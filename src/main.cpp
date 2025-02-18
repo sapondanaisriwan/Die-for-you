@@ -75,7 +75,7 @@ int main()
 {
     // Initialize window
     const float screenWidth = 1000;
-    const float screenHeight = 750;
+    const float screenHeight = 750; 
 
     InitWindow(screenWidth, screenHeight, "Die for you");
     SetTargetFPS(60);
