@@ -1,0 +1,46 @@
+[
+  {
+    "id": 1,
+    "score": 0,
+    "desk": "animal",
+    "data": [
+      {
+        "word": "Dog",
+        "meaning": "This is a dog",
+        "image": "img/desks/animal/dog.png"
+      },
+      {
+        "word": "Cat",
+        "meaning": "This is a cat",
+        "image": "img/desks/animal/cat.png"
+      },
+      {
+        "word": "Rabbit",
+        "meaning": "This is a rabbit",
+        "image": "img/desks/animal/rabbit.png"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "score": 0,
+    "desk": "fruit",
+    "data": [
+      {
+        "word": "Apple",
+        "meaning": "This is an apple",
+        "image": "img/desks/fruit/apple.png"
+      },
+      {
+        "word": "Banana",
+        "meaning": "This is a banana",
+        "image": "img/desks/fruit/banana.png"
+      },
+      {
+        "word": "Orange",
+        "meaning": "This is an orange",
+        "image": "img/desks/fruit/orange.png"
+      }
+    ]
+  }
+]

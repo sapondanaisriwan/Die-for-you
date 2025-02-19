@@ -61,6 +61,16 @@
 		"text_encoding": "cpp",
 		"cinttypes": "cpp",
 		"typeinfo": "cpp",
-		"variant": "cpp"
+		"variant": "cpp",
+		"any": "cpp",
+		"codecvt": "cpp",
+		"cstring": "cpp",
+		"forward_list": "cpp",
+		"map": "cpp",
+		"ratio": "cpp",
+		"iomanip": "cpp",
+		"ranges": "cpp",
+		"sstream": "cpp",
+		"valarray": "cpp"
 	}
 }
