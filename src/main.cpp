@@ -24,7 +24,7 @@ bool showAnswer = false;
 Document getData()
 {
     // Read the JSON file
-    ifstream file("data.json");
+    ifstream file("resources/data.json");
 
     // Read file content into a string
     stringstream buffer;
