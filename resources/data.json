@@ -6,27 +6,27 @@
     "data": [
       {
         "word": "Elephant",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/animals/1.png"
       },
       {
         "word": "Dog",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/animals/2.png"
       },
       {
         "word": "Cat",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/animals/3.png"
       },
       {
         "word": "Rabbit",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/animals/4.png"
       },
       {
         "word": "Giraffe",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/animals/5.png"
       }
     ]
@@ -38,27 +38,27 @@
     "data": [
       {
         "word": "Rice",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/foods/1.png"
       },
       {
         "word": "Noodle",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/foods/2.png"
       },
       {
         "word": "Bread",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/foods/3.png"
       },
       {
         "word": "Soup",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/foods/4.png"
       },
       {
         "word": "Salad",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/foods/5.png"
       }
     ]
@@ -69,28 +69,28 @@
     "desk": "flowers",
     "data": [
       {
-        "word": "",
-        "meaning": "",
+        "word": "Sunflower",
+        "meaning": "XXXXX",
         "image": "img/desks/flowers/1.png"
       },
       {
-        "word": "",
-        "meaning": "",
+        "word": "Tulip",
+        "meaning": "XXXXX",
         "image": "img/desks/flowers/2.png"
       },
       {
-        "word": "",
-        "meaning": "",
+        "word": "Lily",
+        "meaning": "XXXXX",
         "image": "img/desks/flowers/3.png"
       },
       {
-        "word": "",
-        "meaning": "",
+        "word": "Lotus",
+        "meaning": "XXXXX",
         "image": "img/desks/flowers/4.png"
       },
       {
-        "word": "",
-        "meaning": "",
+        "word": "MariGold",
+        "meaning": "XXXXX",
         "image": "img/desks/flowers/5.png"
       }
     ]
@@ -98,32 +98,32 @@
   {
     "id": 4,
     "score": 0,
-    "desk": "countries",
+    "desk": "country",
     "data": [
       {
-        "word": "",
-        "meaning": "",
-        "image": "img/desks/countries/1.png"
+        "word": "Thailand",
+        "meaning": "XXXXX",
+        "image": "img/desks/country/1.png"
       },
       {
-        "word": "",
-        "meaning": "",
-        "image": "img/desks/countries/2.png"
+        "word": "Singapore",
+        "meaning": "XXXXX",
+        "image": "img/desks/country/2.png"
       },
       {
-        "word": "",
-        "meaning": "",
-        "image": "img/desks/countries/3.png"
+        "word": "Korea",
+        "meaning": "XXXXX",
+        "image": "img/desks/country/3.png"
       },
       {
-        "word": "",
-        "meaning": "",
-        "image": "img/desks/countries/4.png"
+        "word": "Unuted States",
+        "meaning": "XXXXX",
+        "image": "img/desks/country/4.png"
       },
       {
-        "word": "",
-        "meaning": "",
-        "image": "img/desks/countries/5.png"
+        "word": "Canada",
+        "meaning": "XXXXX",
+        "image": "img/desks/country/5.png"
       }
     ]
   }
@@ -133,28 +133,28 @@
     "desk": "jobs",
     "data": [
       {
-        "word": "",
-        "meaning": "",
+        "word": "Pilot",
+        "meaning": "XXXXX",
         "image": "img/desks/jobs/1.png"
       },
       {
-        "word": "",
-        "meaning": "",
+        "word": "Nurse",
+        "meaning": "XXXXX",
         "image": "img/desks/jobs/2.png"
       },
       {
-        "word": "",
-        "meaning": "",
+        "word": "Teacher",
+        "meaning": "XXXXX",
         "image": "img/desks/jobs/3.png"
       },
       {
-        "word": "",
-        "meaning": "",
+        "word": "Doctor",
+        "meaning": "XXXXX",
         "image": "img/desks/jobs/4.png"
       },
       {
-        "word": "",
-        "meaning": "",
+        "word": "Chef",
+        "meaning": "XXXXX",
         "image": "img/desks/jobs/5.png"
       }
     ]
@@ -165,28 +165,28 @@
     "desk": "vetgetables",
     "data": [
       {
-        "word": "",
-        "meaning": "",
+        "word": "Bell Pepper",
+        "meaning": "XXXXX",
         "image": "img/desks/vetgetables/1.png"
       },
       {
         "word": "",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/vetgetables/2.png"
       },
       {
         "word": "",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/vetgetables/3.png"
       },
       {
         "word": "",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/vetgetables/4.png"
       },
       {
         "word": "",
-        "meaning": "",
+        "meaning": "XXXXX",
         "image": "img/desks/vetgetables/5.png"
       }
     ]

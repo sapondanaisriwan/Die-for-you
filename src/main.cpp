@@ -49,6 +49,12 @@ int main()
     InitWindow(screenWidth, screenHeight, "Die for you");
     SetTargetFPS(60);
 
+    //Get front
+    Font InterSemiBold = LoadFont("resources/InterSemiBold.ttf");
+    Font InterLight = LoadFont("resources/InterLight.ttf");
+
+
+
     // homepage
     Button topbar{"img/homepage/topbar.png", {0, 0}, 1};
     Button newDesk{"img/homepage/new-desk.png", {48, 95}, 1};
@@ -128,6 +134,10 @@ int main()
         {
 
             int dataSize = document[currentDesk]["data"].Size() - 1;
+
+            string Wordl = document[currentDesk]["data"][currentPage]["word"].GetString();
+            string Mean = document[currentDesk]["data"][currentPage]["meaning"].GetString();
+
             if (!imageLoaded)
             {
                 string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
@@ -171,6 +181,8 @@ int main()
                 gpMedBtn.Draw();
                 gpHardBtn.Draw();
                 gpHideAns.Draw();
+                int vocabWidth = MeasureText(Wordl.c_str(), 30);
+                DrawTextEx(InterSemiBold,Mean.c_str(), (Vector2){500 - vocabWidth / 2.0f, 80}, 35, 2, DARKBLUE);
             }
             else
             {
@@ -186,7 +198,9 @@ int main()
 
             if (imageLoaded)
             {
-                DrawTexture(wordImage, 254, 148, WHITE);
+                int vocabWidth = MeasureText(Wordl.c_str(), 30);
+                DrawTextEx(InterSemiBold,Wordl.c_str(), (Vector2){500 - vocabWidth / 2.0f, 80}, 35, 2, DARKBLUE);
+                DrawTexture(wordImage, 254, 100, WHITE);//draw image
             }
         }
         EndDrawing();
