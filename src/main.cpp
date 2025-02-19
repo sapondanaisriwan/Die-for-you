@@ -139,12 +139,8 @@ int main()
         else if (currentWindow == GAMEPLAY_WINDOW)
         {
 
-            if (gpHome.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = HOME_WINDOW;
-                UnloadTexture(wordImage);
-            }
-
+            int dataSize = document[currentDesk]["data"].Size() - 1;
+            cout << dataSize;
             if (!imageLoaded)
             {
                 string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
@@ -153,20 +149,19 @@ int main()
                 cout << imgPath << endl;
             }
 
-            if (gpNext.isPressed(mousePosition, mousePressed))
+            if (gpHome.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = HOME_WINDOW;
+                UnloadTexture(wordImage);
+            }
+            else if (gpNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize)
             {
                 currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
             }
 
-            if (gpPrevious.isPressed(mousePosition, mousePressed) && currentPage > 0)
-            {
-                currentPage--;
-                UnloadTexture(wordImage);
-                imageLoaded = false;
-            }
-            if (gpPreviousFade.isPressed(mousePosition, mousePressed) && currentPage > 0)
+            else if ((gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
             {
                 currentPage--;
                 UnloadTexture(wordImage);
