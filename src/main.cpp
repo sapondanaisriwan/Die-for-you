@@ -76,11 +76,10 @@ int main()
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {48, 48}, 1};
     Button gpHome{"img/gameplay/home-btn.png", {64, 650}, 1};
-    Button gpPrevious{"img/gameplay/previous-btn.png", {472, 650}, 1};
-    Button gpPrevious2{"img/gameplay/previous-btn2.png", {472, 650}, 1};
+    Button gpPreviousFade{"img/gameplay/previous-btn.png", {472, 650}, 1};
+    Button gpPrevious{"img/gameplay/previous-btn2.png", {472, 650}, 1};
     Button gpNext{"img/gameplay/next-btn.png", {528, 650}, 1};
     Button gpAns{"img/gameplay/show-answer-btn.png", {809, 650}, 1};
-
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340, 590}, 1};
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452, 590}, 1};
     Button gpHardBtn{"img/gameplay/hard-btn.png", {564, 590}, 1};
@@ -167,7 +166,7 @@ int main()
                 UnloadTexture(wordImage);
                 imageLoaded = false;
             }
-            if (gpPrevious2.isPressed(mousePosition, mousePressed) && currentPage > 0)
+            if (gpPreviousFade.isPressed(mousePosition, mousePressed) && currentPage > 0)
             {
                 currentPage--;
                 UnloadTexture(wordImage);
@@ -179,9 +178,9 @@ int main()
             gpNext.Draw();
 
             if (currentPage > 0)
-                gpPrevious2.Draw();
-            else
                 gpPrevious.Draw();
+            else
+                gpPreviousFade.Draw();
 
             gpAns.Draw();
             gpEasyBtn.Draw();
