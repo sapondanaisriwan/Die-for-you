@@ -15,9 +15,13 @@ enum WindowState
 };
 WindowState currentWindow = HOME_WINDOW;
 
-int main()
-{
+int currentPage = 0;
+int currentDesk = 0;
+Texture2D wordImage;
+bool imageLoaded = false;
 
+Document getData()
+{
     // Read the JSON file
     ifstream file("data.json");
 
@@ -27,11 +31,15 @@ int main()
     string jsonStr = buffer.str();
 
     Document document;
-    if (document.Parse(jsonStr.c_str()).HasParseError())
-    {
-        cout << "Failed to parse JSON" << endl;
-        return 1;
-    }
+    document.Parse(jsonStr.c_str());
+    return document;
+}
+
+int main()
+{
+
+    // Get the JSON document
+    Document document = getData();
 
     // // Loop through each object in the array
     // for (const auto &item : document.GetArray())
@@ -69,6 +77,7 @@ int main()
     Button gpBG{"img/gameplay/bg.png", {48, 48}, 1};
     Button gpHome{"img/gameplay/home-btn.png", {64, 650}, 1};
     Button gpPrevious{"img/gameplay/previous-btn.png", {472, 650}, 1};
+    Button gpPrevious2{"img/gameplay/previous-btn2.png", {472, 650}, 1};
     Button gpNext{"img/gameplay/next-btn.png", {528, 650}, 1};
     Button gpAns{"img/gameplay/show-answer-btn.png", {809, 650}, 1};
 
@@ -87,11 +96,8 @@ int main()
 
         if (currentWindow == HOME_WINDOW)
         {
-            if (foodBtn.isPressed(mousePosition, mousePressed))
-            {
-
-                currentWindow = GAMEPLAY_WINDOW;
-            }
+            currentPage = 0;
+            imageLoaded = false;
             topbar.Draw();
             newDesk.Draw();
             foodBtn.Draw();
@@ -100,21 +106,92 @@ int main()
             countryBtn.Draw();
             jobsBtn.Draw();
             vegetableBtn.Draw();
+            if (animalBtn.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+                currentDesk = 0;
+            }
+            else if (foodBtn.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+                currentDesk = 1;
+            }
+            else if (flowerBtn.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+                currentDesk = 2;
+            }
+            else if (countryBtn.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+                currentDesk = 3;
+            }
+            else if (jobsBtn.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+                currentDesk = 4;
+            }
+            else if (vegetableBtn.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+                currentDesk = 5;
+            }
         }
         else if (currentWindow == GAMEPLAY_WINDOW)
         {
+
             if (gpHome.isPressed(mousePosition, mousePressed))
             {
                 currentWindow = HOME_WINDOW;
+                UnloadTexture(wordImage);
             }
+
+            if (!imageLoaded)
+            {
+                string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
+                wordImage = LoadTexture(imgPath.c_str());
+                imageLoaded = true;
+                cout << imgPath << endl;
+            }
+
+            if (gpNext.isPressed(mousePosition, mousePressed))
+            {
+                currentPage++;
+                UnloadTexture(wordImage);
+                imageLoaded = false;
+            }
+
+            if (gpPrevious.isPressed(mousePosition, mousePressed) && currentPage > 0)
+            {
+                currentPage--;
+                UnloadTexture(wordImage);
+                imageLoaded = false;
+            }
+            if (gpPrevious2.isPressed(mousePosition, mousePressed) && currentPage > 0)
+            {
+                currentPage--;
+                UnloadTexture(wordImage);
+                imageLoaded = false;
+            }
+
             gpBG.Draw();
             gpHome.Draw();
             gpNext.Draw();
-            gpPrevious.Draw();
+
+            if (currentPage > 0)
+                gpPrevious2.Draw();
+            else
+                gpPrevious.Draw();
+
             gpAns.Draw();
             gpEasyBtn.Draw();
             gpMedBtn.Draw();
             gpHardBtn.Draw();
+
+            if (imageLoaded)
+            {
+                DrawTexture(wordImage, 254, 148, WHITE);
+            }
         }
         EndDrawing();
     }
