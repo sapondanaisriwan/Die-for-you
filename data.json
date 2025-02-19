@@ -7,17 +7,17 @@
       {
         "word": "Dog",
         "meaning": "This is a dog",
-        "image": "desks/animal/dog.png"
+        "image": "img/desks/animal/dog.png"
       },
       {
         "word": "Cat",
         "meaning": "This is a cat",
-        "image": "desks/animal/cat.png"
+        "image": "img/desks/animal/cat.png"
       },
       {
         "word": "Rabbit",
         "meaning": "This is a rabbit",
-        "image": "desks/animal/rabbit.png"
+        "image": "img/desks/animal/rabbit.png"
       }
     ]
   },
@@ -29,17 +29,17 @@
       {
         "word": "Apple",
         "meaning": "This is an apple",
-        "image": "desks/fruit/apple.png"
+        "image": "img/desks/fruit/apple.png"
       },
       {
         "word": "Banana",
         "meaning": "This is a banana",
-        "image": "desks/fruit/banana.png"
+        "image": "img/desks/fruit/banana.png"
       },
       {
         "word": "Orange",
         "meaning": "This is an orange",
-        "image": "desks/fruit/orange.png"
+        "image": "img/desks/fruit/orange.png"
       }
     ]
   }
