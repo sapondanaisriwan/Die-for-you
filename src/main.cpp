@@ -19,6 +19,7 @@ int currentPage = 0;
 int currentDesk = 0;
 Texture2D wordImage;
 bool imageLoaded = false;
+bool showAnswer = false;
 
 Document getData()
 {
@@ -40,21 +41,6 @@ int main()
 
     // Get the JSON document
     Document document = getData();
-
-    // // Loop through each object in the array
-    // for (const auto &item : document.GetArray())
-    // {
-    //     cout << "Desk: " << item["desk"].GetString() << endl;
-
-    //     // Loop through the "data" array
-    //     for (const auto &entry : item["data"].GetArray())
-    //     {
-    //         cout << "  Word: " << entry["word"].GetString() << endl;
-    //         cout << "  Meaning: " << entry["meaning"].GetString() << endl;
-    //         cout << "  Image: " << entry["image"].GetString() << endl;
-    //         cout << endl;
-    //     }
-    // }
 
     // Initialize window
     const float screenWidth = 1000;
@@ -79,7 +65,8 @@ int main()
     Button gpPreviousFade{"img/gameplay/previous-btn.png", {472, 650}, 1};
     Button gpPrevious{"img/gameplay/previous-btn2.png", {472, 650}, 1};
     Button gpNext{"img/gameplay/next-btn.png", {528, 650}, 1};
-    Button gpAns{"img/gameplay/show-answer-btn.png", {809, 650}, 1};
+    Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 650}, 1};
+    Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 650}, 1};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340, 590}, 1};
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452, 590}, 1};
     Button gpHardBtn{"img/gameplay/hard-btn.png", {564, 590}, 1};
@@ -97,6 +84,7 @@ int main()
         {
             currentPage = 0;
             imageLoaded = false;
+            showAnswer = false;
             topbar.Draw();
             newDesk.Draw();
             foodBtn.Draw();
@@ -140,7 +128,6 @@ int main()
         {
 
             int dataSize = document[currentDesk]["data"].Size() - 1;
-            cout << dataSize;
             if (!imageLoaded)
             {
                 string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
@@ -159,28 +146,43 @@ int main()
                 currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
+                showAnswer = false;
             }
-
+            else if (gpShowAns.isPressed(mousePosition, mousePressed))
+            {
+                showAnswer = !showAnswer;
+            }
             else if ((gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
             {
                 currentPage--;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
+                showAnswer = false;
             }
 
             gpBG.Draw();
             gpHome.Draw();
             gpNext.Draw();
+            gpShowAns.Draw();
+
+            if (showAnswer)
+            {
+                gpEasyBtn.Draw();
+                gpMedBtn.Draw();
+                gpHardBtn.Draw();
+                gpHideAns.Draw();
+            }
+            else
+            {
+                gpShowAns.Draw();
+            }
 
             if (currentPage > 0)
                 gpPrevious.Draw();
             else
+            {
                 gpPreviousFade.Draw();
-
-            gpAns.Draw();
-            gpEasyBtn.Draw();
-            gpMedBtn.Draw();
-            gpHardBtn.Draw();
+            }
 
             if (imageLoaded)
             {
