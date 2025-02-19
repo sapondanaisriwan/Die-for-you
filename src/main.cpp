@@ -1,7 +1,11 @@
 #include "raylib.h"
+#include <fstream>
 #include <iostream>
+#include <sstream>
+#include "rapidjson/document.h"
 #include "button.hpp"
 
+using namespace rapidjson;
 using namespace std;
 
 enum WindowState
@@ -11,12 +15,39 @@ enum WindowState
 };
 WindowState currentWindow = HOME_WINDOW;
 
-void homepage(Texture2D textures[], Vector2 positions[])
-{
-}
-
 int main()
 {
+
+    // Read the JSON file
+    ifstream file("data.json");
+
+    // Read file content into a string
+    stringstream buffer;
+    buffer << file.rdbuf();
+    string jsonStr = buffer.str();
+
+    Document document;
+    if (document.Parse(jsonStr.c_str()).HasParseError())
+    {
+        cout << "Failed to parse JSON" << endl;
+        return 1;
+    }
+
+    // // Loop through each object in the array
+    // for (const auto &item : document.GetArray())
+    // {
+    //     cout << "Desk: " << item["desk"].GetString() << endl;
+
+    //     // Loop through the "data" array
+    //     for (const auto &entry : item["data"].GetArray())
+    //     {
+    //         cout << "  Word: " << entry["word"].GetString() << endl;
+    //         cout << "  Meaning: " << entry["meaning"].GetString() << endl;
+    //         cout << "  Image: " << entry["image"].GetString() << endl;
+    //         cout << endl;
+    //     }
+    // }
+
     // Initialize window
     const float screenWidth = 1000;
     const float screenHeight = 750;
@@ -45,7 +76,6 @@ int main()
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452, 590}, 1};
     Button gpHardBtn{"img/gameplay/hard-btn.png", {564, 590}, 1};
 
-
     while (!WindowShouldClose())
     {
 
@@ -53,14 +83,13 @@ int main()
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
         BeginDrawing();
-
-
         ClearBackground(RAYWHITE);
-        // ClearBackground(WHITE);
+
         if (currentWindow == HOME_WINDOW)
         {
             if (foodBtn.isPressed(mousePosition, mousePressed))
             {
+
                 currentWindow = GAMEPLAY_WINDOW;
             }
             topbar.Draw();
