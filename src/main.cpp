@@ -71,10 +71,13 @@ int main()
     Button gpPrevious{"img/gameplay/previous-btn.png", {472, 650}, 1};
     Button gpNext{"img/gameplay/next-btn.png", {528, 650}, 1};
     Button gpAns{"img/gameplay/show-answer-btn.png", {809, 650}, 1};
-
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340, 590}, 1};
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452, 590}, 1};
     Button gpHardBtn{"img/gameplay/hard-btn.png", {564, 590}, 1};
+    
+    //fade button
+    Button gpPreviousF{"img/gameplay/Fprevious-btn.png", {472, 650}, 1};
+    Button gpNextF{"img/gameplay/Fnext-btn.png", {528, 650}, 1};
 
     while (!WindowShouldClose())
     {
@@ -89,7 +92,6 @@ int main()
         {
             if (foodBtn.isPressed(mousePosition, mousePressed))
             {
-
                 currentWindow = GAMEPLAY_WINDOW;
             }
             topbar.Draw();
