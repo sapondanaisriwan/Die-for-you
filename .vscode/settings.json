@@ -71,6 +71,7 @@
 		"iomanip": "cpp",
 		"ranges": "cpp",
 		"sstream": "cpp",
-		"valarray": "cpp"
+		"valarray": "cpp",
+		"fstream": "cpp"
 	}
 }
