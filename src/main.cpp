@@ -35,46 +35,58 @@ int main()
     Button vegetableBtn{"img/homepage/vegetable.png", {508.24, 384}, 1};
 
     // gameplay
-    Button gameplayBG{"img/gameplay/bg.png", {48, 48}, 1};
-    Button gmaeplayhome{"img/gameplay/home-btn.png", {64, 650}, 1};
-    Button gameplaynext{"img/gameplay/next-btn.png", {528, 649}, 1};
-    Button gameplayprevious{"img/gameplay/previous-btn.png", {472, 687}, 1};
-    Button gameplayans{"img/gameplay/show-answer-btn.png", {809, 625}, 1};
+    Button gpBG{"img/gameplay/bg.png", {48, 48}, 1};
+    Button gpHome{"img/gameplay/home-btn.png", {64, 650}, 1};
+    Button gpPrevious{"img/gameplay/previous-btn.png", {472, 650}, 1};
+    Button gpNext{"img/gameplay/next-btn.png", {528, 650}, 1};
+    Button gpAns{"img/gameplay/show-answer-btn.png", {809, 650}, 1};
+
+    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340, 590}, 1};
+    Button gpMedBtn{"img/gameplay/medium-btn.png", {452, 590}, 1};
+    Button gpHardBtn{"img/gameplay/hard-btn.png", {564, 590}, 1};
 
 
     while (!WindowShouldClose())
     {
 
-        // Vector2 mousePosition = GetMousePosition();
-        // bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+        Vector2 mousePosition = GetMousePosition();
+        bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
         BeginDrawing();
 
-        gameplayBG.Draw();
-        gmaeplayhome.Draw();
-        gameplaynext.Draw();
-        gameplayprevious.Draw();
-        gameplayans.Draw();
 
         ClearBackground(RAYWHITE);
-        // if (currentWindow == HOME_WINDOW)
-        // {
-        //     if (foodBtn.isPressed(mousePosition, mousePressed))
-        //     {
-        //         currentWindow = GAMEPLAY_WINDOW;
-        //     }
-        //     topbar.Draw();
-        //     newDesk.Draw();
-        //     foodBtn.Draw();
-        //     animalBtn.Draw();
-        //     flowerBtn.Draw();
-        //     countryBtn.Draw();
-        //     jobsBtn.Draw();
-        //     vegetableBtn.Draw();
-        // }
-        // else if (currentWindow == GAMEPLAY_WINDOW)
-        // {
-        // }
+        // ClearBackground(WHITE);
+        if (currentWindow == HOME_WINDOW)
+        {
+            if (foodBtn.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+            }
+            topbar.Draw();
+            newDesk.Draw();
+            foodBtn.Draw();
+            animalBtn.Draw();
+            flowerBtn.Draw();
+            countryBtn.Draw();
+            jobsBtn.Draw();
+            vegetableBtn.Draw();
+        }
+        else if (currentWindow == GAMEPLAY_WINDOW)
+        {
+            if (gpHome.isPressed(mousePosition, mousePressed))
+            {
+                currentWindow = HOME_WINDOW;
+            }
+            gpBG.Draw();
+            gpHome.Draw();
+            gpNext.Draw();
+            gpPrevious.Draw();
+            gpAns.Draw();
+            gpEasyBtn.Draw();
+            gpMedBtn.Draw();
+            gpHardBtn.Draw();
+        }
         EndDrawing();
     }
 
