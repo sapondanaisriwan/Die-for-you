@@ -138,6 +138,7 @@ int main()
     // homepage
     Button topbar{"img/homepage/topbar.png", {0, 0}, 1};
     //Button newDesk{"img/homepage/new-desk.png", {48, 95}, 1};
+    Button SMT{"img/homepage/SMT.png", {48, 95}, 1};
     Button foodBtn{"img/homepage/Foods.png", {278.12, 95}, 1};
     Button animalBtn{"img/homepage/animals.png", {508.24, 95}, 1};
     Button flowerBtn{"img/homepage/flowers.png", {738.36, 95}, 1};
@@ -173,6 +174,7 @@ int main()
             showAnswer = false;
             topbar.Draw();
             //newDesk.Draw();
+            SMT.Draw();
             foodBtn.Draw();
             animalBtn.Draw();
             flowerBtn.Draw();
