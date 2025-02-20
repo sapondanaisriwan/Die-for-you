@@ -76,7 +76,7 @@ int main()
     Button gpHome{"img/gameplay/home-btn.png", {64+4, 650}, 1};
     Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 -4, 649}, 1};
     Button gpPrevious{"img/gameplay/previous-btn2.png", {443 -4, 649}, 1};
-    Button gpNext{"img/gameplay/next-btn.png", {529+8, 649}, 1};
+    Button gpNext{"img/gameplay/next-btn.png", {529+4, 649}, 1};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}, 1};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340+8, 590}, 1};
