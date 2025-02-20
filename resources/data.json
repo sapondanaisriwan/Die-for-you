@@ -6,17 +6,17 @@
     "data": [
       {
         "word": "Elephant",
-        "meaning": "Cat",
+        "meaning": "This is a cat",
         "image": "img/desks/animals/1.png"
       },
       {
         "word": "Dog",
-        "meaning": "XXXXX",
+        "meaning": "This is a Elephant",
         "image": "img/desks/animals/2.png"
       },
       {
         "word": "Cat",
-        "meaning": "XXXXX",
+        "meaning": "This is a dog",
         "image": "img/desks/animals/3.png"
       },
       {
