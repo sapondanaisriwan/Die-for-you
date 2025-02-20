@@ -73,7 +73,7 @@ int main()
 
     // homepage
     Button topbar{"img/homepage/topbar.png", {0, 0}, 1};
-    Button newDesk{"img/homepage/new-desk.png", {48, 95}, 1};
+    //Button newDesk{"img/homepage/new-desk.png", {48, 95}, 1};
     Button foodBtn{"img/homepage/Foods.png", {278.12, 95}, 1};
     Button animalBtn{"img/homepage/animals.png", {508.24, 95}, 1};
     Button flowerBtn{"img/homepage/flowers.png", {738.36, 95}, 1};
@@ -108,7 +108,7 @@ int main()
             imageLoaded = false;
             showAnswer = false;
             topbar.Draw();
-            newDesk.Draw();
+            //newDesk.Draw();
             foodBtn.Draw();
             animalBtn.Draw();
             flowerBtn.Draw();
@@ -149,7 +149,7 @@ int main()
         else if (currentWindow == GAMEPLAY_WINDOW)
         {
             int dataSize = document[currentDesk]["data"].Size() - 1;
-
+            
             string wordDesk = document[currentDesk]["data"][currentPage]["word"].GetString();
             string meaning = document[currentDesk]["data"][currentPage]["meaning"].GetString();
             string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
