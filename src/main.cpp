@@ -45,6 +45,9 @@ int main()
     // Initialize window
     const float screenWidth = 1000;
     const float screenHeight = 750;
+    //center position
+    Vector2 CenterPos = {screenWidth / 2, screenHeight / 2};
+
 
     InitWindow(screenWidth, screenHeight, "Die for you");
     SetTargetFPS(60);
@@ -150,6 +153,7 @@ int main()
             if (!imageLoaded)
             {
                 wordImage = LoadTexture(imgPath.c_str());
+                
                 imageLoaded = true;
                 cout << imgPath << endl;
             }
@@ -205,8 +209,19 @@ int main()
 
             if (imageLoaded)
             {
+<<<<<<< HEAD
                 DrawTextEx(InterSemiBold, wordDesk.c_str(), xyCentered, 44, 0, BLACK);
                 DrawTexture(wordImage, 254, 100, WHITE); // draw image
+=======
+                DrawTextEx(InterSemiBold, wordDesk.c_str(), (Vector2){xCentered, 80}, 36, 0, BLACK);
+                Rectangle ImageRec = {0, 0, wordImage.width /1.0f, wordImage.height/1.0f};
+                Vector2 ImageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
+
+                DrawTexturePro(wordImage,ImageRec,(Rectangle) {CenterPos.x,CenterPos.y,ImageRec.width,ImageRec.height},ImageCenter, 0, WHITE); 
+
+
+                // DrawTexture(wordImage, 500, 100, WHITE); // draw image
+>>>>>>> 18e637506d6da6dfa879eec1accaa96e9ed57e93
             }
         }
         EndDrawing();
