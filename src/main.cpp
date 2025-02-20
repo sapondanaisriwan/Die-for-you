@@ -79,9 +79,9 @@ int main()
     Button gpNext{"img/gameplay/next-btn.png", {529+4, 649}, 1};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}, 1};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
-    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340+8, 590}, 1};
-    Button gpMedBtn{"img/gameplay/medium-btn.png", {452+8, 590}, 1};
-    Button gpHardBtn{"img/gameplay/hard-btn.png", {564+8, 590}, 1};
+    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340+4, 590}, 1};
+    Button gpMedBtn{"img/gameplay/medium-btn.png", {452+4, 590}, 1};
+    Button gpHardBtn{"img/gameplay/hard-btn.png", {564+4, 590}, 1};
 
     while (!WindowShouldClose())
     {
@@ -138,15 +138,14 @@ int main()
         }
         else if (currentWindow == GAMEPLAY_WINDOW)
         {
-
             int dataSize = document[currentDesk]["data"].Size() - 1;
 
             string wordDesk = document[currentDesk]["data"][currentPage]["word"].GetString();
             string meaning = document[currentDesk]["data"][currentPage]["meaning"].GetString();
             string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
 
-            float textWidth = MeasureText(wordDesk.c_str(), 36);
-            float xCentered = (screenWidth - textWidth / 2.0) / 2.0;
+            Vector2 textWidth = MeasureTextEx(InterSemiBold,wordDesk.c_str(), 36,2);
+            Vector2 xyCentered = {(screenWidth/2.0f - textWidth.x/2.0f), 80};
 
             if (!imageLoaded)
             {
@@ -190,7 +189,7 @@ int main()
                 gpMedBtn.Draw();
                 gpHardBtn.Draw();
                 gpHideAns.Draw();
-                DrawTextEx(InterMedium, meaning.c_str(), (Vector2){xCentered, 529}, 36, 0, BLACK);
+                // DrawTextEx(InterMedium, meaning.c_str(), (Vector2){xyCentered, 529}, 36, 0, BLACK);
             }
             else
             {
@@ -206,7 +205,7 @@ int main()
 
             if (imageLoaded)
             {
-                DrawTextEx(InterSemiBold, wordDesk.c_str(), (Vector2){xCentered, 80}, 36, 0, BLACK);
+                DrawTextEx(InterSemiBold, wordDesk.c_str(), xyCentered, 44, 0, BLACK);
                 DrawTexture(wordImage, 254, 100, WHITE); // draw image
             }
         }
