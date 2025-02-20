@@ -2,7 +2,12 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
+#include <algorithm> // For shuffle
+#include <random>    // For random generator
 #include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 #include "button.hpp"
 
 using namespace rapidjson;
@@ -17,9 +22,10 @@ WindowState currentWindow = HOME_WINDOW;
 
 int currentPage = 0;
 int currentDesk = 0;
-Texture2D wordImage;
 bool imageLoaded = false;
 bool showAnswer = false;
+bool isShuffled = false;
+Texture2D wordImage;
 
 Document getData()
 {
@@ -33,7 +39,65 @@ Document getData()
 
     Document document;
     document.Parse(jsonStr.c_str());
+    file.close();
     return document;
+}
+
+void shuffleDeck()
+{
+    Document document = getData();
+
+    // Random number generator
+    random_device rd;
+    mt19937 rng(rd());
+
+    // Loop through all desks and shuffle their "data" arrays
+    for (SizeType i = 0; i < document.Size(); i++)
+    {
+        Value &item = document[i];
+
+        // Check if "data" exists and is an array
+        if (item.HasMember("data") && item["data"].IsArray())
+        {
+            Value &dataArray = item["data"]; // Get the data array
+            Document::AllocatorType &allocator = document.GetAllocator();
+
+            // Store elements in a vector
+            vector<Value> dataVector;
+            for (SizeType j = 0; j < dataArray.Size(); j++)
+            {
+                dataVector.push_back(Value(dataArray[j], allocator)); // Deep copy
+            }
+
+            // Shuffle the vector
+            shuffle(dataVector.begin(), dataVector.end(), rng);
+
+            // Clear the original data array
+            dataArray.Clear();
+
+            // Copy shuffled data back into JSON array
+            for (auto &entry : dataVector)
+            {
+                // cout << entry["name"].GetString() << endl;
+                dataArray.PushBack(entry, allocator);
+            }
+        }
+    }
+
+    // Convert JSON back to string
+    StringBuffer bufferOut;
+    Writer<StringBuffer> writer(bufferOut);
+    document.Accept(writer);
+
+    // Write the updated JSON back to the file
+    ofstream outFile("resources/data.json");
+    if (!outFile)
+    {
+        cerr << "Error: Cannot write to file!" << endl;
+        return;
+    }
+    outFile << bufferOut.GetString();
+    outFile.close();
 }
 
 Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
@@ -47,8 +111,8 @@ int main()
 {
 
     // Get the JSON document
+    // shuffleDeck();
     Document document = getData();
-
     // Initialize window
     const float screenWidth = 1000;
     const float screenHeight = 750;
@@ -148,6 +212,14 @@ int main()
         }
         else if (currentWindow == GAMEPLAY_WINDOW)
         {
+
+            if (isShuffled == false)
+            {
+                shuffleDeck();
+                document = getData();
+                isShuffled = !isShuffled;
+            }
+
             int dataSize = document[currentDesk]["data"].Size() - 1;
             
             string wordDesk = document[currentDesk]["data"][currentPage]["word"].GetString();
@@ -165,6 +237,7 @@ int main()
             if (gpHome.isPressed(mousePosition, mousePressed))
             {
                 currentWindow = HOME_WINDOW;
+                isShuffled = !isShuffled;
                 UnloadTexture(wordImage);
             }
             else if (gpNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize)
