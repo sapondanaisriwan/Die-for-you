@@ -198,9 +198,9 @@ int main()
                 gpHardBtn.Draw();
                 gpHideAns.Draw();
 
-                // Draw text
-                Vector2 textPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529 + 6);
-                DrawTextEx(InterMedium, meaning.c_str(), textPos, 32, 0, BLACK);
+                // Show answer text
+                Vector2 answerPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529 + 6);
+                DrawTextEx(InterMedium, meaning.c_str(), answerPos, 32, 0, BLACK);
             }
             else
             {
@@ -214,13 +214,17 @@ int main()
                 gpPreviousFade.Draw();
             }
 
+            string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
+            Vector2 pageIndexPos = GetCenteredTextPos(InterRegular, pageIndex, 20, screenCenterPos, 660);
+            DrawTextEx(InterRegular, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 20, 0, Color{88, 99, 128, 255});
+
             if (imageLoaded)
             {
-                // Draw text
+                // show the deks's word at the top of the screen
                 Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80 + 6);
                 DrawTextEx(InterSemiBold, wordDesk.c_str(), textPos, 36, 0, BLACK);
 
-                // Draw image
+                // Show the desk's image
                 Rectangle imageRec = {0, 0, (float)wordImage.width, (float)wordImage.height};
                 Vector2 imageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
                 DrawTexturePro(wordImage, imageRec, (Rectangle){screenCenterPos.x, 328, imageRec.width, imageRec.height}, imageCenter, 0, WHITE);
