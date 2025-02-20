@@ -28,6 +28,11 @@
         "word": "Giraffe",
         "meaning": "XXXXX",
         "image": "img/desks/animals/5.png"
+      },
+      {
+        "word": "Nong Meow",
+        "meaning": "This is a cat",
+        "image": "img/desks/animals/6.png"
       }
     ]
   },
