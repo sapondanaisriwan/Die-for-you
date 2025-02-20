@@ -82,7 +82,7 @@ int main()
     Button vegetableBtn{"img/homepage/vegetable.png", {508.24, 384}, 1};
 
     // gameplay
-    Button gpBG{"img/gameplay/bg2.png", {48, 48}, 1};
+    Button gpBG{"img/gameplay/bg.png", {48, 48}, 1};
     Button gpHome{"img/gameplay/home-btn.png", {64 + 4, 650}, 1};
     Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}, 1};
     Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}, 1};
@@ -199,7 +199,7 @@ int main()
                 gpHideAns.Draw();
 
                 // Draw text
-                Vector2 textPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529+6);
+                Vector2 textPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529 + 6);
                 DrawTextEx(InterMedium, meaning.c_str(), textPos, 32, 0, BLACK);
             }
             else
@@ -217,13 +217,13 @@ int main()
             if (imageLoaded)
             {
                 // Draw text
-                Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80+6);
+                Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80 + 6);
                 DrawTextEx(InterSemiBold, wordDesk.c_str(), textPos, 36, 0, BLACK);
 
                 // Draw image
-                Rectangle ImageRec = {0, 0, (float)wordImage.width, (float)wordImage.height};
-                Vector2 ImageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
-                DrawTexturePro(wordImage, ImageRec, (Rectangle){screenCenterPos.x, screenCenterPos.y, ImageRec.width, ImageRec.height}, ImageCenter, 0, WHITE);
+                Rectangle imageRec = {0, 0, (float)wordImage.width, (float)wordImage.height};
+                Vector2 imageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
+                DrawTexturePro(wordImage, imageRec, (Rectangle){screenCenterPos.x, 328, imageRec.width, imageRec.height}, imageCenter, 0, WHITE);
             }
         }
         EndDrawing();
