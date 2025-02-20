@@ -36,6 +36,13 @@ Document getData()
     return document;
 }
 
+Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
+{
+    Vector2 textXY = MeasureTextEx(font, text.c_str(), fontSize, 0);
+    Vector2 result = {(screencenterPos.x - (textXY.x / 2.0f)), yPos};
+    return result;
+}
+
 int main()
 {
 
@@ -45,9 +52,9 @@ int main()
     // Initialize window
     const float screenWidth = 1000;
     const float screenHeight = 750;
-    //center position
-    Vector2 CenterPos = {screenWidth / 2, screenHeight / 2};
 
+    // Center position
+    Vector2 screenCenterPos = {screenWidth / 2.0f, screenHeight / 2.0f};
 
     InitWindow(screenWidth, screenHeight, "Die for you");
     SetTargetFPS(60);
@@ -76,15 +83,15 @@ int main()
 
     // gameplay
     Button gpBG{"img/gameplay/bg2.png", {48, 48}, 1};
-    Button gpHome{"img/gameplay/home-btn.png", {64+4, 650}, 1};
-    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 -4, 649}, 1};
-    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 -4, 649}, 1};
-    Button gpNext{"img/gameplay/next-btn.png", {529+4, 649}, 1};
+    Button gpHome{"img/gameplay/home-btn.png", {64 + 4, 650}, 1};
+    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}, 1};
+    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}, 1};
+    Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}, 1};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}, 1};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
-    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340+4, 590}, 1};
-    Button gpMedBtn{"img/gameplay/medium-btn.png", {452+4, 590}, 1};
-    Button gpHardBtn{"img/gameplay/hard-btn.png", {564+4, 590}, 1};
+    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}, 1};
+    Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
+    Button gpHardBtn{"img/gameplay/hard-btn.png", {564 + 4, 590}, 1};
 
     while (!WindowShouldClose())
     {
@@ -147,13 +154,10 @@ int main()
             string meaning = document[currentDesk]["data"][currentPage]["meaning"].GetString();
             string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
 
-            Vector2 textWidth = MeasureTextEx(InterSemiBold,wordDesk.c_str(), 36,2);
-            Vector2 xyCentered = {(screenWidth/2.0f - textWidth.x/2.0f), 80};
-
             if (!imageLoaded)
             {
                 wordImage = LoadTexture(imgPath.c_str());
-                
+
                 imageLoaded = true;
                 cout << imgPath << endl;
             }
@@ -193,7 +197,10 @@ int main()
                 gpMedBtn.Draw();
                 gpHardBtn.Draw();
                 gpHideAns.Draw();
-                // DrawTextEx(InterMedium, meaning.c_str(), (Vector2){xyCentered, 529}, 36, 0, BLACK);
+
+                // Draw text
+                Vector2 textPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529+6);
+                DrawTextEx(InterMedium, meaning.c_str(), textPos, 32, 0, BLACK);
             }
             else
             {
@@ -209,19 +216,14 @@ int main()
 
             if (imageLoaded)
             {
-<<<<<<< HEAD
-                DrawTextEx(InterSemiBold, wordDesk.c_str(), xyCentered, 44, 0, BLACK);
-                DrawTexture(wordImage, 254, 100, WHITE); // draw image
-=======
-                DrawTextEx(InterSemiBold, wordDesk.c_str(), (Vector2){xCentered, 80}, 36, 0, BLACK);
-                Rectangle ImageRec = {0, 0, wordImage.width /1.0f, wordImage.height/1.0f};
+                // Draw text
+                Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80+6);
+                DrawTextEx(InterSemiBold, wordDesk.c_str(), textPos, 36, 0, BLACK);
+
+                // Draw image
+                Rectangle ImageRec = {0, 0, (float)wordImage.width, (float)wordImage.height};
                 Vector2 ImageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
-
-                DrawTexturePro(wordImage,ImageRec,(Rectangle) {CenterPos.x,CenterPos.y,ImageRec.width,ImageRec.height},ImageCenter, 0, WHITE); 
-
-
-                // DrawTexture(wordImage, 500, 100, WHITE); // draw image
->>>>>>> 18e637506d6da6dfa879eec1accaa96e9ed57e93
+                DrawTexturePro(wordImage, ImageRec, (Rectangle){screenCenterPos.x, screenCenterPos.y, ImageRec.width, ImageRec.height}, ImageCenter, 0, WHITE);
             }
         }
         EndDrawing();
