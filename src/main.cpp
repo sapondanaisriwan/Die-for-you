@@ -49,11 +49,17 @@ int main()
     InitWindow(screenWidth, screenHeight, "Die for you");
     SetTargetFPS(60);
 
-    //Get front
-    Font InterSemiBold = LoadFont("resources/InterSemiBold.ttf");
+    // Get font
+    Font InterSemiBold = LoadFont("resources/Inter_SemiBold.ttf");
+    Font InterMedium = LoadFont("resources/Inter_Medium.ttf");
+    Font InterRegular = LoadFont("resources/Inter_Regular.ttf");
     Font InterLight = LoadFont("resources/InterLight.ttf");
 
-
+    // Smooth the font
+    SetTextureFilter(InterSemiBold.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(InterMedium.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(InterRegular.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(InterLight.texture, TEXTURE_FILTER_BILINEAR);
 
     // homepage
     Button topbar{"img/homepage/topbar.png", {0, 0}, 1};
@@ -66,16 +72,16 @@ int main()
     Button vegetableBtn{"img/homepage/vegetable.png", {508.24, 384}, 1};
 
     // gameplay
-    Button gpBG{"img/gameplay/bg.png", {48, 48}, 1};
-    Button gpHome{"img/gameplay/home-btn.png", {64, 650}, 1};
-    Button gpPreviousFade{"img/gameplay/previous-btn.png", {472, 650}, 1};
-    Button gpPrevious{"img/gameplay/previous-btn2.png", {472, 650}, 1};
-    Button gpNext{"img/gameplay/next-btn.png", {528, 650}, 1};
-    Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 650}, 1};
-    Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 650}, 1};
-    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340, 590}, 1};
-    Button gpMedBtn{"img/gameplay/medium-btn.png", {452, 590}, 1};
-    Button gpHardBtn{"img/gameplay/hard-btn.png", {564, 590}, 1};
+    Button gpBG{"img/gameplay/bg2.png", {48, 48}, 1};
+    Button gpHome{"img/gameplay/home-btn.png", {64+4, 650}, 1};
+    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 -4, 649}, 1};
+    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 -4, 649}, 1};
+    Button gpNext{"img/gameplay/next-btn.png", {529+8, 649}, 1};
+    Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}, 1};
+    Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
+    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340+8, 590}, 1};
+    Button gpMedBtn{"img/gameplay/medium-btn.png", {452+8, 590}, 1};
+    Button gpHardBtn{"img/gameplay/hard-btn.png", {564+8, 590}, 1};
 
     while (!WindowShouldClose())
     {
@@ -135,12 +141,15 @@ int main()
 
             int dataSize = document[currentDesk]["data"].Size() - 1;
 
-            string Wordl = document[currentDesk]["data"][currentPage]["word"].GetString();
-            string Mean = document[currentDesk]["data"][currentPage]["meaning"].GetString();
+            string wordDesk = document[currentDesk]["data"][currentPage]["word"].GetString();
+            string meaning = document[currentDesk]["data"][currentPage]["meaning"].GetString();
+            string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
+
+            float textWidth = MeasureText(wordDesk.c_str(), 36);
+            float xCentered = (screenWidth - textWidth / 2.0) / 2.0;
 
             if (!imageLoaded)
             {
-                string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
                 wordImage = LoadTexture(imgPath.c_str());
                 imageLoaded = true;
                 cout << imgPath << endl;
@@ -181,8 +190,7 @@ int main()
                 gpMedBtn.Draw();
                 gpHardBtn.Draw();
                 gpHideAns.Draw();
-                int vocabWidth = MeasureText(Wordl.c_str(), 30);
-                DrawTextEx(InterSemiBold,Mean.c_str(), (Vector2){500 - vocabWidth / 2.0f, 80}, 35, 2, DARKBLUE);
+                DrawTextEx(InterMedium, meaning.c_str(), (Vector2){xCentered, 529}, 36, 0, BLACK);
             }
             else
             {
@@ -198,9 +206,8 @@ int main()
 
             if (imageLoaded)
             {
-                int vocabWidth = MeasureText(Wordl.c_str(), 30);
-                DrawTextEx(InterSemiBold,Wordl.c_str(), (Vector2){500 - vocabWidth / 2.0f, 80}, 35, 2, DARKBLUE);
-                DrawTexture(wordImage, 254, 100, WHITE);//draw image
+                DrawTextEx(InterSemiBold, wordDesk.c_str(), (Vector2){xCentered, 80}, 36, 0, BLACK);
+                DrawTexture(wordImage, 254, 100, WHITE); // draw image
             }
         }
         EndDrawing();
