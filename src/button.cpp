@@ -36,3 +36,26 @@ bool Button::isPressed(Vector2 mousePos, bool mousePressed)
   }
   return false;
 }
+
+Button::Button(Button &&other) noexcept
+{
+    texture = other.texture;
+    position = other.position;
+
+    // Reset other to avoid double deletion
+    other.texture.id = 0;
+}
+
+Button &Button::operator=(Button &&other) noexcept
+{
+    if (this != &other)
+    {
+        UnloadTexture(texture); // Free existing texture
+
+        texture = other.texture;
+        position = other.position;
+
+        other.texture.id = 0; // Prevent destructor from unloading the texture
+    }
+    return *this;
+}
