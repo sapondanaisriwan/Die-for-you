@@ -9,15 +9,11 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include "button.hpp"
+#include "type.hpp"
 
 using namespace rapidjson;
 using namespace std;
 
-enum WindowState
-{
-    HOME_WINDOW,
-    GAMEPLAY_WINDOW
-};
 WindowState currentWindow = HOME_WINDOW;
 
 int currentPage = 0;
@@ -137,8 +133,9 @@ int main()
 
     float xPos = 48;
     float yPos = 95;
-    float xImage = 230;
-    float yImage = 161;
+    float xImage = 88;
+    float yImage = 120;
+    oldPos oldPos = {xPos, yPos, xImage, yImage};
     vector<Button> deckButtons = {};
     vector<Button> deckCovers = {};
     for (SizeType i = 0; i < document.Size(); i++)
@@ -148,14 +145,14 @@ int main()
         {
             string coverPath = obj["cover"].GetString();
             deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
-            deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, 1));
+            deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
             xPos += 230;
             xImage += 230;
             if (xPos > 800)
             {
-                xPos = 48;
+                xPos = oldPos.xPos;
                 yPos += 289;
-                xImage = 230;
+                xImage = oldPos.xImage;
                 yImage += 287;
             }
         }
@@ -167,7 +164,7 @@ int main()
     Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}, 1};
     Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}, 1};
     Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}, 1};
-    Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}, 1};
+    Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}, 1};
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
@@ -210,11 +207,13 @@ int main()
                 isShuffled = !isShuffled;
             }
 
-            int dataSize = document[currentDesk]["data"].Size() - 1;
+            Value &currentDeskData = document[currentDesk]["data"];
+            Value &currentPageData = currentDeskData[currentPage];
 
-            string wordDesk = document[currentDesk]["data"][currentPage]["word"].GetString();
-            string meaning = document[currentDesk]["data"][currentPage]["meaning"].GetString();
-            string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
+            int dataSize = currentDeskData.Size() - 1;
+            string wordDesk = currentPageData["word"].GetString();
+            string meaning = currentPageData["meaning"].GetString();
+            string imgPath = currentPageData["image"].GetString();
 
             if (!imageLoaded)
             {
