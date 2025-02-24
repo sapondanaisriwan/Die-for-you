@@ -26,11 +26,23 @@ bool imageLoaded = false;
 bool showAnswer = false;
 bool isShuffled = false;
 Texture2D wordImage;
+
+/*
+### here is just part of the code to show how to use the countdown timer###
+//time value
 int countdownTime = 5;
 bool countdownStarted = false;
 int startTime = 0;
 bool timeOut = false;
-
+//countdown test Action
+DrawCountdown(startTime, countdownTime, Upperclock, Vector2{849+20, 71}, 60, RED,timeOut);
+if(timeOut){
+    cout << "Time out" << endl;
+    timeOut = false;
+    countdownStarted = false;
+    break;
+}
+*/
 Document getData()
 {
     // Read the JSON file
@@ -110,7 +122,7 @@ Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screenc
     Vector2 result = {(screencenterPos.x - (textXY.x / 2.0f)), yPos};
     return result;
 }
-
+/* count down function
 void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position, int fontSize, Color color,bool &timeOut)
 {
     int currentTime = static_cast<int>(GetTime());
@@ -128,7 +140,7 @@ void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position
         timeOut = true;
     }
 }
-
+*/
 int main()
 {
 
@@ -196,7 +208,7 @@ int main()
             currentPage = 0;
             imageLoaded = false;
             showAnswer = false;
-            countdownStarted = false;
+            //countdownStarted = false;
             topbar.Draw();
             // newDesk.Draw();
             SMT.Draw();
@@ -241,12 +253,13 @@ int main()
 
         {
             //start countdown
+            /*
             if (!countdownStarted)
             {
                 countdownTime = 60;
                 startTime = static_cast<int>(GetTime());
                 countdownStarted = true;
-            }
+            }*/
 
             if (isShuffled == false)
             {
@@ -299,14 +312,7 @@ int main()
             gpNext.Draw();
             gpShowAns.Draw();
             
-            //countdown test
-            DrawCountdown(startTime, countdownTime, Upperclock, Vector2{849+20, 71}, 60, RED,timeOut);
-            if(timeOut){
-                cout << "Time out" << endl;
-                timeOut = false;
-                countdownStarted = false;
-                break;
-            }
+            
 
 
             if (showAnswer)
