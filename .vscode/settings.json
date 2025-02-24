@@ -72,6 +72,8 @@
 		"ranges": "cpp",
 		"sstream": "cpp",
 		"valarray": "cpp",
-		"fstream": "cpp"
+		"fstream": "cpp",
+		"bitset": "cpp",
+		"regex": "cpp"
 	}
 }

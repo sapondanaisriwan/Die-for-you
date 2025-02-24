@@ -26,6 +26,10 @@ bool imageLoaded = false;
 bool showAnswer = false;
 bool isShuffled = false;
 Texture2D wordImage;
+int countdownTime = 5;
+bool countdownStarted = false;
+int startTime = 0;
+bool timeOut = false;
 
 Document getData()
 {
@@ -107,6 +111,24 @@ Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screenc
     return result;
 }
 
+void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position, int fontSize, Color color,bool &timeOut)
+{
+    int currentTime = static_cast<int>(GetTime());
+    int elapsedTime = currentTime - startTime;
+    int remainingTime = countdownTime - elapsedTime;
+
+    if (remainingTime < 0)
+    {
+        remainingTime = 0;
+    }
+    std::string timeStr = std::to_string(remainingTime);
+    DrawTextEx(font, timeStr.c_str(), position, fontSize, 0, color);
+    if (remainingTime == 0)
+    {
+        timeOut = true;
+    }
+}
+
 int main()
 {
 
@@ -128,16 +150,18 @@ int main()
     Font InterMedium = LoadFont("resources/Inter_Medium.ttf");
     Font InterRegular = LoadFont("resources/Inter_Regular.ttf");
     Font InterLight = LoadFont("resources/InterLight.ttf");
+    Font Upperclock = LoadFont("resources/UpperClockVariable.ttf");
 
     // Smooth the font
     SetTextureFilter(InterSemiBold.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(InterMedium.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(InterRegular.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(InterLight.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(Upperclock.texture, TEXTURE_FILTER_BILINEAR);
 
     // homepage
     Button topbar{"img/homepage/topbar.png", {0, 0}, 1};
-    //Button newDesk{"img/homepage/new-desk.png", {48, 95}, 1};
+    // Button newDesk{"img/homepage/new-desk.png", {48, 95}, 1};
     Button SMT{"img/homepage/SMT.png", {48, 95}, 1};
     Button foodBtn{"img/homepage/Foods.png", {278.12, 95}, 1};
     Button animalBtn{"img/homepage/animals.png", {508.24, 95}, 1};
@@ -156,7 +180,7 @@ int main()
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}, 1};
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
-    Button gpHardBtn{"img/gameplay/hard-btn.png", {564 + 4, 590}, 1};
+    Button gpAgain{"img/gameplay/again-btn.png", {564 + 4, 590}, 1};
 
     while (!WindowShouldClose())
     {
@@ -172,8 +196,9 @@ int main()
             currentPage = 0;
             imageLoaded = false;
             showAnswer = false;
+            countdownStarted = false;
             topbar.Draw();
-            //newDesk.Draw();
+            // newDesk.Draw();
             SMT.Draw();
             foodBtn.Draw();
             animalBtn.Draw();
@@ -213,7 +238,15 @@ int main()
             }
         }
         else if (currentWindow == GAMEPLAY_WINDOW)
+
         {
+            //start countdown
+            if (!countdownStarted)
+            {
+                countdownTime = 60;
+                startTime = static_cast<int>(GetTime());
+                countdownStarted = true;
+            }
 
             if (isShuffled == false)
             {
@@ -223,7 +256,7 @@ int main()
             }
 
             int dataSize = document[currentDesk]["data"].Size() - 1;
-            
+
             string wordDesk = document[currentDesk]["data"][currentPage]["word"].GetString();
             string meaning = document[currentDesk]["data"][currentPage]["meaning"].GetString();
             string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
@@ -265,13 +298,30 @@ int main()
             gpHome.Draw();
             gpNext.Draw();
             gpShowAns.Draw();
+            
+            //countdown test
+            DrawCountdown(startTime, countdownTime, Upperclock, Vector2{849+20, 71}, 60, RED,timeOut);
+            if(timeOut){
+                cout << "Time out" << endl;
+                timeOut = false;
+                countdownStarted = false;
+                break;
+            }
+
 
             if (showAnswer)
             {
                 gpEasyBtn.Draw();
-                gpMedBtn.Draw();
-                gpHardBtn.Draw();
+                // gpMedBtn.Draw();
+                gpAgain.Draw();
                 gpHideAns.Draw();
+
+                if (gpEasyBtn.isPressed(mousePosition, mousePressed))
+                {
+                }
+                else if (gpAgain.isPressed(mousePosition, mousePressed))
+                {
+                }
 
                 // Show answer text
                 Vector2 answerPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529 + 6);
@@ -289,9 +339,9 @@ int main()
                 gpPreviousFade.Draw();
             }
 
-            string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
-            Vector2 pageIndexPos = GetCenteredTextPos(InterRegular, pageIndex, 20, screenCenterPos, 660);
-            DrawTextEx(InterRegular, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 20, 0, Color{88, 99, 128, 255});
+            // string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
+            // Vector2 pageIndexPos = GetCenteredTextPos(Upperclock, pageIndex, 56, screenCenterPos, 660);
+            // DrawTextEx(Upperclock, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 56, 0, Color{88, 99, 128, 255});
 
             if (imageLoaded)
             {
