@@ -148,6 +148,13 @@ int main()
             deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
             xPos += 230;
             xImage += 230;
+
+            if ((i + 1) % 8 == 0)
+            {
+                xPos = oldPos.xPos;
+                xImage = oldPos.xImage;
+            }
+
             if (xPos > 800)
             {
                 xPos = oldPos.xPos;
@@ -172,7 +179,6 @@ int main()
 
     while (!WindowShouldClose())
     {
-
         Vector2 mousePosition = GetMousePosition();
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
@@ -184,7 +190,6 @@ int main()
             currentPage = 0;
             imageLoaded = false;
             showAnswer = false;
-
             for (size_t i = 0; i < deckButtons.size(); i++)
             {
                 deckButtons[i].Draw();
