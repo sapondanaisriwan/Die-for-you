@@ -7,6 +7,12 @@ struct ImageSize
   float height;
 };
 
+struct TextureSize
+{
+  int width;
+  int height;
+};
+
 class Button
 {
 public:
@@ -15,6 +21,9 @@ public:
   ~Button();
   void Draw();
   void Draw2();
+
+  Vector2 getPosition();
+  TextureSize getImageSize();
   bool isPressed(Vector2 mousePos, bool mousePressed);
 
   // Disable copy constructor and copy assignment
@@ -25,7 +34,8 @@ public:
   Button(Button &&other) noexcept;
   Button &operator=(Button &&other) noexcept;
 
-private:
+  
+  private:
   Texture2D texture;
   Vector2 position;
 };

@@ -39,8 +39,8 @@ void Button::Draw()
 }
 void Button::Draw2()
 {
-// // Draw a part of a texture defined by a rectangle with 'pro' parameters
-// void DrawTexturePro(Texture2D texture, Rectangle sourceRec, Rectangle destRec, Vector2 origin, float rotation, Color tint);
+  // // Draw a part of a texture defined by a rectangle with 'pro' parameters
+  // void DrawTexturePro(Texture2D texture, Rectangle sourceRec, Rectangle destRec, Vector2 origin, float rotation, Color tint);
   Rectangle sourceRec = {0.0f, 0.0f, (float)texture.width, (float)texture.height};
   Rectangle destRec = {position.x, position.y, (float)texture.width, (float)texture.height};
   Vector2 origin = {0.0f, 0.0f};
@@ -81,4 +81,13 @@ Button &Button::operator=(Button &&other) noexcept
     other.texture.id = 0; // Prevent destructor from unloading the texture
   }
   return *this;
+}
+Vector2 Button::getPosition()
+{
+  return Vector2{position.x, position.y};
+}
+
+TextureSize Button::getImageSize()
+{
+  return {texture.width, texture.height};
 }
