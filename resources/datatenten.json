@@ -279,8 +279,8 @@
         "image": ""
       },
       {
-        "word": "Healthy",
-        "meaning": "In good physical condition.",
+        "word": "Mental health",
+        "meaning": "A person’s emotional, psychological, and social well-being.",
         "image": ""
       },
       {
@@ -311,6 +311,11 @@
       {
         "word": "Patient",
         "meaning": "A person who is receiving medical treatment.",
+        "image": ""
+      },
+      {
+        "word": "Warm-up & Cool-down",
+        "meaning": "Light exercises before and after a workout to prevent injuries.",
         "image": ""
       }
     ]
@@ -366,13 +371,13 @@
         "image": ""
       },
       {
-        "word": "Delay",
-        "meaning": "When a trip or transport takes longer than expected.",
+        "word": "Layover",
+        "meaning": "A short stop at an airport between connecting flights.",
         "image": ""
       },
       {
-        "word": "Destination",
-        "meaning": "The place where you are going.",
+        "word": "Turbulence",
+        "meaning": "Sudden air movement causing a rough flight.",
         "image": ""
       },
       {
@@ -381,28 +386,28 @@
         "image": ""
       },
       {
-        "word": "Guidebook",
-        "meaning": "A book with travel information.",
+        "word": "Jaywalking",
+        "meaning": "Crossing the street illegally or dangerously.",
         "image": ""
       },
       {
         "word": "Highway",
-        "meaning": "A big road for fast travel.",
+        "meaning": "A major road designed for fast traffic.",
         "image": ""
       },
       {
-        "word": "Journey",
-        "meaning": "A trip from one place to another.",
+        "word": "Itinerary",
+        "meaning": "A planned route or schedule for a trip.",
         "image": ""
       },
       {
-        "word": "Luggage",
-        "meaning": "Bags carried when traveling.",
+        "word": "Sightseeing",
+        "meaning": "Visiting famous places or attractions.",
         "image": ""
       },
       {
-        "word": "Passport",
-        "meaning": "An official document used for travel.",
+        "word": "Carpooling",
+        "meaning": "Sharing a car ride with others to reduce costs and pollution.",
         "image": ""
       },
       {
