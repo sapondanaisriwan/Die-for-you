@@ -16,7 +16,10 @@ using namespace std;
 enum WindowState
 {
     HOME_WINDOW,
-    GAMEPLAY_WINDOW
+    START_WINDOW,
+    GAMEPLAY_WINDOW,
+    BROWSER_WINDOW,
+    ADD_WINDOW
 };
 WindowState currentWindow = HOME_WINDOW;
 
@@ -194,6 +197,12 @@ int main()
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
     Button gpAgain{"img/gameplay/again-btn.png", {564 + 4, 590}, 1};
 
+    // start screen
+    Button stStartBtn{"img/buttons/start.png", {415, 219}, 1};
+    Button stChallengeBtn{"img/buttons/challenge.png", {415, 310}, 1};
+    Button stBrowseBtn{"img/buttons/browse.png", {415, 396}, 1};
+    Button stAddBtn{"img/buttons/add.png", {415, 482}, 1};
+
     while (!WindowShouldClose())
     {
 
@@ -220,34 +229,62 @@ int main()
             vegetableBtn.Draw();
             if (animalBtn.isPressed(mousePosition, mousePressed))
             {
-                currentWindow = GAMEPLAY_WINDOW;
+                currentWindow = START_WINDOW;
                 currentDesk = 0;
             }
             else if (foodBtn.isPressed(mousePosition, mousePressed))
             {
-                currentWindow = GAMEPLAY_WINDOW;
+                currentWindow = START_WINDOW;
                 currentDesk = 1;
             }
             else if (flowerBtn.isPressed(mousePosition, mousePressed))
             {
-                currentWindow = GAMEPLAY_WINDOW;
+                currentWindow = START_WINDOW;
                 currentDesk = 2;
             }
             else if (countryBtn.isPressed(mousePosition, mousePressed))
             {
-                currentWindow = GAMEPLAY_WINDOW;
+                currentWindow = START_WINDOW;
                 currentDesk = 3;
             }
             else if (jobsBtn.isPressed(mousePosition, mousePressed))
             {
-                currentWindow = GAMEPLAY_WINDOW;
+                currentWindow = START_WINDOW;
                 currentDesk = 4;
             }
             else if (vegetableBtn.isPressed(mousePosition, mousePressed))
             {
-                currentWindow = GAMEPLAY_WINDOW;
+                currentWindow = START_WINDOW;
                 currentDesk = 5;
             }
+        }
+        else if (currentWindow == START_WINDOW)
+        {
+            bool isStartPressed = stStartBtn.isPressed(mousePosition, mousePressed);
+            bool isChallengePressed = stChallengeBtn.isPressed(mousePosition, mousePressed);
+            bool isBrowsePressed = stBrowseBtn.isPressed(mousePosition, mousePressed);
+            bool isAddPressed = stAddBtn.isPressed(mousePosition, mousePressed);
+
+            if (isStartPressed)
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+            }
+            else if (isChallengePressed)
+            {
+                currentWindow = GAMEPLAY_WINDOW;
+            }
+            else if (isBrowsePressed)
+            {
+                currentWindow = BROWSER_WINDOW;
+            }
+            else if (isAddPressed)
+            {
+                currentWindow = ADD_WINDOW;
+            }
+            stStartBtn.Draw();
+            stChallengeBtn.Draw();
+            stBrowseBtn.Draw();
+            stAddBtn.Draw();
         }
         else if (currentWindow == GAMEPLAY_WINDOW)
 
@@ -268,11 +305,13 @@ int main()
                 isShuffled = !isShuffled;
             }
 
-            int dataSize = document[currentDesk]["data"].Size() - 1;
+            Value &currentData = document[currentDesk]["data"];
+            Value &currentPageData = currentData[currentPage];
 
-            string wordDesk = document[currentDesk]["data"][currentPage]["word"].GetString();
-            string meaning = document[currentDesk]["data"][currentPage]["meaning"].GetString();
-            string imgPath = document[currentDesk]["data"][currentPage]["image"].GetString();
+            int dataSize = currentData.Size() - 1;
+            string wordDesk = currentPageData["word"].GetString();
+            string meaning = currentPageData["meaning"].GetString();
+            string imgPath = currentPageData["image"].GetString();
 
             if (!imageLoaded)
             {
