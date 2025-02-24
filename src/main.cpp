@@ -138,14 +138,17 @@ int main()
     oldPos oldPos = {xPos, yPos, xImage, yImage};
     vector<Button> deckButtons = {};
     vector<Button> deckCovers = {};
+    vector<string> deckName = {};
     for (SizeType i = 0; i < document.Size(); i++)
     {
         Value &obj = document[i];
         if (obj.HasMember("cover"))
         {
             string coverPath = obj["cover"].GetString();
+            deckName.push_back(document[i]["deck"].GetString());
             deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
             deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
+
             xPos += 230;
             xImage += 230;
 
@@ -194,6 +197,11 @@ int main()
             {
                 deckButtons[i].Draw();
                 deckCovers[i].Draw();
+                // show dack's name
+                Vector2 centerText = MeasureTextEx(InterMedium, deckName[i].c_str(), 24, 0);
+                Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
+                DrawTextEx(InterMedium, deckName[i].c_str(), textPos, 24, 0, BLACK);
+
                 bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
                 if (isClicked)
                 {
