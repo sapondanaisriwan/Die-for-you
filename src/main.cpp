@@ -28,24 +28,49 @@ int currentDesk = 0;
 bool imageLoaded = false;
 bool showAnswer = false;
 bool isShuffled = false;
+bool challengeMode = false;
 Texture2D wordImage;
 
-/*
-### here is just part of the code to show how to use the countdown timer###
 //time value
-int countdownTime = 5;
+int countdownTime = 30;
 bool countdownStarted = false;
 int startTime = 0;
 bool timeOut = false;
-//countdown test Action
-DrawCountdown(startTime, countdownTime, Upperclock, Vector2{849+20, 71}, 60, RED,timeOut);
-if(timeOut){
-    cout << "Time out" << endl;
-    timeOut = false;
-    countdownStarted = false;
-    break;
+
+void approveEdit(int deskIndex, int pageIndex,bool boolSet)
+{
+    // Load the JSON document
+    ifstream file("resources/data.json");
+    stringstream buffer;
+    buffer << file.rdbuf();
+    string jsonStr = buffer.str();
+    file.close();
+
+    Document document;
+    document.Parse(jsonStr.c_str());
+
+    // Modify the specified value
+    if (document[deskIndex]["data"][pageIndex].HasMember("approved") && document[deskIndex]["data"][pageIndex]["approved"].IsBool())
+    {
+        document[deskIndex]["data"][pageIndex]["approved"].SetBool(boolSet);
+    }
+
+    // Convert JSON back to string
+    StringBuffer bufferOut;
+    Writer<StringBuffer> writer(bufferOut);
+    document.Accept(writer);
+
+    // Write the updated JSON back to the file
+    ofstream outFile("resources/data.json");
+    if (!outFile)
+    {
+        cerr << "Error: Cannot write to file!" << endl;
+        return;
+    }
+    outFile << bufferOut.GetString();
+    outFile.close();
 }
-*/
+
 Document getData()
 {
     // Read the JSON file
@@ -64,6 +89,7 @@ Document getData()
 
 void shuffleDeck()
 {
+    return;
     Document document = getData();
 
     // Random number generator
@@ -125,7 +151,6 @@ Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screenc
     Vector2 result = {(screencenterPos.x - (textXY.x / 2.0f)), yPos};
     return result;
 }
-/* count down function
 void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position, int fontSize, Color color,bool &timeOut)
 {
     int currentTime = static_cast<int>(GetTime());
@@ -143,7 +168,7 @@ void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position
         timeOut = true;
     }
 }
-*/
+
 int main()
 {
 
@@ -193,8 +218,8 @@ int main()
     Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}, 1};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}, 1};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
-    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}, 1};
-    Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
+    Button gpEasy{"img/gameplay/easy-btn.png", {340 + 4, 590}, 1};
+    //Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
     Button gpAgain{"img/gameplay/again-btn.png", {564 + 4, 590}, 1};
 
     // start screen
@@ -217,7 +242,8 @@ int main()
             currentPage = 0;
             imageLoaded = false;
             showAnswer = false;
-            //countdownStarted = false;
+            countdownStarted = false;
+            challengeMode = false;
             topbar.Draw();
             // newDesk.Draw();
             SMT.Draw();
@@ -271,6 +297,9 @@ int main()
             }
             else if (isChallengePressed)
             {
+                challengeMode = true;
+                startTime = static_cast<int>(GetTime());
+                countdownStarted = true;
                 currentWindow = GAMEPLAY_WINDOW;
             }
             else if (isBrowsePressed)
@@ -287,36 +316,31 @@ int main()
             stAddBtn.Draw();
         }
         else if (currentWindow == GAMEPLAY_WINDOW)
-
         {
-            //start countdown
-            /*
-            if (!countdownStarted)
-            {
-                countdownTime = 60;
-                startTime = static_cast<int>(GetTime());
-                countdownStarted = true;
-            }*/
-
             if (isShuffled == false)
             {
                 shuffleDeck();
                 document = getData();
                 isShuffled = !isShuffled;
             }
-
+            
             Value &currentData = document[currentDesk]["data"];
             Value &currentPageData = currentData[currentPage];
-
             int dataSize = currentData.Size() - 1;
+
+
+            while(currentPageData["approved"].GetBool() == true){
+                currentPage++;
+            }
+            
             string wordDesk = currentPageData["word"].GetString();
             string meaning = currentPageData["meaning"].GetString();
             string imgPath = currentPageData["image"].GetString();
 
-            if (!imageLoaded)
+
+            if (!imageLoaded&&currentPageData["approved"].GetBool() == false)
             {
                 wordImage = LoadTexture(imgPath.c_str());
-
                 imageLoaded = true;
                 cout << imgPath << endl;
             }
@@ -327,8 +351,9 @@ int main()
                 isShuffled = !isShuffled;
                 UnloadTexture(wordImage);
             }
-            else if (gpNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize)
+            else if (gpEasy.isPressed(mousePosition, mousePressed) && currentPage <= dataSize)
             {
+                approveEdit(currentDesk, currentPage, true);
                 currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
@@ -338,34 +363,46 @@ int main()
             {
                 showAnswer = !showAnswer;
             }
-            else if ((gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
+            else if (gpAgain.isPressed(mousePosition, mousePressed) && currentPage >= 0)
             {
-                currentPage--;
+                currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
                 showAnswer = false;
             }
-
             gpBG.Draw();
             gpHome.Draw();
-            gpNext.Draw();
+            //gpNext.Draw();
             gpShowAns.Draw();
-            
-            
 
+            //time challange mode
+            if(challengeMode){
+                DrawCountdown(startTime, countdownTime, Upperclock, Vector2{880, 71}, 64, BLACK,timeOut);
+                if(timeOut){
+                    cout << "Time out" << endl;
+                    timeOut = false;
+                    countdownStarted = false;
+                    break;
+                }
+                else {
+
+                }
+            }
 
             if (showAnswer)
             {
-                gpEasyBtn.Draw();
+                gpEasy.Draw();
                 // gpMedBtn.Draw();
                 gpAgain.Draw();
                 gpHideAns.Draw();
 
-                if (gpEasyBtn.isPressed(mousePosition, mousePressed))
+                if (gpEasy.isPressed(mousePosition, mousePressed))
                 {
+                    
                 }
                 else if (gpAgain.isPressed(mousePosition, mousePressed))
                 {
+
                 }
 
                 // Show answer text
@@ -377,11 +414,13 @@ int main()
                 gpShowAns.Draw();
             }
 
-            if (currentPage > 0)
-                gpPrevious.Draw();
+            if (currentPage > dataSize){
+                //gpPrevious.Draw();
+                currentPage = 0;
+                }
             else
             {
-                gpPreviousFade.Draw();
+            //     gpPreviousFade.Draw();
             }
 
             // string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
