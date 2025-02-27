@@ -1,9 +1,11 @@
 enum WindowState
 {
     HOME_WINDOW,
-    GAMEPLAY_WINDOW
+    START_WINDOW,
+    GAMEPLAY_WINDOW,
+    BROWSER_WINDOW,
+    ADD_WINDOW
 };
-
 struct oldPos
 {
     float xPos;

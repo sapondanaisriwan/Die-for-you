@@ -14,17 +14,6 @@
 using namespace rapidjson;
 using namespace std;
 
-<<<<<<< HEAD
-=======
-enum WindowState
-{
-    HOME_WINDOW,
-    START_WINDOW,
-    GAMEPLAY_WINDOW,
-    BROWSER_WINDOW,
-    ADD_WINDOW
-};
->>>>>>> origin/main
 WindowState currentWindow = HOME_WINDOW;
 
 int currentPage = 0;
@@ -189,7 +178,6 @@ int main()
     SetTextureFilter(InterRegular.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(InterLight.texture, TEXTURE_FILTER_BILINEAR);
 
-<<<<<<< HEAD
     float xPos = 48;
     float yPos = 95;
     float xImage = 88;
@@ -226,18 +214,6 @@ int main()
             }
         }
     }
-=======
-    // homepage
-    Button topbar{"img/homepage/topbar.png", {0, 0}, 1};
-    // Button newDesk{"img/homepage/new-desk.png", {48, 95}, 1};
-    Button SMT{"img/homepage/SMT.png", {48, 95}, 1};
-    Button foodBtn{"img/homepage/Foods.png", {278.12, 95}, 1};
-    Button animalBtn{"img/homepage/animals.png", {508.24, 95}, 1};
-    Button flowerBtn{"img/homepage/flowers.png", {738.36, 95}, 1};
-    Button countryBtn{"img/homepage/country.png", {48, 384}, 1};
-    Button jobsBtn{"img/homepage/jobs.png", {278.12, 384}, 1};
-    Button vegetableBtn{"img/homepage/vegetable.png", {508.24, 384}, 1};
->>>>>>> origin/main
 
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {48, 48}, 1};
@@ -275,7 +251,6 @@ int main()
             currentPage = 0;
             imageLoaded = false;
             showAnswer = false;
-<<<<<<< HEAD
             for (size_t i = 0; i < deckButtons.size(); i++)
             {
                 deckButtons[i].Draw();
@@ -288,49 +263,9 @@ int main()
                 bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
                 if (isClicked)
                 {
-                    currentWindow = GAMEPLAY_WINDOW;
+                    currentWindow = START_WINDOW;
                     currentDesk = i;
                 }
-=======
-            topbar.Draw();
-            // newDesk.Draw();
-            SMT.Draw();
-            foodBtn.Draw();
-            animalBtn.Draw();
-            flowerBtn.Draw();
-            countryBtn.Draw();
-            jobsBtn.Draw();
-            vegetableBtn.Draw();
-            if (animalBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 0;
-            }
-            else if (foodBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 1;
-            }
-            else if (flowerBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 2;
-            }
-            else if (countryBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 3;
-            }
-            else if (jobsBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 4;
-            }
-            else if (vegetableBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 5;
->>>>>>> origin/main
             }
         }
         else if (currentWindow == START_WINDOW)
@@ -371,17 +306,10 @@ int main()
                 isShuffled = !isShuffled;
             }
 
-<<<<<<< HEAD
-            Value &currentDeskData = document[currentDesk]["data"];
-            Value &currentPageData = currentDeskData[currentPage];
-
-            int dataSize = currentDeskData.Size() - 1;
-=======
             Value &currentData = document[currentDesk]["data"];
             Value &currentPageData = currentData[currentPage];
 
             int dataSize = currentData.Size() - 1;
->>>>>>> origin/main
             string wordDesk = currentPageData["word"].GetString();
             string meaning = currentPageData["meaning"].GetString();
             string imgPath = currentPageData["image"].GetString();
