@@ -43,4 +43,6 @@ public:
 private:
   Texture2D texture;
   Vector2 position;
+  float scaleX = 1.0f; // Scale factor for width
+  float scaleY = 1.0f; // Scale factor for height
 };
