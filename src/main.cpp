@@ -301,8 +301,8 @@ int main()
     }
 
     // gameplay
-    Button gpBG{"img/gameplay/bg.png", {48, 48}};
-    Button gpHome{"img/start/home-btn.png", {64 + 4, 650}};
+    Button gpBG{"img/gameplay/bg.png", {43, 48}};
+    Button gpHome{"img/start/home-btn.png", {83, 637}};
     Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}};
     Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}};
     Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}};
