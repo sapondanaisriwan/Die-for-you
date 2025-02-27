@@ -186,7 +186,7 @@ void updateApproved(int currentDeck, int dataIndex, bool isApproved)
         return;
     }
 
-    deckData[dataIndex]["approved"].SetBool(isApproved);
+    document[currentDeck]["data"][dataIndex]["approved"].SetBool(isApproved);
 
     updateJSONFile(document);
     return;
@@ -197,7 +197,7 @@ bool checkEndGame(int currentDesk = 0)
     // check if the game is over by checking if all the cards are approved
     Document document = getData();
     Value &currentData = document[currentDesk]["data"];
-    int dataSize = currentData.Size() - 1;
+    int dataSize = currentData.Size();
 
     for (int i = 0; i < dataSize; i++)
     {
@@ -415,14 +415,20 @@ int main()
             }
 
             Value &currentData = document[currentDesk]["data"];
-            Value &currentPageData = currentData[currentPage];
 
             int dataSize = currentData.Size() - 1;
-            bool isApproved = currentPageData["approved"].GetBool();
+            bool isApproved = currentData[currentPage]["approved"].GetBool();
 
-            while (isApproved == true && currentPage < dataSize)
+            while (isApproved == true && checkEndGame(currentDesk) == false)
             {
-                currentPage++;
+                if (currentPage < dataSize)
+                {
+                    currentPage++;
+                }
+                else
+                {
+                    currentPage = 0;
+                }
                 isApproved = currentData[currentPage]["approved"].GetBool();
             }
 
@@ -557,8 +563,12 @@ int main()
             }
             else if (isRestartPressed)
             {
+                currentPage = 0;
+                imageLoaded = false;
+                showAnswer = false;
                 currentWindow = START_WINDOW;
                 resetApproved();
+                document = getData();
             }
             // แสดงข้อความว่าเกมจบแล้ว
             string endGameText = "Congratulations! You have completed the deck!";
