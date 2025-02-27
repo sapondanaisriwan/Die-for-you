@@ -216,27 +216,27 @@ int main()
     }
 
     // gameplay
-    Button gpBG{"img/gameplay/bg.png", {48, 48}, 1};
-    Button gpHome{"img/gameplay/home-btn.png", {64 + 4, 650}, 1};
-    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}, 1};
-    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}, 1};
-    Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}, 1};
+    Button gpBG{"img/gameplay/bg.png", {48, 48}};
+    Button gpHome{"img/buttons/home.png", {64 + 4, 650}};
+    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}};
+    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}};
+    Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}};
-    Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
-    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}, 1};
-    Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
-    Button gpHardBtn{"img/gameplay/hard-btn.png", {564 + 4, 590}, 1};
+    Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}};
+    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}};
+    Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}};
+    Button gpHardBtn{"img/gameplay/hard-btn.png", {564 + 4, 590}};
 
     // start screen
-    Button stStartBtn{"img/buttons/start.png", {415, 219}, 1};
-    Button stChallengeBtn{"img/buttons/challenge.png", {415, 310}, 1};
-    Button stBrowseBtn{"img/buttons/browse.png", {415, 396}, 1};
-    Button stAddBtn{"img/buttons/add.png", {415, 482}, 1};
+    Button stStartBtn{"img/buttons/start.png", {415, 219}};
+    Button stChallengeBtn{"img/buttons/challenge.png", {415, 310}};
+    Button stBrowseBtn{"img/buttons/browse.png", {415, 396}};
+    Button stAddBtn{"img/buttons/add.png", {415, 482}};
 
     // browse
-    Button browseBackBtn{"img/browse/back.png", {50, 50}, 0.5};
-    Button browseDeleteBtn{"img/browse/delete.png", {800, 50}, 0.5};
-    Button browseEditBtn{"img/browse/edit.png", {900, 50}, 0.5};
+    Button browseBackBtn{"img/buttons/back.png", {50, 50}};
+    Button browseDeleteBtn{"img/buttons/delete.png", {800, 50}};
+    Button browseEditBtn{"img/buttons/edit2.png", {900, 50}};
 
     while (!WindowShouldClose())
     {
@@ -274,12 +274,13 @@ int main()
             bool isChallengePressed = stChallengeBtn.isPressed(mousePosition, mousePressed);
             bool isBrowsePressed = stBrowseBtn.isPressed(mousePosition, mousePressed);
             bool isAddPressed = stAddBtn.isPressed(mousePosition, mousePressed);
+            bool isHomePressed = gpHome.isPressed(mousePosition, mousePressed);
 
-            if (isStartPressed)
+            if (isStartPressed && document[currentDesk]["data"].Size() > 0)
             {
                 currentWindow = GAMEPLAY_WINDOW;
             }
-            else if (isChallengePressed)
+            else if (isChallengePressed && document[currentDesk]["data"].Size() > 0)
             {
                 currentWindow = GAMEPLAY_WINDOW;
             }
@@ -291,6 +292,11 @@ int main()
             {
                 currentWindow = ADD_WINDOW;
             }
+            else if (isHomePressed)
+            {
+                currentWindow = HOME_WINDOW;
+            }
+            gpHome.Draw();
             stStartBtn.Draw();
             stChallengeBtn.Draw();
             stBrowseBtn.Draw();
@@ -314,32 +320,36 @@ int main()
             string meaning = currentPageData["meaning"].GetString();
             string imgPath = currentPageData["image"].GetString();
 
+            bool ishomePressed = gpHome.isPressed(mousePosition, mousePressed);
+            bool isNextPressed = gpNext.isPressed(mousePosition, mousePressed);
+            bool isShowAnsPressed = gpShowAns.isPressed(mousePosition, mousePressed);
+            bool isPreviousPressed = (gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed));
+
             if (!imageLoaded)
             {
                 wordImage = LoadTexture(imgPath.c_str());
-
                 imageLoaded = true;
                 cout << imgPath << endl;
             }
 
-            if (gpHome.isPressed(mousePosition, mousePressed))
+            if (ishomePressed)
             {
                 currentWindow = HOME_WINDOW;
                 isShuffled = !isShuffled;
                 UnloadTexture(wordImage);
             }
-            else if (gpNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize)
+            else if (isNextPressed && currentPage < dataSize)
             {
                 currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
                 showAnswer = false;
             }
-            else if (gpShowAns.isPressed(mousePosition, mousePressed))
+            else if (isShowAnsPressed)
             {
                 showAnswer = !showAnswer;
             }
-            else if ((gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
+            else if (isPreviousPressed && currentPage > 0)
             {
                 currentPage--;
                 UnloadTexture(wordImage);
@@ -483,7 +493,6 @@ int main()
             }
 
             // อันนี้ปุ่มเปลี่ยนหน้าเฉยๆ
-
             if (gpNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize / 10)
             {
                 currentPage++;
