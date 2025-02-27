@@ -5,6 +5,7 @@ enum WindowState
     GAMEPLAY_WINDOW,
     BROWSER_WINDOW,
     ADD_WINDOW,
+    EDIT_WINDOW,
     ENDGAME_WINDOW,
     TIMEOUT_WINDOW
 };

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <stack>
 #include <algorithm> // For shuffle
 #include <random>    // For random generator
 #include "rapidjson/document.h"
@@ -14,7 +15,7 @@
 using namespace rapidjson;
 using namespace std;
 
-WindowState currentWindow = HOME_WINDOW;
+WindowState currentWindow = EDIT_WINDOW;
 
 int currentPage = 0;
 int currentDesk = 0;
@@ -227,6 +228,45 @@ void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position
     }
 }
 
+// ADD & EDIT
+int GetCursorPosition(Font font, Rectangle textBox, vector<char> text){
+    int i = 0;
+    int textLengthToIndex, currentCharLength;
+    while(i < (int)text.size()){
+        textLengthToIndex = MeasureTextEx(font,TextSubtext(&text[0],0,i),40,0).x;
+        currentCharLength = MeasureTextEx(font,TextSubtext(&text[0],i,1),40,0).x;
+
+        //less than half of current character
+        if(GetMousePosition().x <= textBox.x + textLengthToIndex + currentCharLength/2){ 
+            break;
+        }
+
+        //greater than half of current character
+        if(GetMousePosition().x <= textBox.x + textLengthToIndex + currentCharLength){
+            break;
+        }
+
+        i++;
+    }
+    return i;
+}
+
+void deleteSelectedText(vector<char> &text,int &firstIndex,int &lastIndex){
+    if(firstIndex > lastIndex) swap(firstIndex,lastIndex);
+    text.erase(text.begin()+firstIndex,text.begin()+lastIndex);
+}
+
+void copySelectedText(vector<char> text,int firstIndex,int lastIndex){
+    if(firstIndex > lastIndex) swap(firstIndex,lastIndex);
+    vector<char> cpy (text.begin()+firstIndex,text.begin()+lastIndex);
+    cpy.push_back('\0');
+    SetClipboardText(&cpy[0]);
+}
+
+
+
+
+//MAIN
 int main()
 {
 
@@ -319,6 +359,25 @@ int main()
     Button browseDeleteBtn{"img/buttons/delete.png", {800, 50}};
     Button browseEditBtn{"img/buttons/edit2.png", {900, 50}};
 
+    // add & edit
+    Rectangle wordBox = {100, 100, 800, 50};
+    Rectangle meaningBox = {100, 220, 800, 50};
+    vector<char> word, meaning;
+    int letterCount = 0;
+    
+    bool mouseOnWordBox = false;
+    bool clickOnWordBox = false;
+    bool mouseOnMeaningBox = false;
+    bool clickOnMeaningBox = false;
+    bool select = false;
+    bool selectKeyPressed = false;
+
+    int framesCounter = 0;
+    int framesDelete = 0;
+    int index = 0;
+    int firstSelectedIndex = 0;
+    int lastSeclectedIndex = 0;
+
     // endgame
     Button endHomeBtn{"img/buttons/home.png", {522, 593}};
     Button endRestartBtn{"img/buttons/retry2.png", {378, 593}};
@@ -327,6 +386,255 @@ int main()
     {
         Vector2 mousePosition = GetMousePosition();
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+
+        if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW){
+            Font editTextFont = InterRegular;
+            
+            if (CheckCollisionPointRec(GetMousePosition(), wordBox)){
+                mouseOnWordBox = true;
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) clickOnWordBox = true; 
+            } else {
+                mouseOnWordBox = false;
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                {
+                    clickOnWordBox = false;
+                }
+            }
+
+            if (CheckCollisionPointRec(GetMousePosition(), meaningBox)){
+                mouseOnMeaningBox = true;
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) clickOnMeaningBox = true; 
+            } else {
+                mouseOnMeaningBox = false;
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                {
+                    clickOnMeaningBox = false;
+                }
+            }
+
+            if (clickOnWordBox || clickOnMeaningBox)
+            {
+                vector<char> text;
+                if(clickOnWordBox) text = word;
+                else text = meaning;
+                
+                Rectangle editBox;
+                if(clickOnWordBox) editBox = wordBox;
+                else editBox = meaningBox;
+
+                // MOUSE
+
+                // Set the window's cursor to the I-Beam
+                SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+                // MOUSE_BUTTON_LEFT
+                if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+                    index = GetCursorPosition(editTextFont,editBox,text);
+                    select = false;
+                }
+                if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)){
+                    index = GetCursorPosition(editTextFont,editBox,text);
+                    //selected index
+                    if(!select) firstSelectedIndex = index;
+                    lastSeclectedIndex = index;
+                    select = true;
+                }
+
+
+                // Get char pressed (unicode character) on the queue
+                int key = GetCharPressed();
+                //add after cursor
+                while (key > 0){
+                    if(select){
+                        deleteSelectedText(text,firstSelectedIndex,lastSeclectedIndex);
+                        index = firstSelectedIndex;
+                    }
+                    text.insert(text.begin()+index,key); 
+                    index++;
+                    select = false;
+                    key = GetCharPressed();  // Check next character in the queue
+                }
+
+
+                //BACKSPACE
+                if(IsKeyDown(KEY_BACKSPACE)){
+
+                    if(firstSelectedIndex != lastSeclectedIndex)
+                    {
+                        deleteSelectedText(text,firstSelectedIndex,lastSeclectedIndex);
+                        index = firstSelectedIndex;
+                        select = false;
+                    } 
+                    else if(framesDelete == 0 || (framesDelete % 2 == 0 && framesDelete >= 40))
+                    {
+                        if(letterCount > 0 && index > 0)
+                        {   
+                            text.erase(text.begin()+index-1);
+                            index--;
+                        }
+                    }
+                    framesDelete++;
+                }
+
+                //Frames BACKSPACE
+                if(IsKeyUp(KEY_BACKSPACE)) framesDelete = 0;
+
+
+            
+                // LEFT
+                if(IsKeyPressed(KEY_LEFT)){
+                    if(selectKeyPressed)
+                    {
+                        if(index > 0){
+                            index--;
+                            lastSeclectedIndex = index;
+                        }
+                    }
+                    else
+                    {
+                        if(select)
+                        {
+                            if(firstSelectedIndex > lastSeclectedIndex) swap(firstSelectedIndex,lastSeclectedIndex);
+                            index = firstSelectedIndex; 
+                            select = false;
+                        } 
+                        else
+                        {
+                            if(index > 0) index--;
+                        }
+                    }
+                }
+
+                // RIGHT
+                if(IsKeyPressed(KEY_RIGHT)){
+                    if(selectKeyPressed)
+                    {
+                        if(index < (int)text.size()){
+                            index++;
+                            lastSeclectedIndex = index;
+                        }
+                    }
+                    else
+                    {
+                        if(select)
+                        {
+                            if(firstSelectedIndex > lastSeclectedIndex) swap(firstSelectedIndex,lastSeclectedIndex);
+                            index = lastSeclectedIndex; 
+                            select = false;
+                        } 
+                        else
+                        {
+                            if(index < (int)text.size()) index++;
+                        }
+                    }
+                }
+
+                // UP
+                if(IsKeyPressed(KEY_UP))
+                {
+                    index = 0;
+                    if(selectKeyPressed)
+                    {
+                        lastSeclectedIndex = index;
+                    }
+                    else
+                    {
+                        if(select)
+                        {
+                            select = false;
+                        } 
+                    }
+                }
+
+                // DOWN
+                if(IsKeyPressed(KEY_DOWN)) 
+                {
+                    index = (int)text.size();
+                    if(selectKeyPressed)
+                    {
+                        lastSeclectedIndex = index;
+                    }
+                    else
+                    {
+                        if(select)
+                        {
+                            select = false;
+                        } 
+                    }
+                }
+
+                // CTRL+A
+                if((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_A))
+                {
+                    index = (int)text.size();
+                    firstSelectedIndex = 0;
+                    lastSeclectedIndex = index;
+                    select = true;
+                }
+
+                // CTRL+C
+                if((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_C))
+                {
+                    copySelectedText(text,firstSelectedIndex,lastSeclectedIndex);
+                }
+
+                // CTRL+V
+                if((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_V))
+                {
+                    if(select){
+                        deleteSelectedText(text,firstSelectedIndex,lastSeclectedIndex);
+                        index = firstSelectedIndex;
+                        select = false;
+                    }
+                    
+                    const char* copyText = GetClipboardText();
+                    for(int i=0;copyText[i] != '\0';i++){
+                        text.insert(text.begin()+index,copyText[i]);
+                        index++;
+                    }
+                }
+
+                // CTRL+X
+                if((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_X))
+                {
+                    copySelectedText(text,firstSelectedIndex,lastSeclectedIndex);
+
+                    deleteSelectedText(text,firstSelectedIndex,lastSeclectedIndex);
+                    index = firstSelectedIndex;
+                    select = false;
+                }
+                
+                //SHIFT
+                if((IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) && !GetCharPressed())
+                {
+                    //selected index
+                    if(!select) firstSelectedIndex = index;
+                    lastSeclectedIndex = index;
+
+                    //select
+                    select = true;
+                    selectKeyPressed = true;
+                } else{
+                    selectKeyPressed = false;
+                }
+
+                //selected index
+                if(!select){
+                    firstSelectedIndex = index;
+                    lastSeclectedIndex = index;
+                }
+            
+                letterCount = text.size();
+                if(clickOnWordBox) word = text;
+                else meaning = text;
+            }
+            else if(mouseOnWordBox || mouseOnMeaningBox) SetMouseCursor(MOUSE_CURSOR_IBEAM);
+            else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+            if (mouseOnWordBox || clickOnWordBox) framesCounter++;
+            else framesCounter = 0;
+        }
+
 
         BeginDrawing();
         ClearBackground(RAYWHITE);
@@ -520,8 +828,8 @@ int main()
                 gpHideAns.Draw();
 
                 // Show answer text
-                Vector2 answerPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529 + 6);
-                DrawTextEx(InterMedium, meaning.c_str(), answerPos, 32, 0, BLACK);
+                Vector2 answerPos = GetCenteredTextPos(InterSemiBold, meaning, 40, screenCenterPos, 529 + 6);
+                DrawTextEx(InterMedium, meaning.c_str(), answerPos, 40, 0, BLACK);
             }
             else
             {
@@ -680,6 +988,58 @@ int main()
             string pageIndicator = "Page " + to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
             Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX, 700}, 700);
             DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
+        }
+        else if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW)
+        {
+            //editBox
+            Rectangle editBox = wordBox;
+            if(clickOnWordBox) editBox = wordBox;
+            if(clickOnMeaningBox) editBox = meaningBox;
+
+            //text
+            word.push_back('\0'); 
+            meaning.push_back('\0');
+            vector<char> text;
+            if(clickOnWordBox) text = word;
+            else text = meaning;
+
+            //font
+            Font editTextFont = InterRegular; 
+
+            DrawRectangleRec(wordBox, LIGHTGRAY);
+            if (mouseOnWordBox || clickOnWordBox) DrawRectangleLinesEx(wordBox, 2, BLACK);
+            else DrawRectangleLinesEx(wordBox, 2, GRAY);
+
+            DrawRectangleRec(meaningBox, LIGHTGRAY);
+            if (mouseOnMeaningBox || clickOnMeaningBox) DrawRectangleLinesEx(meaningBox, 2, BLACK);
+            else DrawRectangleLinesEx(meaningBox, 2, GRAY);
+
+            //draw highlight
+            if(select){
+                int f = firstSelectedIndex;
+                int l = lastSeclectedIndex;
+                if(f > l) swap(f,l);
+
+                DrawRectangle(editBox.x + 5 + MeasureTextEx(editTextFont, TextSubtext(&text[0],0,f+1), 40, 0).x - MeasureTextEx(editTextFont, TextSubtext(&text[0],f,1), 40, 0).x //first selected index position
+                                    ,editBox.y+2
+                                    ,MeasureTextEx(editTextFont, TextSubtext(&text[0],f,l-f), 40, 0).x //selected index length
+                                    ,editBox.height-4
+                                    ,BLUE);
+            }
+
+            Vector2 wordPos = {wordBox.x + 5.0f, wordBox.y + 8.0f};
+            DrawTextEx(editTextFont, &word[0], wordPos, 40, 0, BLACK);
+
+            Vector2 meaningPos = {meaningBox.x + 5.0f, meaningBox.y + 8.0f};
+            DrawTextEx(editTextFont, &meaning[0], meaningPos, 40, 0, BLACK);
+            
+            if(clickOnWordBox || clickOnMeaningBox)
+            {
+                if (((framesCounter/20)%2) == 0) DrawText("|", (int)editBox.x + 4 + MeasureTextEx(editTextFont, TextSubtext(&text[0],0,index), 40, 0).x, (int)editBox.y + 8, 40, BLACK);
+            }
+
+            word.pop_back();
+            meaning.pop_back();
         }
         EndDrawing();
     }
