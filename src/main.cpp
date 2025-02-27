@@ -13,6 +13,7 @@
 using namespace rapidjson;
 using namespace std;
 
+
 enum WindowState
 {
     HOME_WINDOW,
@@ -31,13 +32,23 @@ bool isShuffled = false;
 bool challengeMode = false;
 Texture2D wordImage;
 
-//time value
+bool firstStart = true;
+vector<bool> approved;
+bool endgame = false;
+bool allApproved = false;
+
+// datavalues
+string wordDesk;
+string meaning;
+string imgPath;
+
+// time value
 int countdownTime = 30;
 bool countdownStarted = false;
 int startTime = 0;
 bool timeOut = false;
 
-void approveEdit(int deskIndex, int pageIndex,bool boolSet)
+void approveEdit(int deskIndex, int pageIndex, bool boolSet)
 {
     // Load the JSON document
     ifstream file("resources/data.json");
@@ -151,7 +162,7 @@ Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screenc
     Vector2 result = {(screencenterPos.x - (textXY.x / 2.0f)), yPos};
     return result;
 }
-void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position, int fontSize, Color color,bool &timeOut)
+void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position, int fontSize, Color color, bool &timeOut)
 {
     int currentTime = static_cast<int>(GetTime());
     int elapsedTime = currentTime - startTime;
@@ -219,7 +230,7 @@ int main()
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}, 1};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
     Button gpEasy{"img/gameplay/easy-btn.png", {340 + 4, 590}, 1};
-    //Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
+    // Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
     Button gpAgain{"img/gameplay/again-btn.png", {564 + 4, 590}, 1};
 
     // start screen
@@ -227,13 +238,13 @@ int main()
     Button stChallengeBtn{"img/buttons/challenge.png", {415, 310}, 1};
     Button stBrowseBtn{"img/buttons/browse.png", {415, 396}, 1};
     Button stAddBtn{"img/buttons/add.png", {415, 482}, 1};
+    // Load the image for the current word
 
     while (!WindowShouldClose())
     {
 
         Vector2 mousePosition = GetMousePosition();
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
-
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
@@ -298,9 +309,9 @@ int main()
             else if (isChallengePressed)
             {
                 challengeMode = true;
-                startTime = static_cast<int>(GetTime());
                 countdownStarted = true;
                 currentWindow = GAMEPLAY_WINDOW;
+                startTime = static_cast<int>(GetTime());
             }
             else if (isBrowsePressed)
             {
@@ -317,28 +328,77 @@ int main()
         }
         else if (currentWindow == GAMEPLAY_WINDOW)
         {
+
             if (isShuffled == false)
             {
                 shuffleDeck();
                 document = getData();
                 isShuffled = !isShuffled;
             }
-            
+
             Value &currentData = document[currentDesk]["data"];
-            Value &currentPageData = currentData[currentPage];
             int dataSize = currentData.Size() - 1;
-
-
-            while(currentPageData["approved"].GetBool() == true){
-                currentPage++;
+            if (firstStart == true)
+            {
+                currentPage = 0;
+                approved.clear();
+                for (int i = 0; i < dataSize; i++)
+                {
+                    approved.push_back(false);
+                }
+                firstStart = false;
+                allApproved = false;
             }
-            
-            string wordDesk = currentPageData["word"].GetString();
-            string meaning = currentPageData["meaning"].GetString();
-            string imgPath = currentPageData["image"].GetString();
+            else
+            {
+                while (approved[currentPage] == true)
+                {
+                    currentPage++;
+                    imageLoaded = false;
+                    if (currentPage >= dataSize)
+                    {
+                        currentPage = 0;
+                        endgame = true;
+                        break;
+                    }
+                }
+            }
+            if (challengeMode)
+            {
+                if (endgame)
+                {
+                    cout << "success" << endl;
+                    endgame = false;
+                    firstStart = true;
+                    break;
+                }
+                if (timeOut && !endgame)
+                {
+                    cout << "endgameTimeout" << endl;
+                    break;
+                }
+            }
+            else
+            {
+                if (endgame)
+                {
+                    cout << "endgame" << endl;
+                    endgame = false;
+                    firstStart = true;
+                    currentWindow = HOME_WINDOW;
+                    // break;
+                }
+            }
 
+            Value &currentPageData = currentData[currentPage];
+            wordDesk = currentPageData["word"].GetString();
+            meaning = currentPageData["meaning"].GetString();
+            imgPath = currentPageData["image"].GetString();
+            // cout << "Word: " << wordDesk << endl;
+            // cout << "Meaning: " << meaning << endl;
+            // cout << "Image Path: " << imgPath << endl;
 
-            if (!imageLoaded&&currentPageData["approved"].GetBool() == false)
+            if (!imageLoaded)
             {
                 wordImage = LoadTexture(imgPath.c_str());
                 imageLoaded = true;
@@ -351,42 +411,19 @@ int main()
                 isShuffled = !isShuffled;
                 UnloadTexture(wordImage);
             }
-            else if (gpEasy.isPressed(mousePosition, mousePressed) && currentPage <= dataSize)
-            {
-                approveEdit(currentDesk, currentPage, true);
-                currentPage++;
-                UnloadTexture(wordImage);
-                imageLoaded = false;
-                showAnswer = false;
-            }
             else if (gpShowAns.isPressed(mousePosition, mousePressed))
             {
                 showAnswer = !showAnswer;
             }
-            else if (gpAgain.isPressed(mousePosition, mousePressed) && currentPage >= 0)
-            {
-                currentPage++;
-                UnloadTexture(wordImage);
-                imageLoaded = false;
-                showAnswer = false;
-            }
             gpBG.Draw();
             gpHome.Draw();
-            //gpNext.Draw();
             gpShowAns.Draw();
+            // gpNext.Draw();
 
-            //time challange mode
-            if(challengeMode){
-                DrawCountdown(startTime, countdownTime, Upperclock, Vector2{880, 71}, 64, BLACK,timeOut);
-                if(timeOut){
-                    cout << "Time out" << endl;
-                    timeOut = false;
-                    countdownStarted = false;
-                    break;
-                }
-                else {
-
-                }
+            // time challange mode
+            if (challengeMode)
+            {
+                DrawCountdown(startTime, countdownTime, Upperclock, Vector2{880, 71}, 64, BLACK, timeOut);
             }
 
             if (showAnswer)
@@ -396,36 +433,29 @@ int main()
                 gpAgain.Draw();
                 gpHideAns.Draw();
 
-                if (gpEasy.isPressed(mousePosition, mousePressed))
-                {
-                    
-                }
-                else if (gpAgain.isPressed(mousePosition, mousePressed))
-                {
-
-                }
-
                 // Show answer text
                 Vector2 answerPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529 + 6);
                 DrawTextEx(InterMedium, meaning.c_str(), answerPos, 32, 0, BLACK);
+                if (gpEasy.isPressed(mousePosition, mousePressed))
+                {
+                    approved[currentPage] = true;
+                    currentPage++;
+                    UnloadTexture(wordImage);
+                    imageLoaded = false;
+                    showAnswer = false;
+                }
+                else if (gpAgain.isPressed(mousePosition, mousePressed))
+                {
+                    currentPage++;
+                    UnloadTexture(wordImage);
+                    imageLoaded = false;
+                    showAnswer = false;
+                }
             }
             else
             {
                 gpShowAns.Draw();
             }
-
-            if (currentPage > dataSize){
-                //gpPrevious.Draw();
-                currentPage = 0;
-                }
-            else
-            {
-            //     gpPreviousFade.Draw();
-            }
-
-            // string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
-            // Vector2 pageIndexPos = GetCenteredTextPos(Upperclock, pageIndex, 56, screenCenterPos, 660);
-            // DrawTextEx(Upperclock, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 56, 0, Color{88, 99, 128, 255});
 
             if (imageLoaded)
             {
@@ -438,6 +468,15 @@ int main()
                 Vector2 imageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
                 DrawTexturePro(wordImage, imageRec, (Rectangle){screenCenterPos.x, 328, imageRec.width, imageRec.height}, imageCenter, 0, WHITE);
             }
+
+            if (currentPage > dataSize)
+            {
+                currentPage = 0;
+            }
+
+            // string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
+            // Vector2 pageIndexPos = GetCenteredTextPos(Upperclock, pageIndex, 56, screenCenterPos, 660);
+            // DrawTextEx(Upperclock, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 56, 0, Color{88, 99, 128, 255});
         }
         EndDrawing();
     }
