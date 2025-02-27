@@ -327,6 +327,8 @@ int main()
     // endgame
     Button endHomeBtn{"img/buttons/home.png", {522, 593}};
     Button endRestartBtn{"img/buttons/retry2.png", {378, 593}};
+    Button congratscat{"img/end/congrat.png", {280, 70}};
+    Button timesupcat{"img/end/timeup.png", {280, 100}};
 
     Color backgroundColor = Color{221, 245, 253, 255};
 
@@ -565,6 +567,8 @@ int main()
         }
         else if (currentWindow == ENDGAME_WINDOW)
         {
+            gpBG.Draw();
+            congratscat.Draw();
             endHomeBtn.Draw();
             endRestartBtn.Draw();
             bool isRestartPressed = endRestartBtn.isPressed(mousePosition, mousePressed);
@@ -579,12 +583,17 @@ int main()
                 resetApproved();
             }
             // แสดงข้อความว่าเกมจบแล้ว
-            string endGameText = "Congratulations! You have completed the deck!";
-            Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 36, screenCenterPos, 80 + 6);
-            DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 36, 0, BLACK);
+            string endGameText = "Congratulations !";
+            string endGameText2 = "You've memorized all the words";
+            Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 54, screenCenterPos, 480);
+            DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 54, 0, BLACK);
+            Vector2 endGameTextPos2 = GetCenteredTextPos(InterSemiBold, endGameText2, 30, screenCenterPos, 540);
+            DrawTextEx(InterSemiBold, endGameText2.c_str(), endGameTextPos2, 30, 0, BLACK);
         }
         else if (currentWindow == TIMEOUT_WINDOW)
         {
+            gpBG.Draw();
+            timesupcat.Draw();
             endHomeBtn.Draw();
             endRestartBtn.Draw();
             bool isRestartPressed = endRestartBtn.isPressed(mousePosition, mousePressed);
@@ -600,12 +609,11 @@ int main()
             }
             // แสดงข้อความว่าเกมจบแล้ว
             string endGameText = "Time's Up!";
-            Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 36, screenCenterPos, 550 + 6);
-            DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 36, 0, BLACK);
+            Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 60, screenCenterPos, 500);
+            DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 60, 0, BLACK);
         }
         else if (currentWindow == BROWSER_WINDOW)
         {
-
             browseBackBtn.Draw();
             browseEditBtn.Draw();
             browseDeleteBtn.Draw();
