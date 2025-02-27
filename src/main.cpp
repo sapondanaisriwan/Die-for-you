@@ -110,6 +110,62 @@ Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screenc
     return result;
 }
 
+
+//delete func
+
+bool deleteWord(int deskIndex, int wordIndex)
+{
+    // อ่านข้อมูล JSON
+    Document document = getData();
+    
+    // ตรวจสอบว่า deskIndex และ wordIndex ถูกต้องหรือไม่
+   // if (deskIndex < 0 || deskIndex >= document.Size())
+   if (deskIndex < 0 || deskIndex >= static_cast<int>(document.Size()))
+    {
+        cerr << "Error: Invalid desk index!" << endl;
+        return false;
+    }
+    
+    Value &deskData = document[deskIndex];
+    if (!deskData.HasMember("data") || !deskData["data"].IsArray())
+    {
+        cerr << "Error: Desk has no data array!" << endl;
+        return false;
+    }
+    
+    Value &dataArray = deskData["data"];
+
+   // if (wordIndex < 0 || wordIndex >= dataArray.Size())
+   if (wordIndex < 0 || wordIndex >= static_cast<int>(dataArray.Size()))
+    {
+        cerr << "Error: Invalid word index!" << endl;
+        return false;
+    }
+    
+    // ลบรายการที่ต้องการออกจาก array
+    dataArray.Erase(dataArray.Begin() + wordIndex);
+    
+    // แปลง JSON กลับเป็น string เพื่อบันทึกลงไฟล์
+    StringBuffer buffer;
+    Writer<StringBuffer> writer(buffer);
+    document.Accept(writer);
+    
+    // บันทึกข้อมูลที่อัปเดตลงไฟล์
+    ofstream outFile("resources/data.json");
+    if (!outFile)
+    {
+        cerr << "Error: Cannot write to file!" << endl;
+        return false;
+    }
+    outFile << buffer.GetString();
+    outFile.close();
+    
+    cout << "Word deleted successfully!" << endl;
+    return true;
+}
+
+
+
 int main()
 {
 
@@ -385,8 +441,37 @@ int main()
                 currentWindow = START_WINDOW;
             }
 
+            //ทำDelete
+
+            if (browseDeleteBtn.isPressed(mousePosition, mousePressed) && selectedIndex != -1)
+            {
+                // คำนวณ index จริงในข้อมูล โดยนำ selectedIndex มารวมกับ startIndex
+                int actualIndex = startIndex + (selectedIndex - startIndex);
+                
+                // เรียกใช้ฟังก์ชัน deleteWord เพื่อลบรายการที่เลือก
+                if (deleteWord(currentDesk, actualIndex))
+                {
+                    // อัปเดตข้อมูลหลังจากลบ
+                    document = getData();
+                    
+                    // ตรวจสอบว่าหลังจากลบแล้ว หน้าปัจจุบันยังมีข้อมูลหรือไม่
+                    int newDataSize = document[currentDesk]["data"].Size();
+                    if (startIndex >= newDataSize && currentPage > 0)
+                    {
+                        // ถ้าหน้าปัจจุบันไม่มีข้อมูลแล้ว ให้ย้อนกลับไปหน้าก่อนหน้า
+                        currentPage--;
+                    }
+                    
+                    selectedIndex = -1; // รีเซ็ตการเลือก
+                    continue;
+                }
+            }        
 
    
+
+
+
+
 
     for (int i = startIndex; i < endIndex; ++i)
     {
@@ -447,3 +532,4 @@ int main()
     CloseWindow();
     return 0;
 }
+
