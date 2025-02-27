@@ -397,12 +397,19 @@ int main()
                 currentWindow = HOME_WINDOW;
             }
 
-            // start picture
+            // new position
             Vector2 newPosition = {173, 201};
             Vector2 originalPosition = deckCovers[currentDesk].getPosition();
-            deckCovers[currentDesk].SetPosition(newPosition);
-            deckCovers[currentDesk].Draw();
-            deckCovers[currentDesk].SetPosition(originalPosition);
+            // resize
+            float scale = 2; // 2เท่า
+            Texture2D texture = deckCovers[currentDesk].GetTexture();
+            float newWidth = texture.width * scale;
+            float newHeight = texture.height * scale;
+            Rectangle sourceRec = {0, 0, (float)texture.width, (float)texture.height};
+            Rectangle destRec = {newPosition.x, newPosition.y, newWidth, newHeight}; // new pic
+            Vector2 origin = {0, 0};
+            DrawTexturePro(texture, sourceRec, destRec, origin, 0.0f, WHITE);
+            deckCovers[currentDesk].SetPosition(originalPosition); // คืนค่าเดิมหน้า home
 
             gpHome.Draw();
             startDeleteBtn.Draw();

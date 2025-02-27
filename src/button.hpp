@@ -32,6 +32,12 @@ public:
     position = newPosition;
   }
 
+  // เก็บข้อมูลของภาพที่โหลดมา
+  Texture2D GetTexture()
+  {
+    return texture;
+  }
+
   // Disable copy constructor and copy assignment
   Button(const Button &) = delete;
   Button &operator=(const Button &) = delete;
