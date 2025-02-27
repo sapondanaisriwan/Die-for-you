@@ -4,7 +4,8 @@ enum WindowState
     START_WINDOW,
     GAMEPLAY_WINDOW,
     BROWSER_WINDOW,
-    ADD_WINDOW
+    ADD_WINDOW,
+    ENDGAME_WINDOW
 };
 struct oldPos
 {
