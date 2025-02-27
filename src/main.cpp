@@ -21,7 +21,14 @@ int currentDesk = 0;
 bool imageLoaded = false;
 bool showAnswer = false;
 bool isShuffled = false;
+bool challengeMode = false;
 Texture2D wordImage;
+
+// Time Variables
+int startTime = 0;
+int countdownTime = 5;
+bool timeOut = false;
+bool countdownStarted = false;
 
 Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
 {
@@ -202,6 +209,24 @@ bool checkEndGame(int currentDesk = 0)
     return true;
 }
 
+void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position, int fontSize, Color color, bool &timeOut)
+{
+    int currentTime = static_cast<int>(GetTime());
+    int elapsedTime = currentTime - startTime;
+    int remainingTime = countdownTime - elapsedTime;
+
+    if (remainingTime < 0)
+    {
+        remainingTime = 0;
+    }
+    std::string timeStr = std::to_string(remainingTime);
+    DrawTextEx(font, timeStr.c_str(), position, fontSize, 0, color);
+    if (remainingTime == 0)
+    {
+        timeOut = true;
+    }
+}
+
 int main()
 {
 
@@ -225,12 +250,14 @@ int main()
     Font InterMedium = LoadFont("resources/Inter_Medium.ttf");
     Font InterRegular = LoadFont("resources/Inter_Regular.ttf");
     Font InterLight = LoadFont("resources/InterLight.ttf");
+    Font Upperclock = LoadFont("resources/UpperClockVariable.ttf");
 
     // Smooth the font
     SetTextureFilter(InterSemiBold.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(InterMedium.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(InterRegular.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(InterLight.texture, TEXTURE_FILTER_BILINEAR);
+    SetTextureFilter(Upperclock.texture, TEXTURE_FILTER_BILINEAR);
 
     float xPos = 48;
     float yPos = 95;
@@ -309,6 +336,9 @@ int main()
             currentPage = 0;
             imageLoaded = false;
             showAnswer = false;
+            challengeMode = false;
+            countdownStarted = false;
+            timeOut = false;
             for (size_t i = 0; i < deckButtons.size(); i++)
             {
                 deckButtons[i].Draw();
@@ -340,7 +370,10 @@ int main()
             }
             else if (isChallengePressed && document[currentDesk]["data"].Size() > 0)
             {
+                challengeMode = true;
+                countdownStarted = true;
                 currentWindow = GAMEPLAY_WINDOW;
+                startTime = static_cast<int>(GetTime());
             }
             else if (isBrowsePressed)
             {
@@ -373,6 +406,11 @@ int main()
             if (checkEndGame(currentDesk))
             {
                 currentWindow = ENDGAME_WINDOW;
+                UnloadTexture(wordImage);
+            }
+            else if (challengeMode && timeOut)
+            {
+                currentWindow = TIMEOUT_WINDOW;
                 UnloadTexture(wordImage);
             }
 
@@ -461,6 +499,12 @@ int main()
             gpHome.Draw();
             gpNext.Draw();
             gpShowAns.Draw();
+
+            // time challange mode
+            if (challengeMode)
+            {
+                DrawCountdown(startTime, countdownTime, Upperclock, Vector2{880, 71}, 64, BLACK, timeOut);
+            }
 
             if (showAnswer)
             {
