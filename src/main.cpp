@@ -23,6 +23,13 @@ bool showAnswer = false;
 bool isShuffled = false;
 Texture2D wordImage;
 
+Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
+{
+    Vector2 textXY = MeasureTextEx(font, text.c_str(), fontSize, 0);
+    Vector2 result = {(screencenterPos.x - (textXY.x / 2.0f)), yPos};
+    return result;
+}
+
 Document getData()
 {
     // Read the JSON file
@@ -103,15 +110,7 @@ void shuffleDeck()
     updateJSONFile(document);
 }
 
-Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
-{
-    Vector2 textXY = MeasureTextEx(font, text.c_str(), fontSize, 0);
-    Vector2 result = {(screencenterPos.x - (textXY.x / 2.0f)), yPos};
-    return result;
-}
-
 // delete func
-
 bool deleteWord(int deskIndex, int wordIndex)
 {
     // อ่านข้อมูล JSON
@@ -149,6 +148,25 @@ bool deleteWord(int deskIndex, int wordIndex)
     return true;
 }
 
+// change the approved status of all card to false
+void resetApproved()
+{
+    Document document = getData();
+    for (size_t i = 0; i < document.Size(); i++)
+    {
+        Value &obj = document[i];
+        if (obj.HasMember("data"))
+        {
+            Value &data = obj["data"];
+            for (size_t j = 0; j < data.Size(); j++)
+            {
+                data[j]["approved"].SetBool(false);
+            }
+        }
+    }
+    updateJSONFile(document);
+}
+
 void updateApproved(int currentDeck, int dataIndex, bool isApproved)
 {
     Document document = getData();
@@ -167,7 +185,7 @@ void updateApproved(int currentDeck, int dataIndex, bool isApproved)
     return;
 };
 
-bool checkEndGame()
+bool checkEndGame(int currentDesk = 0)
 {
     // check if the game is over by checking if all the cards are approved
     Document document = getData();
@@ -182,25 +200,6 @@ bool checkEndGame()
         }
     }
     return true;
-}
-
-// change the approved status of all card to false
-void resetApproved()
-{
-    Document document = getData();
-    for (size_t i = 0; i < document.Size(); i++)
-    {
-        Value &obj = document[i];
-        if (obj.HasMember("data"))
-        {
-            Value &data = obj["data"];
-            for (size_t j = 0; j < data.Size(); j++)
-            {
-                data[j]["approved"].SetBool(false);
-            }
-        }
-    }
-    updateJSONFile(document);
 }
 
 int main()
@@ -371,7 +370,7 @@ int main()
                 isShuffled = !isShuffled;
             }
 
-            if (checkEndGame())
+            if (checkEndGame(currentDesk))
             {
                 currentWindow = ENDGAME_WINDOW;
                 UnloadTexture(wordImage);
