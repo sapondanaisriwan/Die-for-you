@@ -46,6 +46,26 @@ Document getData()
     return document;
 }
 
+void updateJSONFile(Document &document)
+{
+    // Convert JSON back to string
+    StringBuffer bufferOut;
+    Writer<StringBuffer> writer(bufferOut);
+    document.Accept(writer);
+
+    // Write the updated JSON back to the file
+    ofstream outFile("resources/data.json");
+    if (!outFile)
+    {
+        cout << "[Error]: Cannot write to file!" << endl;
+        return;
+    }
+    outFile << bufferOut.GetString();
+    outFile.close();
+
+    cout << "Data has been updated!" << endl;
+}
+
 void shuffleDeck()
 {
     Document document = getData();
@@ -87,20 +107,7 @@ void shuffleDeck()
         }
     }
 
-    // Convert JSON back to string
-    StringBuffer bufferOut;
-    Writer<StringBuffer> writer(bufferOut);
-    document.Accept(writer);
-
-    // Write the updated JSON back to the file
-    ofstream outFile("resources/data.json");
-    if (!outFile)
-    {
-        cerr << "Error: Cannot write to file!" << endl;
-        return;
-    }
-    outFile << bufferOut.GetString();
-    outFile.close();
+    updateJSONFile(document);
 }
 
 Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
