@@ -1,12 +1,29 @@
 #pragma once
 #include <raylib.h>
 
+struct ImageSize
+{
+  float width;
+  float height;
+};
+
+struct TextureSize
+{
+  int width;
+  int height;
+};
+
 class Button
 {
 public:
-  Button(const char *imagePath, Vector2 imagePosition, float scale);
+  Button(const char *imagePath, Vector2 imagePosition, float scale = 1);
+  Button(const char *imagePath, Vector2 imagePosition, ImageSize imageSize);
   ~Button();
   void Draw();
+  void Draw2();
+
+  Vector2 getPosition();
+  TextureSize getImageSize();
   bool isPressed(Vector2 mousePos, bool mousePressed);
 
   // Disable copy constructor and copy assignment
@@ -17,7 +34,8 @@ public:
   Button(Button &&other) noexcept;
   Button &operator=(Button &&other) noexcept;
 
-private:
+  
+  private:
   Texture2D texture;
   Vector2 position;
 };

@@ -9,18 +9,11 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
 #include "button.hpp"
+#include "type.hpp"
 
 using namespace rapidjson;
 using namespace std;
 
-enum WindowState
-{
-    HOME_WINDOW,
-    START_WINDOW,
-    GAMEPLAY_WINDOW,
-    BROWSER_WINDOW,
-    ADD_WINDOW
-};
 WindowState currentWindow = HOME_WINDOW;
 
 int currentPage = 0;
@@ -185,16 +178,42 @@ int main()
     SetTextureFilter(InterRegular.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(InterLight.texture, TEXTURE_FILTER_BILINEAR);
 
-    // homepage
-    Button topbar{"img/homepage/topbar.png", {0, 0}, 1};
-    // Button newDesk{"img/homepage/new-desk.png", {48, 95}, 1};
-    Button SMT{"img/homepage/SMT.png", {48, 95}, 1};
-    Button foodBtn{"img/homepage/Foods.png", {278.12, 95}, 1};
-    Button animalBtn{"img/homepage/animals.png", {508.24, 95}, 1};
-    Button flowerBtn{"img/homepage/flowers.png", {738.36, 95}, 1};
-    Button countryBtn{"img/homepage/country.png", {48, 384}, 1};
-    Button jobsBtn{"img/homepage/jobs.png", {278.12, 384}, 1};
-    Button vegetableBtn{"img/homepage/vegetable.png", {508.24, 384}, 1};
+    float xPos = 48;
+    float yPos = 95;
+    float xImage = 88;
+    float yImage = 120;
+    oldPos oldPos = {xPos, yPos, xImage, yImage};
+    vector<Button> deckButtons = {};
+    vector<Button> deckCovers = {};
+    vector<string> deckName = {};
+    for (SizeType i = 0; i < document.Size(); i++)
+    {
+        Value &obj = document[i];
+        if (obj.HasMember("cover"))
+        {
+            string coverPath = obj["cover"].GetString();
+            deckName.push_back(document[i]["deck"].GetString());
+            deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
+            deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
+
+            xPos += 230;
+            xImage += 230;
+
+            if ((i + 1) % 8 == 0)
+            {
+                xPos = oldPos.xPos;
+                xImage = oldPos.xImage;
+            }
+
+            if (xPos > 800)
+            {
+                xPos = oldPos.xPos;
+                yPos += 289;
+                xImage = oldPos.xImage;
+                yImage += 287;
+            }
+        }
+    }
 
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {48, 48}, 1};
@@ -202,7 +221,7 @@ int main()
     Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}, 1};
     Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}, 1};
     Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}, 1};
-    Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}, 1};
+    Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}, 1};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}, 1};
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}, 1};
@@ -221,7 +240,6 @@ int main()
 
     while (!WindowShouldClose())
     {
-
         Vector2 mousePosition = GetMousePosition();
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
@@ -233,44 +251,21 @@ int main()
             currentPage = 0;
             imageLoaded = false;
             showAnswer = false;
-            topbar.Draw();
-            // newDesk.Draw();
-            SMT.Draw();
-            foodBtn.Draw();
-            animalBtn.Draw();
-            flowerBtn.Draw();
-            countryBtn.Draw();
-            jobsBtn.Draw();
-            vegetableBtn.Draw();
-            if (animalBtn.isPressed(mousePosition, mousePressed))
+            for (size_t i = 0; i < deckButtons.size(); i++)
             {
-                currentWindow = START_WINDOW;
-                currentDesk = 0;
-            }
-            else if (foodBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 1;
-            }
-            else if (flowerBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 2;
-            }
-            else if (countryBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 3;
-            }
-            else if (jobsBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 4;
-            }
-            else if (vegetableBtn.isPressed(mousePosition, mousePressed))
-            {
-                currentWindow = START_WINDOW;
-                currentDesk = 5;
+                deckButtons[i].Draw();
+                deckCovers[i].Draw();
+                // show dack's name
+                Vector2 centerText = MeasureTextEx(InterMedium, deckName[i].c_str(), 24, 0);
+                Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
+                DrawTextEx(InterMedium, deckName[i].c_str(), textPos, 24, 0, BLACK);
+
+                bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
+                if (isClicked)
+                {
+                    currentWindow = START_WINDOW;
+                    currentDesk = i;
+                }
             }
         }
         else if (currentWindow == START_WINDOW)
