@@ -23,6 +23,13 @@ bool showAnswer = false;
 bool isShuffled = false;
 Texture2D wordImage;
 
+Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
+{
+    Vector2 textXY = MeasureTextEx(font, text.c_str(), fontSize, 0);
+    Vector2 result = {(screencenterPos.x - (textXY.x / 2.0f)), yPos};
+    return result;
+}
+
 Document getData()
 {
     // Read the JSON file
@@ -103,15 +110,7 @@ void shuffleDeck()
     updateJSONFile(document);
 }
 
-Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
-{
-    Vector2 textXY = MeasureTextEx(font, text.c_str(), fontSize, 0);
-    Vector2 result = {(screencenterPos.x - (textXY.x / 2.0f)), yPos};
-    return result;
-}
-
 // delete func
-
 bool deleteWord(int deskIndex, int wordIndex)
 {
     // อ่านข้อมูล JSON
@@ -149,12 +148,67 @@ bool deleteWord(int deskIndex, int wordIndex)
     return true;
 }
 
+// change the approved status of all card to false
+void resetApproved()
+{
+    Document document = getData();
+    for (size_t i = 0; i < document.Size(); i++)
+    {
+        Value &obj = document[i];
+        if (obj.HasMember("data"))
+        {
+            Value &data = obj["data"];
+            for (size_t j = 0; j < data.Size(); j++)
+            {
+                data[j]["approved"].SetBool(false);
+            }
+        }
+    }
+    updateJSONFile(document);
+}
+
+void updateApproved(int currentDeck, int dataIndex, bool isApproved)
+{
+    Document document = getData();
+    Value &deckData = document[currentDeck]["data"];
+    int deckDataSize = deckData.Size() - 1;
+
+    if (dataIndex < 0 || dataIndex > deckDataSize)
+    {
+        cout << "[Error]: Invalid data index!" << endl;
+        return;
+    }
+
+    deckData[dataIndex]["approved"].SetBool(isApproved);
+
+    updateJSONFile(document);
+    return;
+};
+
+bool checkEndGame(int currentDesk = 0)
+{
+    // check if the game is over by checking if all the cards are approved
+    Document document = getData();
+    Value &currentData = document[currentDesk]["data"];
+    int dataSize = currentData.Size() - 1;
+
+    for (int i = 0; i < dataSize; i++)
+    {
+        if (!currentData[i]["approved"].GetBool())
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 int main()
 {
 
     // Get the JSON document
     // shuffleDeck();
     Document document = getData();
+    resetApproved();
     // Initialize window
     const float screenWidth = 1000;
     const float screenHeight = 750;
@@ -238,6 +292,10 @@ int main()
     Button browseDeleteBtn{"img/buttons/delete.png", {800, 50}};
     Button browseEditBtn{"img/buttons/edit2.png", {900, 50}};
 
+    // endgame
+    Button endHomeBtn{"img/buttons/home.png", {522, 593}};
+    Button endRestartBtn{"img/buttons/retry2.png", {378, 593}};
+
     while (!WindowShouldClose())
     {
         Vector2 mousePosition = GetMousePosition();
@@ -312,18 +370,34 @@ int main()
                 isShuffled = !isShuffled;
             }
 
+            if (checkEndGame(currentDesk))
+            {
+                currentWindow = ENDGAME_WINDOW;
+                UnloadTexture(wordImage);
+            }
+
             Value &currentData = document[currentDesk]["data"];
             Value &currentPageData = currentData[currentPage];
 
             int dataSize = currentData.Size() - 1;
-            string wordDesk = currentPageData["word"].GetString();
-            string meaning = currentPageData["meaning"].GetString();
-            string imgPath = currentPageData["image"].GetString();
+            bool isApproved = currentPageData["approved"].GetBool();
+
+            while (isApproved == true && currentPage < dataSize)
+            {
+                currentPage++;
+                isApproved = currentData[currentPage]["approved"].GetBool();
+            }
+
+            string wordDesk = currentData[currentPage]["word"].GetString();
+            string meaning = currentData[currentPage]["meaning"].GetString();
+            string imgPath = currentData[currentPage]["image"].GetString();
 
             bool ishomePressed = gpHome.isPressed(mousePosition, mousePressed);
             bool isNextPressed = gpNext.isPressed(mousePosition, mousePressed);
             bool isShowAnsPressed = gpShowAns.isPressed(mousePosition, mousePressed);
             bool isPreviousPressed = (gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed));
+            bool isEasyPressed = gpEasyBtn.isPressed(mousePosition, mousePressed);
+            bool isHardPressed = gpHardBtn.isPressed(mousePosition, mousePressed);
 
             if (!imageLoaded)
             {
@@ -352,6 +426,32 @@ int main()
             else if (isPreviousPressed && currentPage > 0)
             {
                 currentPage--;
+                UnloadTexture(wordImage);
+                imageLoaded = false;
+                showAnswer = false;
+            }
+            else if (isEasyPressed)
+            {
+                updateApproved(currentDesk, currentPage, true);
+                currentPage++;
+                UnloadTexture(wordImage);
+                imageLoaded = false;
+                showAnswer = false;
+                document = getData();
+            }
+            else if (isHardPressed)
+            {
+                updateApproved(currentDesk, currentPage, false);
+                currentPage++;
+                UnloadTexture(wordImage);
+                imageLoaded = false;
+                showAnswer = false;
+                document = getData();
+            }
+
+            if (currentPage > dataSize)
+            {
+                currentPage = 0;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
                 showAnswer = false;
@@ -400,6 +500,26 @@ int main()
                 Vector2 imageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
                 DrawTexturePro(wordImage, imageRec, (Rectangle){screenCenterPos.x, 328, imageRec.width, imageRec.height}, imageCenter, 0, WHITE);
             }
+        }
+        else if (currentWindow == ENDGAME_WINDOW)
+        {
+            endHomeBtn.Draw();
+            endRestartBtn.Draw();
+            bool isRestartPressed = endRestartBtn.isPressed(mousePosition, mousePressed);
+            bool isHomePressed = endHomeBtn.isPressed(mousePosition, mousePressed);
+            if (isHomePressed)
+            {
+                currentWindow = HOME_WINDOW;
+            }
+            else if (isRestartPressed)
+            {
+                currentWindow = START_WINDOW;
+                resetApproved();
+            }
+            // แสดงข้อความว่าเกมจบแล้ว
+            string endGameText = "Congratulations! You have completed the deck!";
+            Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 36, screenCenterPos, 80 + 6);
+            DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 36, 0, BLACK);
         }
         else if (currentWindow == BROWSER_WINDOW)
         {
