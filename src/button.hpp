@@ -26,6 +26,12 @@ public:
   TextureSize getImageSize();
   bool isPressed(Vector2 mousePos, bool mousePressed);
 
+  // set new position
+  void SetPosition(Vector2 newPosition)
+  {
+    position = newPosition;
+  }
+
   // Disable copy constructor and copy assignment
   Button(const Button &) = delete;
   Button &operator=(const Button &) = delete;
@@ -34,8 +40,7 @@ public:
   Button(Button &&other) noexcept;
   Button &operator=(Button &&other) noexcept;
 
-  
-  private:
+private:
   Texture2D texture;
   Vector2 position;
 };

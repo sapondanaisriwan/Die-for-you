@@ -245,6 +245,10 @@ int main()
     InitWindow(screenWidth, screenHeight, "Die for you");
     SetTargetFPS(60);
 
+    // icon
+    Image icon = LoadImage("img/icon.png");
+    SetWindowIcon(icon);
+
     // Get font
     Font InterSemiBold = LoadFont("resources/Inter_SemiBold.ttf");
     Font InterMedium = LoadFont("resources/Inter_Medium.ttf");
@@ -298,7 +302,7 @@ int main()
 
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {48, 48}};
-    Button gpHome{"img/buttons/home.png", {64 + 4, 650}};
+    Button gpHome{"img/start/home-btn.png", {64 + 4, 650}};
     Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}};
     Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}};
     Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}};
@@ -309,19 +313,22 @@ int main()
     Button gpHardBtn{"img/gameplay/hard-btn.png", {564 + 4, 590}};
 
     // start screen
-    Button stStartBtn{"img/buttons/start.png", {415, 219}};
-    Button stChallengeBtn{"img/buttons/challenge.png", {415, 310}};
-    Button stBrowseBtn{"img/buttons/browse.png", {415, 396}};
-    Button stAddBtn{"img/buttons/add.png", {415, 482}};
+    Button stStartBtn{"img/start/start-btn.png", {537, 245}};
+    Button stChallengeBtn{"img/start/challenge-btn.png", {537, 326}};
+    Button stBrowseBtn{"img/start/browse-btn.png", {692, 412}};
+    Button stAddBtn{"img/start/add-btn.png", {537, 412}};
+    Button startDeleteBtn{"img/start/delete-btn.png", {808, 637}};
 
     // browse
     Button browseBackBtn{"img/buttons/back.png", {50, 50}};
-    Button browseDeleteBtn{"img/buttons/delete.png", {800, 50}};
-    Button browseEditBtn{"img/buttons/edit2.png", {900, 50}};
+    Button browseDeleteBtn{"img/start/delete-btn.png", {770, 50}};
+    Button browseEditBtn{"img/buttons/edit2.png", {880, 50}};
 
     // endgame
     Button endHomeBtn{"img/buttons/home.png", {522, 593}};
     Button endRestartBtn{"img/buttons/retry2.png", {378, 593}};
+
+    Color backgroundColor = Color{221, 245, 253, 255};
 
     while (!WindowShouldClose())
     {
@@ -329,7 +336,7 @@ int main()
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground(backgroundColor);
 
         if (currentWindow == HOME_WINDOW)
         {
@@ -364,6 +371,8 @@ int main()
             bool isAddPressed = stAddBtn.isPressed(mousePosition, mousePressed);
             bool isHomePressed = gpHome.isPressed(mousePosition, mousePressed);
 
+            gpBG.Draw();
+
             if (isStartPressed && document[currentDesk]["data"].Size() > 0)
             {
                 currentWindow = GAMEPLAY_WINDOW;
@@ -387,7 +396,16 @@ int main()
             {
                 currentWindow = HOME_WINDOW;
             }
+
+            // start picture
+            Vector2 newPosition = {200.0f, 250.0f};
+            Vector2 originalPosition = deckCovers[currentDesk].getPosition();
+            deckCovers[currentDesk].SetPosition(newPosition);
+            deckCovers[currentDesk].Draw();
+            deckCovers[currentDesk].SetPosition(originalPosition);
+
             gpHome.Draw();
+            startDeleteBtn.Draw();
             stStartBtn.Draw();
             stChallengeBtn.Draw();
             stBrowseBtn.Draw();
@@ -563,6 +581,26 @@ int main()
             // แสดงข้อความว่าเกมจบแล้ว
             string endGameText = "Congratulations! You have completed the deck!";
             Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 36, screenCenterPos, 80 + 6);
+            DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 36, 0, BLACK);
+        }
+        else if (currentWindow == TIMEOUT_WINDOW)
+        {
+            endHomeBtn.Draw();
+            endRestartBtn.Draw();
+            bool isRestartPressed = endRestartBtn.isPressed(mousePosition, mousePressed);
+            bool isHomePressed = endHomeBtn.isPressed(mousePosition, mousePressed);
+            if (isHomePressed)
+            {
+                currentWindow = HOME_WINDOW;
+            }
+            else if (isRestartPressed)
+            {
+                currentWindow = START_WINDOW;
+                resetApproved();
+            }
+            // แสดงข้อความว่าเกมจบแล้ว
+            string endGameText = "Time's Up!";
+            Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 36, screenCenterPos, 550 + 6);
             DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 36, 0, BLACK);
         }
         else if (currentWindow == BROWSER_WINDOW)
