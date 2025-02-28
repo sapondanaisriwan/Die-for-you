@@ -357,12 +357,12 @@ int main()
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {795, 640}};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {795, 640}};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {397, 590}};
-    //Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}};
+    // Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}};
     Button gpHardBtn{"img/gameplay/hard-btn.png", {507, 590}};
 
     // start screen
     Button stStartBtn{"img/start/start-btn.png", {537, 245}};
-    Button stHome{"img/buttons/home.png",{80, 637}};
+    Button stHome{"img/buttons/home.png", {80, 637}};
     Button stChallengeBtn{"img/start/challenge-btn.png", {537, 326}};
     Button stBrowseBtn{"img/start/browse-btn.png", {692, 412}};
     Button stAddBtn{"img/start/add-btn.png", {537, 412}};
@@ -894,7 +894,8 @@ int main()
                     currentDeck = i;
                 }
                 bool isCreateDPressed = createDeck.isPressed(mousePosition, mousePressed);
-                if(isCreateDPressed){
+                if (isCreateDPressed)
+                {
                     currentWindow = ADD_DECK_WINDOW;
                 }
             }
@@ -1082,7 +1083,7 @@ int main()
             if (showAnswer)
             {
                 gpEasyBtn.Draw();
-    
+
                 gpHardBtn.Draw();
                 gpHideAns.Draw();
 
