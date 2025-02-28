@@ -14,7 +14,7 @@
 using namespace rapidjson;
 using namespace std;
 
-WindowState currentWindow = HOME_WINDOW;
+WindowState currentWindow = ADD_DECK_WINDOW;
 
 int currentPage = 0;
 int currentDeck = 0;
@@ -381,6 +381,7 @@ int main()
     FilePathList droppedImages;
     Image img;
     Texture2D txt;
+    char* imgPath;
 
     bool mouseOnWordBox = false;
     bool clickOnWordBox = false;
@@ -454,55 +455,61 @@ int main()
                 if (currentWindow == ADD_WINDOW)
                 {
                     word.push_back('\0');
-                    string saveWord(word.begin(), word.end());
+                    string saveWord(word.begin(), word.end()); //word
                     word.pop_back();
 
-                    if (!(currentWindow == ADD_DECK_WINDOW))
-                    {
-                        meaning.push_back('\0');
-                        string saveMeaning(meaning.begin(), meaning.end());
-                        meaning.pop_back();
-                    }
+                    meaning.push_back('\0');
+                    string saveMeaning(meaning.begin(), meaning.end()); //meaning
+                    meaning.pop_back();
 
                     // save code
+                    //imgPath for Image
                 }
 
                 if (currentWindow == EDIT_WINDOW)
                 {
                     word.push_back('\0');
-                    string saveWord(word.begin(), word.end());
+                    string saveWord(word.begin(), word.end()); //word
                     word.pop_back();
 
-                    if (!(currentWindow == ADD_DECK_WINDOW))
-                    {
-                        meaning.push_back('\0');
-                        string saveMeaning(meaning.begin(), meaning.end());
-                        meaning.pop_back();
-                    }
+                    meaning.push_back('\0');
+                    string saveMeaning(meaning.begin(), meaning.end()); //meaning
+                    meaning.pop_back();
+
                     // save code
+                    //imgPath for Image
                 }
 
-                if (currentWindow == EDIT_WINDOW)
-                    currentWindow = BROWSER_WINDOW;
+                if (currentWindow == ADD_DECK_WINDOW)
+                {
+                    word.push_back('\0');
+                    string saveWord(word.begin(), word.end()); //Deck Name
+                    word.pop_back();
+
+                    // save code
+                    //imgPath for Image
+                }
+
 
                 word.clear();
                 meaning.clear();
                 if (isImageLoad)
                 {
+                    imgPath = NULL;
                     UnloadImage(img);
                     UnloadTexture(txt);
                     isImageLoad = false;
                 }
+
+                if (currentWindow == EDIT_WINDOW)
+                    currentWindow = BROWSER_WINDOW;
+                if (currentWindow == ADD_DECK_WINDOW)
+                    currentWindow = HOME_WINDOW;
             }
 
             // editBack
             if (editBackBtn.isPressed(mousePosition, mousePressed))
             {
-                if (currentWindow == ADD_WINDOW)
-                    currentWindow = START_WINDOW;
-                if (currentWindow == EDIT_WINDOW)
-                    currentWindow = BROWSER_WINDOW;
-
                 word.clear();
                 meaning.clear();
                 if (isImageLoad)
@@ -511,18 +518,26 @@ int main()
                     UnloadTexture(txt);
                     isImageLoad = false;
                 }
+
+                if (currentWindow == ADD_WINDOW)
+                    currentWindow = START_WINDOW;
+                if (currentWindow == EDIT_WINDOW)
+                    currentWindow = BROWSER_WINDOW;
+                if (currentWindow == ADD_DECK_WINDOW)
+                    currentWindow = HOME_WINDOW;
             }
 
             // imageBox
-            if (CheckCollisionPointRec(GetMousePosition(), imageBox))
+            if (IsFileDropped())
             {
                 // dropImage
-                if (IsFileDropped())
+                droppedImages = LoadDroppedFiles();
+                if (CheckCollisionPointRec(GetMousePosition(), imageBox))
                 {
-                    droppedImages = LoadDroppedFiles();
                     // drop again
                     if (isImageLoad)
                     {
+                        imgPath = NULL;
                         UnloadImage(img);
                         UnloadTexture(txt);
                         isImageLoad = false;
@@ -530,6 +545,7 @@ int main()
                     if (!isImageLoad)
                     {
                         // loadImage
+                        imgPath = droppedImages.paths[0];
                         img = LoadImage(droppedImages.paths[0]);
                         int newWidth, newHeight;
 
@@ -543,13 +559,15 @@ int main()
                         txt = LoadTextureFromImage(img);
                         isImageLoad = true;
                     }
-                    UnloadDroppedFiles(droppedImages);
                 }
+                UnloadDroppedFiles(droppedImages);
             }
 
             // imageDeleteBotton
             if (imageDeleteBtn.isPressed(mousePosition, mousePressed))
             {
+                imgPath = NULL;
+                UnloadImage(img);
                 UnloadTexture(txt);
                 isImageLoad = false;
             }
@@ -1305,8 +1323,9 @@ int main()
             int fontSize = 20;
 
             // wordBox
-            DrawTextEx(editTextFont, "Word", {(wordBox.x + 5), (wordBox.y - 25)}, fontSize + 4, 0, BLACK);
-            DrawRectangleRec(wordBox, LIGHTGRAY);
+            if(currentWindow != ADD_DECK_WINDOW) DrawTextEx(editTextFont, "Word", {(wordBox.x + 5), (wordBox.y - 25)}, fontSize + 4, 0, BLACK);
+            else DrawTextEx(editTextFont, "Deck Name", {(wordBox.x + 5), (wordBox.y - 25)}, fontSize + 4, 0, BLACK);
+            DrawRectangleRec(wordBox, WHITE);
             if (mouseOnWordBox || clickOnWordBox)
                 DrawRectangleLinesEx(wordBox, 2, BLACK);
             else
@@ -1316,7 +1335,7 @@ int main()
             if (!(currentWindow == ADD_DECK_WINDOW))
             {
                 DrawTextEx(editTextFont, "Meaning", {(meaningBox.x + 5), (meaningBox.y - 25)}, fontSize + 4, 0, BLACK);
-                DrawRectangleRec(meaningBox, LIGHTGRAY);
+                DrawRectangleRec(meaningBox, WHITE);
                 if (mouseOnMeaningBox || clickOnMeaningBox)
                     DrawRectangleLinesEx(meaningBox, 2, BLACK);
                 else
@@ -1325,7 +1344,7 @@ int main()
 
             // imageBox
             DrawTextEx(editTextFont, "Image", {(imageBox.x + 5), (imageBox.y - 25)}, fontSize + 4, 0, BLACK);
-            DrawRectangleRec(imageBox, LIGHTGRAY);
+            DrawRectangleRec(imageBox, WHITE);
             DrawRectangleLinesEx(imageBox, 2, GRAY);
 
             // selectedBox
@@ -1384,14 +1403,14 @@ int main()
             word.pop_back();
             meaning.pop_back();
 
-            if (word.empty() && !clickOnWordBox)
-                DrawTextEx(editTextFont, "Please Input Word", wordPos, fontSize, 0, DARKGRAY);
+            if (word.empty() && !clickOnWordBox){
+                if(currentWindow != ADD_DECK_WINDOW) DrawTextEx(editTextFont, "Please Input Word (At least 1 character)", wordPos, fontSize, 0, DARKGRAY);
+                else DrawTextEx(editTextFont, "Please Input Deck Name (At least 1 character)", wordPos, fontSize, 0, DARKGRAY);
+            }
             if (meaning.empty() && !clickOnMeaningBox && !(currentWindow == ADD_DECK_WINDOW))
                 DrawTextEx(editTextFont, "Please Input Meaning", meaningPos, fontSize, 0, DARKGRAY);
             if (!isImageLoad)
                 DrawTextEx(editTextFont, "Drag and Drop Image here", {(imageBox.x + 5), (imageBox.y + 8)}, fontSize, 0, DARKGRAY);
-            // test text
-            // DrawText(TextFormat("%d %d %f",reachMaxInput,(int)MeasureTextEx(editTextFont, &word[0], 20, 0).x,wordBox.width-10),0,0,30,BLACK);
         }
         EndDrawing();
     }
