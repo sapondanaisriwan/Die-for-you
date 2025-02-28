@@ -26,7 +26,7 @@ Texture2D wordImage;
 
 // Time Variables
 int startTime = 0;
-int countdownTime = 5;
+int countdownTime = 60;
 bool timeOut = false;
 bool countdownStarted = false;
 
@@ -437,6 +437,10 @@ int main()
             }
             else if (challengeMode && timeOut)
             {
+                imageLoaded = false;
+                challengeMode = false;
+                countdownStarted = false;
+                timeOut = false;
                 currentWindow = TIMEOUT_WINDOW;
                 UnloadTexture(wordImage);
             }
