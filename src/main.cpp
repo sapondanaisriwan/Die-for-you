@@ -359,13 +359,18 @@ int main()
     Button browseEditBtn{"img/buttons/edit2.png", {900, 50}};
 
     // add & edit
-    Button editSaveBtn{"img/buttons/save2.png", {screenWidth-120, screenHeight-50}};
-    Button editBackBtn{"img/buttons/back.png", {screenWidth-250, screenHeight-50}};
     Rectangle wordBox = {100, 100, 800, 30};
     Rectangle imageBox = {100, 200, 800, 300};
     Rectangle meaningBox = {100, 550, 800, 30};
+    Button editSaveBtn{"img/buttons/save2.png", {screenWidth-200, screenHeight-120}};
+    Button editBackBtn{"img/buttons/back.png", {100, screenHeight-120}};
+    Button imageDeleteBtn{"img/buttons/delete.png", {imageBox.x+imageBox.width-110, imageBox.y+10}};
 
     vector<char> word, meaning;
+
+    FilePathList droppedImages;
+    Image img;
+    Texture2D txt;
     
     bool mouseOnWordBox = false;
     bool clickOnWordBox = false;
@@ -374,6 +379,8 @@ int main()
     bool select = false;
     bool selectKeyPressed = false;
     bool reachMaxInput = false;
+    bool isImageLoad = false;
+    
 
     int framesCounter = 0;
     int framesDelete = 0;
@@ -396,7 +403,7 @@ int main()
             Font editTextFont = InterRegular;
             
             //wordBox Check
-            if (CheckCollisionPointRec(GetMousePosition(), wordBox)){
+            if(CheckCollisionPointRec(GetMousePosition(), wordBox)){
                 mouseOnWordBox = true;
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) clickOnWordBox = true; 
             } else {
@@ -408,7 +415,7 @@ int main()
             }
 
             //meaningBox Check
-            if (CheckCollisionPointRec(GetMousePosition(), meaningBox)){
+            if(CheckCollisionPointRec(GetMousePosition(), meaningBox)){
                 mouseOnMeaningBox = true;
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) clickOnMeaningBox = true; 
             } else {
@@ -419,23 +426,20 @@ int main()
                 }
             }
 
-            //imageBox
-            
-
-
             //editSave
-            if(editSaveBtn.isPressed(mousePosition,mousePressed))
+            if(editSaveBtn.isPressed(mousePosition,mousePressed) && !word.empty()) //check word not empty
             {
-                //save code
                 if(currentWindow == ADD_WINDOW)
                 {
-                    editCardIndex =  document[currentDeck]["data"].Size();
-
                     word.push_back('\0');
                     string saveWord (word.begin(),word.end());
                     word.pop_back();
 
-                    
+                    meaning.push_back('\0');
+                    string saveMeaning (meaning.begin(),meaning.end());
+                    meaning.pop_back();
+
+                    //save code
                     
                 }
 
@@ -445,14 +449,23 @@ int main()
                     string saveWord (word.begin(),word.end());
                     word.pop_back();
 
-                    //document[currentDeck]["data"][editCardIndex]["word"] = saveWord;
+                    meaning.push_back('\0');
+                    string saveMeaning (meaning.begin(),meaning.end());
+                    meaning.pop_back();
+
+                    //save code
                 }
 
-                //
+                
                 if(currentWindow == EDIT_WINDOW) currentWindow = BROWSER_WINDOW;
                 
                 word.clear();
                 meaning.clear();
+                if(isImageLoad){
+                    UnloadImage(img);
+                    UnloadTexture(txt);
+                    isImageLoad = false;
+                }
             }
 
             //editBack
@@ -460,8 +473,49 @@ int main()
             {
                 if(currentWindow == ADD_WINDOW) currentWindow = START_WINDOW;
                 if(currentWindow == EDIT_WINDOW) currentWindow = BROWSER_WINDOW;
+
+                word.clear();
+                meaning.clear();
+                if(isImageLoad){
+                    UnloadImage(img);
+                    UnloadTexture(txt);
+                    isImageLoad = false;
+                }
             }
 
+            //imageBox
+            if(CheckCollisionPointRec(GetMousePosition(), imageBox)){
+                //dropImage
+                if(IsFileDropped()){
+                    droppedImages = LoadDroppedFiles();
+                    if(isImageLoad){
+                        UnloadImage(img);
+                        UnloadTexture(txt);
+                        isImageLoad = false;
+                    }
+                    if(!isImageLoad){
+                        //loadImage
+                        img = LoadImage(droppedImages.paths[0]);
+                        int newWidth, newHeight;
+
+                        //imageResize
+                        if(img.height != imageBox.height-4){
+                            newHeight = imageBox.height-4;
+                            newWidth = imageBox.height/img.height*img.width;
+                            ImageResize(&img, newWidth, newHeight);
+                        } 
+                        txt = LoadTextureFromImage(img);
+                        isImageLoad = true;
+                    }
+                    UnloadDroppedFiles(droppedImages);
+                }
+            }
+
+            //imageDeleteBotton
+            if(imageDeleteBtn.isPressed(mousePosition, mousePressed)){
+                UnloadTexture(txt);
+                isImageLoad = false;
+            }
 
             //text editor
             if (clickOnWordBox || clickOnMeaningBox)
@@ -502,6 +556,7 @@ int main()
                         index = firstSelectedIndex;
                     }
 
+                    //check reachMaxInput
                     text.push_back('\0');
                     if(MeasureTextEx(editTextFont, &text[0], 20, 0).x > 780) reachMaxInput = true;
                     else reachMaxInput = false;
@@ -649,8 +704,9 @@ int main()
                         select = false;
                     }
 
-                    //
                     const char* copyText = GetClipboardText();
+                    if(copyText == NULL) continue;
+
                     for(int i=0;copyText[i] != '\0';i++){
                         //check reach max input
                         text.push_back('\0');
@@ -704,8 +760,6 @@ int main()
                 letterCount = text.size();
                 if(clickOnWordBox) word = text;
                 else meaning = text;
-
-                
             }
             else if(mouseOnWordBox || mouseOnMeaningBox) SetMouseCursor(MOUSE_CURSOR_IBEAM);
             else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
@@ -1047,6 +1101,18 @@ int main()
                     if(c == '\0') break;
                     meaning.push_back(c);
                 }
+
+                img = LoadImage(deskData[editCardIndex]["image"].GetString());
+                int newWidth, newHeight;
+
+                //imageResize
+                if(img.height != imageBox.height-4){
+                    newHeight = imageBox.height-4;
+                    newWidth = imageBox.height/img.height*img.width;
+                    ImageResize(&img, newWidth, newHeight);
+                } 
+                txt = LoadTextureFromImage(img);
+                isImageLoad = true;
                 
                 currentWindow = EDIT_WINDOW;
             }
@@ -1162,15 +1228,25 @@ int main()
                 if (((framesCounter/20)%2) == 0) DrawText("|", (int)editBox.x + 4 + MeasureTextEx(editTextFont, TextSubtext(&text[0],0,index), fontSize, 0).x, (int)editBox.y + 8, fontSize, BLACK);
             }
 
+            //image
+            Vector2 centerPos;
+            centerPos.x = (imageBox.x+2) + (imageBox.width-img.width)/2;
+            centerPos.y = imageBox.y+2;
+            if(isImageLoad) DrawTexture(txt,centerPos.x,centerPos.y,WHITE);
+            
             
             //button
             editSaveBtn.Draw();
             editBackBtn.Draw();
+            if(isImageLoad) imageDeleteBtn.Draw();
 
             //text
             word.pop_back();
             meaning.pop_back();
 
+            if(word.empty() && !clickOnWordBox) DrawTextEx(editTextFont, "Please Input Word", wordPos, fontSize, 0, DARKGRAY);
+            if(meaning.empty() && !clickOnMeaningBox) DrawTextEx(editTextFont, "Please Input Meaning", meaningPos, fontSize, 0, DARKGRAY);
+            if(!isImageLoad) DrawTextEx(editTextFont, "Drag and Drop Image here", {(imageBox.x+5),(imageBox.y+8)}, fontSize, 0, DARKGRAY);
             //test text
             //DrawText(TextFormat("%d %d %f",reachMaxInput,(int)MeasureTextEx(editTextFont, &word[0], 20, 0).x,wordBox.width-10),0,0,30,BLACK);
         }
