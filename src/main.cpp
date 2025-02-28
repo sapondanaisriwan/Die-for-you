@@ -366,7 +366,7 @@ int main()
     Button stBrowseBtn{"img/start/browse-btn.png", {692, 412}};
     Button stAddBtn{"img/start/add-btn.png", {537, 412}};
     Button startDeleteBtn{"img/start/delete-btn.png", {808, 637}};
-
+    
     // browse
     Button browseBackBtn{"img/buttons/back.png", {65, 650}};
     Button browseDeleteBtn{"img/start/delete-btn.png", {725, 650}};
