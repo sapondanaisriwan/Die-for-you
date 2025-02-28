@@ -1109,14 +1109,14 @@ int main()
             bool isShowAnsPressed = gpShowAns.isPressed(mousePosition, mousePressed);
             bool isEasyPressed = gpEasyBtn.isPressed(mousePosition, mousePressed);
             bool isHardPressed = gpHardBtn.isPressed(mousePosition, mousePressed);
-            
-            if (!imageLoaded&&showAnswer)
+
+            if (!imageLoaded && showAnswer)
             {
                 wordImage = LoadTexture(imgPath.c_str());
                 imageLoaded = true;
                 cout << imgPath << endl;
             }
-            if(!showAnswer&&imageLoaded)
+            if (!showAnswer && imageLoaded)
             {
                 UnloadTexture(wordImage);
                 imageLoaded = false;
@@ -1168,7 +1168,7 @@ int main()
             // show the deks's word at the top of the screen
             Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80 + 6);
             DrawTextEx(InterSemiBold, wordDesk.c_str(), textPos, 36, 0, BLACK);
-            
+
             // time challange mode
             if (challengeMode)
             {
