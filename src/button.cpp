@@ -91,3 +91,13 @@ TextureSize Button::getImageSize()
 {
   return {texture.width, texture.height};
 }
+
+void Button::SetPosition(Vector2 newPosition)
+{
+  position = newPosition;
+}
+
+Texture2D Button::GetTexture()
+{
+  return texture;
+}

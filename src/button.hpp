@@ -27,16 +27,10 @@ public:
   bool isPressed(Vector2 mousePos, bool mousePressed);
 
   // set new position
-  void SetPosition(Vector2 newPosition)
-  {
-    position = newPosition;
-  }
+  void SetPosition(Vector2 newPosition);
 
   // เก็บข้อมูลของภาพที่โหลดมา
-  Texture2D GetTexture()
-  {
-    return texture;
-  }
+  Texture2D GetTexture();
 
   // Disable copy constructor and copy assignment
   Button(const Button &) = delete;
