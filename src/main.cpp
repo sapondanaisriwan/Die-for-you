@@ -26,7 +26,7 @@ Texture2D wordImage;
 
 // Time Variables
 int startTime = 0;
-int countdownTime = 60;
+int countdownTime = 3;
 bool timeOut = false;
 bool countdownStarted = false;
 
@@ -344,13 +344,17 @@ int main()
         }
     }
 
+    // homepage
+    Button hpTitle{"img/homepage/mydecks.png", {10, 20}};
+    Button createDeck{"img/buttons/create2.png", {245,35}} ;
+
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {43, 48}};
-    Button gpHome{"img/start/home-btn.png", {83, 637}};
-    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}};
-    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}};
-    Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}};
-    Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}};
+    Button gpHome{"img/start/home-btn.png", {80, 637}};
+    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 640}};
+    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 640}};
+    Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 640}};
+    Button gpShowAns{"img/gameplay/show-ans-btn.png", {795, 640}};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}};
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}};
@@ -364,15 +368,20 @@ int main()
     Button startDeleteBtn{"img/start/delete-btn.png", {808, 637}};
 
     // browse
-    Button browseBackBtn{"img/buttons/back.png", {50, 50}};
-    Button browseDeleteBtn{"img/start/delete-btn.png", {770, 50}};
-    Button browseEditBtn{"img/buttons/edit2.png", {880, 50}};
+    Button browseBackBtn{"img/buttons/back.png", {65, 650}};
+    Button browseDeleteBtn{"img/start/delete-btn.png", {725, 650}};
+    Button browseEditBtn{"img/buttons/edit.png", {835, 650}};
+    Button brPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 650}};
+    Button brPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 650}};
+    Button brNext{"img/gameplay/next-btn.png", {529 + 4, 650}};
+    Button browseBG{"img/gameplay/bg.png", {43, 48}};
+    Button browseTitle{"img/browse/word-meaning.png",{55,60}};
 
     // add & edit
     Rectangle wordBox = {100, 100, 800, 30};
     Rectangle imageBox = {100, 200, 800, 300};
     Rectangle meaningBox = {100, 550, 800, 30};
-    Button editSaveBtn{"img/buttons/save2.png", {screenWidth - 200, screenHeight - 120}};
+    Button editSaveBtn{"img/buttons/save.png", {screenWidth - 200, screenHeight - 120}};
     Button editBackBtn{"img/buttons/back.png", {100, screenHeight - 120}};
     Button imageDeleteBtn{"img/buttons/delete.png", {imageBox.x + imageBox.width - 110, imageBox.y + 10}};
 
@@ -403,8 +412,8 @@ int main()
     // endgame
     Button endHomeBtn{"img/buttons/home.png", {522, 593}};
     Button endRestartBtn{"img/buttons/retry2.png", {378, 593}};
-    Button congratscat{"img/end/congrat.png", {280, 70}};
-    Button timesupcat{"img/end/timeup.png", {280, 100}};
+    Button congratscat{"img/end/congrat.png", {60, 70}};
+    Button timesupcat{"img/end/timeup.png", {65, 95}};
 
     Color backgroundColor = Color{221, 245, 253, 255};
 
@@ -861,6 +870,8 @@ int main()
 
         if (currentWindow == HOME_WINDOW)
         {
+            hpTitle.Draw();
+            createDeck.Draw();
             currentPage = 0;
             imageLoaded = false;
             showAnswer = false;
@@ -1088,7 +1099,7 @@ int main()
             }
 
             string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
-            Vector2 pageIndexPos = GetCenteredTextPos(InterRegular, pageIndex, 20, screenCenterPos, 660);
+            Vector2 pageIndexPos = GetCenteredTextPos(InterRegular, pageIndex, 20, screenCenterPos, 649);
             DrawTextEx(InterRegular, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 20, 0, Color{88, 99, 128, 255});
 
             if (imageLoaded)
@@ -1124,13 +1135,7 @@ int main()
                 resetApproved();
                 document = getData();
             }
-            // แสดงข้อความว่าเกมจบแล้ว
-            string endGameText = "Congratulations !";
-            string endGameText2 = "You've memorized all the words";
-            Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 54, screenCenterPos, 480);
-            DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 54, 0, BLACK);
-            Vector2 endGameTextPos2 = GetCenteredTextPos(InterSemiBold, endGameText2, 30, screenCenterPos, 540);
-            DrawTextEx(InterSemiBold, endGameText2.c_str(), endGameTextPos2, 30, 0, BLACK);
+
         }
         else if (currentWindow == TIMEOUT_WINDOW)
         {
@@ -1149,20 +1154,18 @@ int main()
                 currentWindow = START_WINDOW;
                 resetApproved();
             }
-            // แสดงข้อความว่าเกมจบแล้ว
-            string endGameText = "Time's Up!";
-            Vector2 endGameTextPos = GetCenteredTextPos(InterSemiBold, endGameText, 60, screenCenterPos, 500);
-            DrawTextEx(InterSemiBold, endGameText.c_str(), endGameTextPos, 60, 0, BLACK);
+
         }
         else if (currentWindow == BROWSER_WINDOW)
         {
-
+            browseBG.Draw();
+            browseTitle.Draw();
             browseBackBtn.Draw();
             browseEditBtn.Draw();
             browseDeleteBtn.Draw();
 
-            gpNext.Draw();
-            gpPrevious.Draw();
+            brNext.Draw();
+            brPrevious.Draw();
 
             const Value &deskData = document[currentDeck]["data"];
             int dataSize = deskData.Size();
@@ -1180,9 +1183,9 @@ int main()
             float xWord = screenCenterX - columnSpacing - 150.0f;
             float xMeaning = screenCenterX + columnSpacing;
 
-            // หัวข้อตาราง
-            DrawTextEx(InterSemiBold, "Word", {xWord, yOffset - 30.0f}, 26, 0, BLACK);
-            DrawTextEx(InterSemiBold, "Meaning", {xMeaning, yOffset - 30.0f}, 26, 0, BLACK);
+            /* หัวข้อตาราง
+            DrawTextEx(InterSemiBold, "Word", {xWord, yOffset}, 26, 0, BLACK);
+            DrawTextEx(InterSemiBold, "Meaning", {xMeaning, yOffset}, 26, 0, BLACK); */
 
             // บิวเขียนเซ็ตปุ่มต่อตรงนี้
             if (browseBackBtn.isPressed(mousePosition, mousePressed))
@@ -1286,18 +1289,18 @@ int main()
             }
 
             // อันนี้ปุ่มเปลี่ยนหน้าเฉยๆ
-            if (gpNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize / 10)
+            if (brNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize / 10)
             {
                 currentPage++;
             }
-            else if ((gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
+            else if ((brPrevious.isPressed(mousePosition, mousePressed) || brPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
             {
                 currentPage--;
             }
 
             // แสดงหมายเลขหน้าปัจจุบัน ไม่รู้จะเอาอยู่มั้ย เเต่ในเกมเพลย์พวกเราตัดออก
-            string pageIndicator = "Page " + to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
-            Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX, 700}, 700);
+            string pageIndicator =  to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
+            Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX+5, 660},660);
             DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
         }
         else if (currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW || currentWindow == ADD_DECK_WINDOW)
