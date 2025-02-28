@@ -1,17 +1,5 @@
 #include "raylib.h"
 #include "func.hpp"
-#include "button.hpp"
-#include "type.hpp"
-// #include <fstream>
-// #include <iostream>
-// #include <sstream>
-// #include <vector>
-// #include <algorithm> // For shuffle
-// #include <random>    // For random generator
-// #include "rapidjson/document.h"
-// #include "rapidjson/writer.h"
-// #include "rapidjson/stringbuffer.h"
-
 
 WindowState currentWindow = HOME_WINDOW;
 
@@ -97,53 +85,11 @@ void copySelectedText(vector<char> text, int firstIndex, int lastIndex)
     SetClipboardText(&cpy[0]);
 }
 
-void dynamicDeck(vector<Button> &deckButtons, vector<Button> &deckCovers, vector<string> &deckName)
-{
-    deckName.clear();
-    deckButtons.clear();
-    deckCovers.clear();
-    float xPos = 48;
-    float yPos = 95;
-    float xImage = 88;
-    float yImage = 120;
-    oldPos oldPos = {xPos, yPos, xImage, yImage};
-    Document document = getData();
-    for (SizeType i = 0; i < document.Size(); i++)
-    {
-        Value &obj = document[i];
-        if (obj.HasMember("cover"))
-        {
-            string coverPath = obj["cover"].GetString();
-            deckName.push_back(document[i]["deck"].GetString());
-            deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
-            deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
-
-            xPos += 230;
-            xImage += 230;
-
-            if ((i + 1) % 8 == 0)
-            {
-                xPos = oldPos.xPos;
-                xImage = oldPos.xImage;
-            }
-
-            if (xPos > 800)
-            {
-                xPos = oldPos.xPos;
-                yPos += 289;
-                xImage = oldPos.xImage;
-                yImage += 287;
-            }
-        }
-    }
-}
-
 // MAIN
 int main()
 {
 
     // Get the JSON document
-    // shuffleDeck();
     Document document = getData();
     resetApproved();
     // Initialize window
