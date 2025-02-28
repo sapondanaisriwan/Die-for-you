@@ -350,18 +350,19 @@ int main()
 
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {43, 48}};
-    Button gpHome{"img/start/home-btn.png", {80, 637}};
-    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 640}};
-    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 640}};
-    Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 640}};
+    Button gpBack{"img/buttons/back.png", {80, 637}};
+    Button gpPreviousFade{"img/gameplay/previous-btn.png", {455, 640}};
+    Button gpPrevious{"img/gameplay/previous-btn2.png", {455, 640}};
+    Button gpNext{"img/gameplay/next-btn.png", {505, 640}};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {795, 640}};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {795, 640}};
-    Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}};
-    Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}};
-    Button gpHardBtn{"img/gameplay/hard-btn.png", {564 + 4, 590}};
+    Button gpEasyBtn{"img/gameplay/easy-btn.png", {397, 590}};
+    //Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}};
+    Button gpHardBtn{"img/gameplay/hard-btn.png", {507, 590}};
 
     // start screen
     Button stStartBtn{"img/start/start-btn.png", {537, 245}};
+    Button stHome{"img/buttons/home.png",{80, 637}};
     Button stChallengeBtn{"img/start/challenge-btn.png", {537, 326}};
     Button stBrowseBtn{"img/start/browse-btn.png", {692, 412}};
     Button stAddBtn{"img/start/add-btn.png", {537, 412}};
@@ -900,7 +901,7 @@ int main()
             bool isChallengePressed = stChallengeBtn.isPressed(mousePosition, mousePressed);
             bool isBrowsePressed = stBrowseBtn.isPressed(mousePosition, mousePressed);
             bool isAddPressed = stAddBtn.isPressed(mousePosition, mousePressed);
-            bool isHomePressed = gpHome.isPressed(mousePosition, mousePressed);
+            bool isHomePressed = stHome.isPressed(mousePosition, mousePressed);
 
             gpBG.Draw();
 
@@ -944,7 +945,7 @@ int main()
             DrawTexturePro(texture, sourceRec, destRec, origin, 0.0f, WHITE);
             deckCovers[currentDeck].SetPosition(originalPosition); // คืนค่าเดิมหน้า home
 
-            gpHome.Draw();
+            stHome.Draw();
             startDeleteBtn.Draw();
             stStartBtn.Draw();
             stChallengeBtn.Draw();
@@ -998,7 +999,7 @@ int main()
             string meaning = currentData[currentPage]["meaning"].GetString();
             string imgPath = currentData[currentPage]["image"].GetString();
 
-            bool ishomePressed = gpHome.isPressed(mousePosition, mousePressed);
+            bool isBackPressed = gpBack.isPressed(mousePosition, mousePressed);
             bool isNextPressed = gpNext.isPressed(mousePosition, mousePressed);
             bool isShowAnsPressed = gpShowAns.isPressed(mousePosition, mousePressed);
             bool isPreviousPressed = (gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed));
@@ -1012,9 +1013,9 @@ int main()
                 cout << imgPath << endl;
             }
 
-            if (ishomePressed)
+            if (isBackPressed)
             {
-                currentWindow = HOME_WINDOW;
+                currentWindow = START_WINDOW;
                 isShuffled = !isShuffled;
                 UnloadTexture(wordImage);
             }
@@ -1064,7 +1065,7 @@ int main()
             }
 
             gpBG.Draw();
-            gpHome.Draw();
+            gpBack.Draw();
             gpNext.Draw();
             gpShowAns.Draw();
 
@@ -1077,7 +1078,7 @@ int main()
             if (showAnswer)
             {
                 gpEasyBtn.Draw();
-                gpMedBtn.Draw();
+    
                 gpHardBtn.Draw();
                 gpHideAns.Draw();
 
@@ -1097,9 +1098,9 @@ int main()
                 gpPreviousFade.Draw();
             }
 
-            string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
+            /*string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
             Vector2 pageIndexPos = GetCenteredTextPos(InterRegular, pageIndex, 20, screenCenterPos, 649);
-            DrawTextEx(InterRegular, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 20, 0, Color{88, 99, 128, 255});
+            DrawTextEx(InterRegular, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 20, 0, Color{88, 99, 128, 255});*/
 
             if (imageLoaded)
             {
