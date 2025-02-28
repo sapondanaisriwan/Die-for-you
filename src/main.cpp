@@ -209,6 +209,27 @@ bool checkEndGame(int currentDeck = 0)
     return true;
 }
 
+void addDeck(string deckName, string coverPath)
+{
+    Document document = getData();
+    SizeType id = document.Size() + 1;
+
+    Document::AllocatorType &allocator = document.GetAllocator();
+    Value newDeck(kObjectType);
+    Value data(kArrayType);
+    Value name, imagePath;
+    name.SetString(deckName.c_str(), allocator);
+    imagePath.SetString(coverPath.c_str(), allocator);
+
+    newDeck.AddMember("id", id, allocator);
+    newDeck.AddMember("deck", name, allocator);
+    newDeck.AddMember("cover", imagePath, allocator);
+    newDeck.AddMember("data", data, allocator);
+    document.PushBack(newDeck, allocator);
+
+    updateJSONFile(document);
+}
+
 void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position, int fontSize, Color color, bool &timeOut)
 {
     int currentTime = static_cast<int>(GetTime());
@@ -270,6 +291,106 @@ void copySelectedText(vector<char> text, int firstIndex, int lastIndex)
     SetClipboardText(&cpy[0]);
 }
 
+void dynamicDeck(vector<Button> &deckButtons, vector<Button> &deckCovers, vector<string> &deckName)
+{
+    deckName.clear();
+    deckButtons.clear();
+    deckCovers.clear();
+    float xPos = 48;
+    float yPos = 95;
+    float xImage = 88;
+    float yImage = 120;
+    oldPos oldPos = {xPos, yPos, xImage, yImage};
+    Document document = getData();
+    for (SizeType i = 0; i < document.Size(); i++)
+    {
+        Value &obj = document[i];
+        if (obj.HasMember("cover"))
+        {
+            string coverPath = obj["cover"].GetString();
+            deckName.push_back(document[i]["deck"].GetString());
+            deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
+            deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
+
+            xPos += 230;
+            xImage += 230;
+
+            if ((i + 1) % 8 == 0)
+            {
+                xPos = oldPos.xPos;
+                xImage = oldPos.xImage;
+            }
+
+            if (xPos > 800)
+            {
+                xPos = oldPos.xPos;
+                yPos += 289;
+                xImage = oldPos.xImage;
+                yImage += 287;
+            }
+        }
+    }
+}
+
+void removeDeck(int deckId)
+{
+
+    Document document = getData();
+    if (deckId > static_cast<int>(document.Size()))
+    {
+        cout << "[DEBUG]: deck data > document" << endl;
+        return;
+    }
+    document.Erase(document.Begin() + deckId);
+    updateJSONFile(document);
+}
+
+void addDeckData(int deckId, string word, string meaning, string image)
+{
+    Document document = getData();
+    Document::AllocatorType &allocator = document.GetAllocator();
+    if (!document[deckId].HasMember("data"))
+    {
+        cout << "[DEBUG]: Impossible 💀" << endl;
+        return;
+    }
+
+    Value &oldDataArr = document[deckId]["data"];
+    Value newDataArr(kObjectType);
+
+    Value newWord, newMeaning, newImage;
+    newWord.SetString(word.c_str(), allocator);
+    newMeaning.SetString(meaning.c_str(), allocator);
+    newImage.SetString(image.c_str(), allocator);
+
+    newDataArr.AddMember("approved", false, allocator);
+    newDataArr.AddMember("word", newWord, allocator);
+    newDataArr.AddMember("meaning", newMeaning, allocator);
+    newDataArr.AddMember("image", newImage, allocator);
+    oldDataArr.PushBack(newDataArr, allocator);
+
+    updateJSONFile(document);
+}
+
+void editDeckData(int deckId, int dataIndex, string word, string meaning, string image)
+{
+    Document document = getData();
+    Document::AllocatorType &allocator = document.GetAllocator();
+
+    if (dataIndex > static_cast<int>(document[deckId]["data"].Size()))
+    {
+        cout << "[DEBUG]: Impossible 💀" << endl;
+        return;
+    }
+
+    Value &data = document[deckId]["data"][dataIndex];
+    data["word"].SetString(word.c_str(), allocator);
+    data["meaning"].SetString(meaning.c_str(), allocator);
+    data["image"].SetString(image.c_str(), allocator);
+
+    updateJSONFile(document);
+}
+
 // MAIN
 int main()
 {
@@ -307,43 +428,10 @@ int main()
     SetTextureFilter(InterLight.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(Upperclock.texture, TEXTURE_FILTER_BILINEAR);
 
-    float xPos = 48;
-    float yPos = 95;
-    float xImage = 88;
-    float yImage = 120;
-    oldPos oldPos = {xPos, yPos, xImage, yImage};
     vector<Button> deckButtons = {};
     vector<Button> deckCovers = {};
     vector<string> deckName = {};
-    for (SizeType i = 0; i < document.Size(); i++)
-    {
-        Value &obj = document[i];
-        if (obj.HasMember("cover"))
-        {
-            string coverPath = obj["cover"].GetString();
-            deckName.push_back(document[i]["deck"].GetString());
-            deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
-            deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
-
-            xPos += 230;
-            xImage += 230;
-
-            if ((i + 1) % 8 == 0)
-            {
-                xPos = oldPos.xPos;
-                xImage = oldPos.xImage;
-            }
-
-            if (xPos > 800)
-            {
-                xPos = oldPos.xPos;
-                yPos += 289;
-                xImage = oldPos.xImage;
-                yImage += 287;
-            }
-        }
-    }
-
+    dynamicDeck(deckButtons, deckCovers, deckName);
     // homepage
     Button hpTitle{"img/homepage/mydecks.png", {10, 20}};
     Button createDeck{"img/buttons/create2.png", {245, 35}};
@@ -391,7 +479,8 @@ int main()
     FilePathList droppedImages;
     Image img;
     Texture2D txt;
-    char *imgPath;
+    string imgPath = "";
+    // char *imgPath;
 
     bool mouseOnWordBox = false;
     bool clickOnWordBox = false;
@@ -474,6 +563,8 @@ int main()
 
                     // save code
                     // imgPath for Image
+                    addDeckData(currentDeck, saveWord, saveMeaning, imgPath);
+                    document = getData();
                 }
 
                 if (currentWindow == EDIT_WINDOW)
@@ -488,6 +579,8 @@ int main()
 
                     // save code
                     // imgPath for Image
+                    editDeckData(currentDeck, currentPage, saveWord, saveMeaning, imgPath);
+                    document = getData();
                 }
 
                 if (currentWindow == ADD_DECK_WINDOW)
@@ -498,13 +591,16 @@ int main()
 
                     // save code
                     // imgPath for Image
+                    addDeck(saveWord, imgPath);
+                    dynamicDeck(deckButtons, deckCovers, deckName);
                 }
 
                 word.clear();
                 meaning.clear();
                 if (isImageLoad)
                 {
-                    imgPath = NULL;
+                    imgPath = "";
+                    // imgPath = NULL;
                     UnloadImage(img);
                     UnloadTexture(txt);
                     isImageLoad = false;
@@ -546,7 +642,8 @@ int main()
                     // drop again
                     if (isImageLoad)
                     {
-                        imgPath = NULL;
+                        imgPath = "";
+                        // imgPath = NULL;
                         UnloadImage(img);
                         UnloadTexture(txt);
                         isImageLoad = false;
@@ -575,7 +672,8 @@ int main()
             // imageDeleteBotton
             if (imageDeleteBtn.isPressed(mousePosition, mousePressed))
             {
-                imgPath = NULL;
+                imgPath = "";
+                // imgPath = NULL;
                 UnloadImage(img);
                 UnloadTexture(txt);
                 isImageLoad = false;
@@ -907,6 +1005,7 @@ int main()
             bool isBrowsePressed = stBrowseBtn.isPressed(mousePosition, mousePressed);
             bool isAddPressed = stAddBtn.isPressed(mousePosition, mousePressed);
             bool isHomePressed = stHome.isPressed(mousePosition, mousePressed);
+            bool isDeletePressed = startDeleteBtn.isPressed(mousePosition, mousePressed);
 
             gpBG.Draw();
 
@@ -933,6 +1032,12 @@ int main()
             }
             else if (isHomePressed)
             {
+                currentWindow = HOME_WINDOW;
+            }
+            else if (isDeletePressed)
+            {
+                removeDeck(currentDeck);
+                dynamicDeck(deckButtons, deckCovers, deckName);
                 currentWindow = HOME_WINDOW;
             }
 
