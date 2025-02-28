@@ -26,7 +26,7 @@ Texture2D wordImage;
 
 // Time Variables
 int startTime = 0;
-int countdownTime = 3;
+int countdownTime = 60;
 bool timeOut = false;
 bool countdownStarted = false;
 
@@ -439,13 +439,9 @@ int main()
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {43, 48}};
     Button gpBack{"img/buttons/back.png", {80, 637}};
-    Button gpPreviousFade{"img/gameplay/previous-btn.png", {455, 640}};
-    Button gpPrevious{"img/gameplay/previous-btn2.png", {455, 640}};
-    Button gpNext{"img/gameplay/next-btn.png", {505, 640}};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {795, 640}};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {795, 640}};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {397, 590}};
-    // Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}};
     Button gpHardBtn{"img/gameplay/hard-btn.png", {507, 590}};
 
     // start screen
@@ -1110,42 +1106,34 @@ int main()
             string imgPath = currentData[currentPage]["image"].GetString();
 
             bool isBackPressed = gpBack.isPressed(mousePosition, mousePressed);
-            bool isNextPressed = gpNext.isPressed(mousePosition, mousePressed);
             bool isShowAnsPressed = gpShowAns.isPressed(mousePosition, mousePressed);
-            bool isPreviousPressed = (gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed));
             bool isEasyPressed = gpEasyBtn.isPressed(mousePosition, mousePressed);
             bool isHardPressed = gpHardBtn.isPressed(mousePosition, mousePressed);
-
-            if (!imageLoaded)
+            
+            if (!imageLoaded&&showAnswer)
             {
                 wordImage = LoadTexture(imgPath.c_str());
                 imageLoaded = true;
                 cout << imgPath << endl;
             }
+            if(!showAnswer&&imageLoaded)
+            {
+                UnloadTexture(wordImage);
+                imageLoaded = false;
+            }
 
             if (isBackPressed)
             {
-                currentWindow = START_WINDOW;
-                isShuffled = !isShuffled;
-                UnloadTexture(wordImage);
-            }
-            else if (isNextPressed && currentPage < dataSize)
-            {
-                currentPage++;
+                resetApproved();
+                showAnswer = false;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
-                showAnswer = false;
+                isShuffled = !isShuffled;
+                currentWindow = START_WINDOW;
             }
             else if (isShowAnsPressed)
             {
                 showAnswer = !showAnswer;
-            }
-            else if (isPreviousPressed && currentPage > 0)
-            {
-                currentPage--;
-                UnloadTexture(wordImage);
-                imageLoaded = false;
-                showAnswer = false;
             }
             else if (isEasyPressed)
             {
@@ -1176,9 +1164,11 @@ int main()
 
             gpBG.Draw();
             gpBack.Draw();
-            gpNext.Draw();
             gpShowAns.Draw();
-
+            // show the deks's word at the top of the screen
+            Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80 + 6);
+            DrawTextEx(InterSemiBold, wordDesk.c_str(), textPos, 36, 0, BLACK);
+            
             // time challange mode
             if (challengeMode)
             {
@@ -1201,22 +1191,8 @@ int main()
                 gpShowAns.Draw();
             }
 
-            if (currentPage > 0)
-                gpPrevious.Draw();
-            else
-            {
-                gpPreviousFade.Draw();
-            }
-
-            /*string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
-            Vector2 pageIndexPos = GetCenteredTextPos(InterRegular, pageIndex, 20, screenCenterPos, 649);
-            DrawTextEx(InterRegular, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 20, 0, Color{88, 99, 128, 255});*/
-
             if (imageLoaded)
             {
-                // show the deks's word at the top of the screen
-                Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80 + 6);
-                DrawTextEx(InterSemiBold, wordDesk.c_str(), textPos, 36, 0, BLACK);
 
                 // Show the desk's image
                 Rectangle imageRec = {0, 0, (float)wordImage.width, (float)wordImage.height};
