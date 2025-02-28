@@ -14,7 +14,7 @@
 using namespace rapidjson;
 using namespace std;
 
-WindowState currentWindow = START_WINDOW;
+WindowState currentWindow = ADD_DECK_WINDOW;
 
 int currentPage = 0;
 int currentDeck = 0;
@@ -399,7 +399,7 @@ int main()
         Vector2 mousePosition = GetMousePosition();
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
 
-        if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW){
+        if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW  || currentWindow == ADD_DECK_WINDOW){
             Font editTextFont = InterRegular;
             
             //wordBox Check
@@ -435,9 +435,11 @@ int main()
                     string saveWord (word.begin(),word.end());
                     word.pop_back();
 
-                    meaning.push_back('\0');
-                    string saveMeaning (meaning.begin(),meaning.end());
-                    meaning.pop_back();
+                    if(!(currentWindow == ADD_DECK_WINDOW)){
+                        meaning.push_back('\0');
+                        string saveMeaning (meaning.begin(),meaning.end());
+                        meaning.pop_back();
+                    }
 
                     //save code
                     
@@ -449,10 +451,11 @@ int main()
                     string saveWord (word.begin(),word.end());
                     word.pop_back();
 
-                    meaning.push_back('\0');
-                    string saveMeaning (meaning.begin(),meaning.end());
-                    meaning.pop_back();
-
+                    if(!(currentWindow == ADD_DECK_WINDOW)){
+                        meaning.push_back('\0');
+                        string saveMeaning (meaning.begin(),meaning.end());
+                        meaning.pop_back();
+                    }
                     //save code
                 }
 
@@ -488,6 +491,7 @@ int main()
                 //dropImage
                 if(IsFileDropped()){
                     droppedImages = LoadDroppedFiles();
+                    //drop again
                     if(isImageLoad){
                         UnloadImage(img);
                         UnloadTexture(txt);
@@ -1161,7 +1165,7 @@ int main()
             Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX, 700}, 700);
             DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
         }
-        else if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW)
+        else if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW || currentWindow == ADD_DECK_WINDOW)
         {
             //editBox
             Rectangle editBox;
@@ -1186,10 +1190,12 @@ int main()
             else DrawRectangleLinesEx(wordBox, 2, GRAY);
 
             //meaningBox
-            DrawTextEx(editTextFont, "Meaning", {(meaningBox.x+5),(meaningBox.y-25)}, fontSize+4, 0, BLACK);
-            DrawRectangleRec(meaningBox, LIGHTGRAY);
-            if (mouseOnMeaningBox || clickOnMeaningBox) DrawRectangleLinesEx(meaningBox, 2, BLACK);
-            else DrawRectangleLinesEx(meaningBox, 2, GRAY);
+            if(!(currentWindow == ADD_DECK_WINDOW)){
+                DrawTextEx(editTextFont, "Meaning", {(meaningBox.x+5),(meaningBox.y-25)}, fontSize+4, 0, BLACK);
+                DrawRectangleRec(meaningBox, LIGHTGRAY);
+                if (mouseOnMeaningBox || clickOnMeaningBox) DrawRectangleLinesEx(meaningBox, 2, BLACK);
+                else DrawRectangleLinesEx(meaningBox, 2, GRAY);
+            }
 
             //imageBox
             DrawTextEx(editTextFont, "Image", {(imageBox.x+5),(imageBox.y-25)}, fontSize+4, 0, BLACK);
@@ -1220,8 +1226,10 @@ int main()
 
             //meaning
             Vector2 meaningPos = {meaningBox.x + 5.0f, meaningBox.y + 6.0f};
-            DrawTextEx(editTextFont, &meaning[0], meaningPos, fontSize, 0, BLACK);
-     
+            if(!(currentWindow == ADD_DECK_WINDOW)){
+                DrawTextEx(editTextFont, &meaning[0], meaningPos, fontSize, 0, BLACK);
+            }
+
             //cursor
             if(clickOnWordBox || clickOnMeaningBox)
             {
@@ -1245,7 +1253,7 @@ int main()
             meaning.pop_back();
 
             if(word.empty() && !clickOnWordBox) DrawTextEx(editTextFont, "Please Input Word", wordPos, fontSize, 0, DARKGRAY);
-            if(meaning.empty() && !clickOnMeaningBox) DrawTextEx(editTextFont, "Please Input Meaning", meaningPos, fontSize, 0, DARKGRAY);
+            if(meaning.empty() && !clickOnMeaningBox && !(currentWindow == ADD_DECK_WINDOW)) DrawTextEx(editTextFont, "Please Input Meaning", meaningPos, fontSize, 0, DARKGRAY);
             if(!isImageLoad) DrawTextEx(editTextFont, "Drag and Drop Image here", {(imageBox.x+5),(imageBox.y+8)}, fontSize, 0, DARKGRAY);
             //test text
             //DrawText(TextFormat("%d %d %f",reachMaxInput,(int)MeasureTextEx(editTextFont, &word[0], 20, 0).x,wordBox.width-10),0,0,30,BLACK);
