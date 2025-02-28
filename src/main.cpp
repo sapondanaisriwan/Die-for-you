@@ -14,7 +14,7 @@
 using namespace rapidjson;
 using namespace std;
 
-WindowState currentWindow = ADD_DECK_WINDOW;
+WindowState currentWindow = HOME_WINDOW;
 
 int currentPage = 0;
 int currentDeck = 0;
@@ -892,6 +892,10 @@ int main()
                 {
                     currentWindow = START_WINDOW;
                     currentDeck = i;
+                }
+                bool isCreateDPressed = createDeck.isPressed(mousePosition, mousePressed);
+                if(isCreateDPressed){
+                    currentWindow = ADD_DECK_WINDOW;
                 }
             }
         }
