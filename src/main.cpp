@@ -14,7 +14,7 @@
 using namespace rapidjson;
 using namespace std;
 
-WindowState currentWindow = ADD_DECK_WINDOW;
+WindowState currentWindow = HOME_WINDOW;
 
 int currentPage = 0;
 int currentDeck = 0;
@@ -347,9 +347,9 @@ int main()
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {43, 48}};
     Button gpHome{"img/start/home-btn.png", {83, 637}};
-    Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}};
-    Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}};
-    Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}};
+    //Button gpPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 649}};
+    //Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 649}};
+    //Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 649}};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {809, 651}};
     Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}};
@@ -989,16 +989,22 @@ int main()
             string imgPath = currentData[currentPage]["image"].GetString();
 
             bool ishomePressed = gpHome.isPressed(mousePosition, mousePressed);
-            bool isNextPressed = gpNext.isPressed(mousePosition, mousePressed);
+            //bool isNextPressed = gpNext.isPressed(mousePosition, mousePressed);
             bool isShowAnsPressed = gpShowAns.isPressed(mousePosition, mousePressed);
-            bool isPreviousPressed = (gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed));
+            //bool isPreviousPressed = (gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed));
             bool isEasyPressed = gpEasyBtn.isPressed(mousePosition, mousePressed);
             bool isHardPressed = gpHardBtn.isPressed(mousePosition, mousePressed);
 
-            if (!imageLoaded)
+            if (!imageLoaded&&showAnswer)
             {
                 wordImage = LoadTexture(imgPath.c_str());
                 imageLoaded = true;
+                cout << imgPath << endl;
+            }
+            if (imageLoaded&&!showAnswer)
+            {
+                UnloadTexture(wordImage);
+                imageLoaded = false;
                 cout << imgPath << endl;
             }
 
@@ -1008,24 +1014,24 @@ int main()
                 isShuffled = !isShuffled;
                 UnloadTexture(wordImage);
             }
-            else if (isNextPressed && currentPage < dataSize)
-            {
-                currentPage++;
-                UnloadTexture(wordImage);
-                imageLoaded = false;
-                showAnswer = false;
-            }
+            // else if (isNextPressed && currentPage < dataSize)
+            // {
+            //     currentPage++;
+            //     UnloadTexture(wordImage);
+            //     imageLoaded = false;
+            //     showAnswer = false;
+            // }
             else if (isShowAnsPressed)
             {
                 showAnswer = !showAnswer;
             }
-            else if (isPreviousPressed && currentPage > 0)
-            {
-                currentPage--;
-                UnloadTexture(wordImage);
-                imageLoaded = false;
-                showAnswer = false;
-            }
+            // else if (isPreviousPressed && currentPage > 0)
+            // {
+            //     currentPage--;
+            //     UnloadTexture(wordImage);
+            //     imageLoaded = false;
+            //     showAnswer = false;
+            // }
             else if (isEasyPressed)
             {
                 updateApproved(currentDeck, currentPage, true);
@@ -1055,8 +1061,11 @@ int main()
 
             gpBG.Draw();
             gpHome.Draw();
-            gpNext.Draw();
+            //gpNext.Draw();
             gpShowAns.Draw();
+            // show the deks's word at the top of the screen
+            Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80 + 6);
+            DrawTextEx(InterSemiBold, wordDesk.c_str(), textPos, 36, 0, BLACK);
 
             // time challange mode
             if (challengeMode)
@@ -1067,7 +1076,6 @@ int main()
             if (showAnswer)
             {
                 gpEasyBtn.Draw();
-                gpMedBtn.Draw();
                 gpHardBtn.Draw();
                 gpHideAns.Draw();
 
@@ -1080,23 +1088,19 @@ int main()
                 gpShowAns.Draw();
             }
 
-            if (currentPage > 0)
-                gpPrevious.Draw();
-            else
-            {
-                gpPreviousFade.Draw();
-            }
+            // if (currentPage > 0)
+            //     gpPrevious.Draw();
+            // else
+            // {
+            //     gpPreviousFade.Draw();
+            // }
 
-            string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
-            Vector2 pageIndexPos = GetCenteredTextPos(InterRegular, pageIndex, 20, screenCenterPos, 660);
-            DrawTextEx(InterRegular, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 20, 0, Color{88, 99, 128, 255});
+            // string pageIndex = to_string(currentPage + 1) + "/" + to_string(dataSize + 1);
+            // Vector2 pageIndexPos = GetCenteredTextPos(InterRegular, pageIndex, 20, screenCenterPos, 660);
+            // DrawTextEx(InterRegular, pageIndex.c_str(), Vector2{pageIndexPos.x + 4, pageIndexPos.y}, 20, 0, Color{88, 99, 128, 255});
 
             if (imageLoaded)
             {
-                // show the deks's word at the top of the screen
-                Vector2 textPos = GetCenteredTextPos(InterSemiBold, wordDesk, 36, screenCenterPos, 80 + 6);
-                DrawTextEx(InterSemiBold, wordDesk.c_str(), textPos, 36, 0, BLACK);
-
                 // Show the desk's image
                 Rectangle imageRec = {0, 0, (float)wordImage.width, (float)wordImage.height};
                 Vector2 imageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
@@ -1161,8 +1165,8 @@ int main()
             browseEditBtn.Draw();
             browseDeleteBtn.Draw();
 
-            gpNext.Draw();
-            gpPrevious.Draw();
+            // gpNext.Draw();
+            // gpPrevious.Draw();
 
             const Value &deskData = document[currentDeck]["data"];
             int dataSize = deskData.Size();
@@ -1286,19 +1290,19 @@ int main()
             }
 
             // อันนี้ปุ่มเปลี่ยนหน้าเฉยๆ
-            if (gpNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize / 10)
-            {
-                currentPage++;
-            }
-            else if ((gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
-            {
-                currentPage--;
-            }
+            // if (gpNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize / 10)
+            // {
+            //     currentPage++;
+            // }
+            // else if ((gpPrevious.isPressed(mousePosition, mousePressed) || gpPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
+            // {
+            //     currentPage--;
+            // }
 
             // แสดงหมายเลขหน้าปัจจุบัน ไม่รู้จะเอาอยู่มั้ย เเต่ในเกมเพลย์พวกเราตัดออก
-            string pageIndicator = "Page " + to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
-            Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX, 700}, 700);
-            DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
+            // string pageIndicator = "Page " + to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
+            // Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX, 700}, 700);
+            // DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
         }
         else if (currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW || currentWindow == ADD_DECK_WINDOW)
         {
