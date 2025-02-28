@@ -17,7 +17,7 @@ using namespace std;
 WindowState currentWindow = HOME_WINDOW;
 
 int currentPage = 0;
-int currentDesk = 0;
+int currentDeck = 0;
 bool imageLoaded = false;
 bool showAnswer = false;
 bool isShuffled = false;
@@ -192,11 +192,11 @@ void updateApproved(int currentDeck, int dataIndex, bool isApproved)
     return;
 };
 
-bool checkEndGame(int currentDesk = 0)
+bool checkEndGame(int currentDeck = 0)
 {
     // check if the game is over by checking if all the cards are approved
     Document document = getData();
-    Value &currentData = document[currentDesk]["data"];
+    Value &currentData = document[currentDeck]["data"];
     int dataSize = currentData.Size();
 
     for (int i = 0; i < dataSize; i++)
@@ -227,6 +227,50 @@ void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position
     }
 }
 
+// ADD & EDIT
+int GetCursorPosition(Font font, Rectangle textBox, vector<char> text)
+{
+    int i = 0;
+    int textLengthToIndex, currentCharLength;
+    while (i < (int)text.size())
+    {
+        textLengthToIndex = MeasureTextEx(font, TextSubtext(&text[0], 0, i), 20, 0).x;
+        currentCharLength = MeasureTextEx(font, TextSubtext(&text[0], i, 1), 20, 0).x;
+
+        // less than half of current character
+        if (GetMousePosition().x <= textBox.x + textLengthToIndex + currentCharLength / 2)
+        {
+            break;
+        }
+
+        // greater than half of current character
+        if (GetMousePosition().x <= textBox.x + textLengthToIndex + currentCharLength)
+        {
+            break;
+        }
+
+        i++;
+    }
+    return i;
+}
+
+void deleteSelectedText(vector<char> &text, int &firstIndex, int &lastIndex)
+{
+    if (firstIndex > lastIndex)
+        swap(firstIndex, lastIndex);
+    text.erase(text.begin() + firstIndex, text.begin() + lastIndex);
+}
+
+void copySelectedText(vector<char> text, int firstIndex, int lastIndex)
+{
+    if (firstIndex > lastIndex)
+        swap(firstIndex, lastIndex);
+    vector<char> cpy(text.begin() + firstIndex, text.begin() + lastIndex);
+    cpy.push_back('\0');
+    SetClipboardText(&cpy[0]);
+}
+
+// MAIN
 int main()
 {
 
@@ -324,6 +368,37 @@ int main()
     Button browseDeleteBtn{"img/start/delete-btn.png", {770, 50}};
     Button browseEditBtn{"img/buttons/edit2.png", {880, 50}};
 
+    // add & edit
+    Rectangle wordBox = {100, 100, 800, 30};
+    Rectangle imageBox = {100, 200, 800, 300};
+    Rectangle meaningBox = {100, 550, 800, 30};
+    Button editSaveBtn{"img/buttons/save2.png", {screenWidth - 200, screenHeight - 120}};
+    Button editBackBtn{"img/buttons/back.png", {100, screenHeight - 120}};
+    Button imageDeleteBtn{"img/buttons/delete.png", {imageBox.x + imageBox.width - 110, imageBox.y + 10}};
+
+    vector<char> word, meaning;
+
+    FilePathList droppedImages;
+    Image img;
+    Texture2D txt;
+
+    bool mouseOnWordBox = false;
+    bool clickOnWordBox = false;
+    bool mouseOnMeaningBox = false;
+    bool clickOnMeaningBox = false;
+    bool select = false;
+    bool selectKeyPressed = false;
+    bool reachMaxInput = false;
+    bool isImageLoad = false;
+
+    int framesCounter = 0;
+    int framesDelete = 0;
+    int letterCount = 0;
+    int index = 0;
+    int firstSelectedIndex = 0;
+    int lastSeclectedIndex = 0;
+    int editCardIndex;
+
     // endgame
     Button endHomeBtn{"img/buttons/home.png", {522, 593}};
     Button endRestartBtn{"img/buttons/retry2.png", {378, 593}};
@@ -336,6 +411,432 @@ int main()
     {
         Vector2 mousePosition = GetMousePosition();
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+
+        if (currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW || currentWindow == ADD_DECK_WINDOW)
+        {
+            Font editTextFont = InterRegular;
+
+            // wordBox Check
+            if (CheckCollisionPointRec(GetMousePosition(), wordBox))
+            {
+                mouseOnWordBox = true;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                    clickOnWordBox = true;
+            }
+            else
+            {
+                mouseOnWordBox = false;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                {
+                    clickOnWordBox = false;
+                }
+            }
+
+            // meaningBox Check
+            if (CheckCollisionPointRec(GetMousePosition(), meaningBox))
+            {
+                mouseOnMeaningBox = true;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                    clickOnMeaningBox = true;
+            }
+            else
+            {
+                mouseOnMeaningBox = false;
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                {
+                    clickOnMeaningBox = false;
+                }
+            }
+
+            // editSave
+            if (editSaveBtn.isPressed(mousePosition, mousePressed) && !word.empty()) // check word not empty
+            {
+                if (currentWindow == ADD_WINDOW)
+                {
+                    word.push_back('\0');
+                    string saveWord(word.begin(), word.end());
+                    word.pop_back();
+
+                    if (!(currentWindow == ADD_DECK_WINDOW))
+                    {
+                        meaning.push_back('\0');
+                        string saveMeaning(meaning.begin(), meaning.end());
+                        meaning.pop_back();
+                    }
+
+                    // save code
+                }
+
+                if (currentWindow == EDIT_WINDOW)
+                {
+                    word.push_back('\0');
+                    string saveWord(word.begin(), word.end());
+                    word.pop_back();
+
+                    if (!(currentWindow == ADD_DECK_WINDOW))
+                    {
+                        meaning.push_back('\0');
+                        string saveMeaning(meaning.begin(), meaning.end());
+                        meaning.pop_back();
+                    }
+                    // save code
+                }
+
+                if (currentWindow == EDIT_WINDOW)
+                    currentWindow = BROWSER_WINDOW;
+
+                word.clear();
+                meaning.clear();
+                if (isImageLoad)
+                {
+                    UnloadImage(img);
+                    UnloadTexture(txt);
+                    isImageLoad = false;
+                }
+            }
+
+            // editBack
+            if (editBackBtn.isPressed(mousePosition, mousePressed))
+            {
+                if (currentWindow == ADD_WINDOW)
+                    currentWindow = START_WINDOW;
+                if (currentWindow == EDIT_WINDOW)
+                    currentWindow = BROWSER_WINDOW;
+
+                word.clear();
+                meaning.clear();
+                if (isImageLoad)
+                {
+                    UnloadImage(img);
+                    UnloadTexture(txt);
+                    isImageLoad = false;
+                }
+            }
+
+            // imageBox
+            if (CheckCollisionPointRec(GetMousePosition(), imageBox))
+            {
+                // dropImage
+                if (IsFileDropped())
+                {
+                    droppedImages = LoadDroppedFiles();
+                    // drop again
+                    if (isImageLoad)
+                    {
+                        UnloadImage(img);
+                        UnloadTexture(txt);
+                        isImageLoad = false;
+                    }
+                    if (!isImageLoad)
+                    {
+                        // loadImage
+                        img = LoadImage(droppedImages.paths[0]);
+                        int newWidth, newHeight;
+
+                        // imageResize
+                        if (img.height != imageBox.height - 4)
+                        {
+                            newHeight = imageBox.height - 4;
+                            newWidth = imageBox.height / img.height * img.width;
+                            ImageResize(&img, newWidth, newHeight);
+                        }
+                        txt = LoadTextureFromImage(img);
+                        isImageLoad = true;
+                    }
+                    UnloadDroppedFiles(droppedImages);
+                }
+            }
+
+            // imageDeleteBotton
+            if (imageDeleteBtn.isPressed(mousePosition, mousePressed))
+            {
+                UnloadTexture(txt);
+                isImageLoad = false;
+            }
+
+            // text editor
+            if (clickOnWordBox || clickOnMeaningBox)
+            {
+                vector<char> text;
+                if (clickOnWordBox)
+                    text = word;
+                else
+                    text = meaning;
+
+                Rectangle editBox;
+                if (clickOnWordBox)
+                    editBox = wordBox;
+                else
+                    editBox = meaningBox;
+
+                // MOUSE
+
+                // Set the window's cursor to the I-Beam
+                SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+                // MOUSE_BUTTON_LEFT
+                if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+                {
+                    index = GetCursorPosition(editTextFont, editBox, text);
+                    select = false;
+                }
+                if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+                {
+                    index = GetCursorPosition(editTextFont, editBox, text);
+                    // selected index
+                    if (!select)
+                        firstSelectedIndex = index;
+                    lastSeclectedIndex = index;
+                    select = true;
+                }
+
+                // Get char pressed (unicode character) on the queue
+                int key = GetCharPressed();
+                // add after cursor
+                while (key > 0)
+                {
+                    if (select)
+                    {
+                        deleteSelectedText(text, firstSelectedIndex, lastSeclectedIndex);
+                        index = firstSelectedIndex;
+                    }
+
+                    // check reachMaxInput
+                    text.push_back('\0');
+                    if (MeasureTextEx(editTextFont, &text[0], 20, 0).x > 780)
+                        reachMaxInput = true;
+                    else
+                        reachMaxInput = false;
+                    text.pop_back();
+
+                    if (!reachMaxInput)
+                    {
+                        text.insert(text.begin() + index, key);
+                        index++;
+                    }
+                    select = false;
+                    key = GetCharPressed(); // Check next character in the queue
+                }
+
+                // BACKSPACE
+                if (IsKeyDown(KEY_BACKSPACE))
+                {
+
+                    if (firstSelectedIndex != lastSeclectedIndex)
+                    {
+                        deleteSelectedText(text, firstSelectedIndex, lastSeclectedIndex);
+                        index = firstSelectedIndex;
+                        select = false;
+                    }
+                    else if (framesDelete == 0 || (framesDelete % 2 == 0 && framesDelete >= 40))
+                    {
+                        if (letterCount > 0 && index > 0)
+                        {
+                            text.erase(text.begin() + index - 1);
+                            index--;
+                        }
+                    }
+                    framesDelete++;
+                }
+
+                // Frames BACKSPACE
+                if (IsKeyUp(KEY_BACKSPACE))
+                    framesDelete = 0;
+
+                // LEFT
+                if (IsKeyPressed(KEY_LEFT))
+                {
+                    if (selectKeyPressed)
+                    {
+                        if (index > 0)
+                        {
+                            index--;
+                            lastSeclectedIndex = index;
+                        }
+                    }
+                    else
+                    {
+                        if (select)
+                        {
+                            if (firstSelectedIndex > lastSeclectedIndex)
+                                swap(firstSelectedIndex, lastSeclectedIndex);
+                            index = firstSelectedIndex;
+                            select = false;
+                        }
+                        else
+                        {
+                            if (index > 0)
+                                index--;
+                        }
+                    }
+                }
+
+                // RIGHT
+                if (IsKeyPressed(KEY_RIGHT))
+                {
+                    if (selectKeyPressed)
+                    {
+                        if (index < (int)text.size())
+                        {
+                            index++;
+                            lastSeclectedIndex = index;
+                        }
+                    }
+                    else
+                    {
+                        if (select)
+                        {
+                            if (firstSelectedIndex > lastSeclectedIndex)
+                                swap(firstSelectedIndex, lastSeclectedIndex);
+                            index = lastSeclectedIndex;
+                            select = false;
+                        }
+                        else
+                        {
+                            if (index < (int)text.size())
+                                index++;
+                        }
+                    }
+                }
+
+                // UP
+                if (IsKeyPressed(KEY_UP))
+                {
+                    index = 0;
+                    if (selectKeyPressed)
+                    {
+                        lastSeclectedIndex = index;
+                    }
+                    else
+                    {
+                        if (select)
+                        {
+                            select = false;
+                        }
+                    }
+                }
+
+                // DOWN
+                if (IsKeyPressed(KEY_DOWN))
+                {
+                    index = (int)text.size();
+                    if (selectKeyPressed)
+                    {
+                        lastSeclectedIndex = index;
+                    }
+                    else
+                    {
+                        if (select)
+                        {
+                            select = false;
+                        }
+                    }
+                }
+
+                // CTRL+A
+                if ((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_A))
+                {
+                    index = (int)text.size();
+                    firstSelectedIndex = 0;
+                    lastSeclectedIndex = index;
+                    select = true;
+                }
+
+                // CTRL+C
+                if ((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_C))
+                {
+                    copySelectedText(text, firstSelectedIndex, lastSeclectedIndex);
+                }
+
+                // CTRL+V
+                if ((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_V))
+                {
+                    if (select)
+                    {
+                        deleteSelectedText(text, firstSelectedIndex, lastSeclectedIndex);
+                        index = firstSelectedIndex;
+                        letterCount = text.size();
+                        select = false;
+                    }
+
+                    const char *copyText = GetClipboardText();
+                    if (copyText == NULL)
+                        continue;
+
+                    for (int i = 0; copyText[i] != '\0'; i++)
+                    {
+                        // check reach max input
+                        text.push_back('\0');
+                        if (MeasureTextEx(editTextFont, &text[0], 20, 0).x > 780)
+                        {
+                            reachMaxInput = true;
+                            break;
+                        }
+                        text.pop_back();
+
+                        text.insert(text.begin() + index, copyText[i]);
+                        index++;
+                    }
+                }
+
+                // CTRL+X
+                if ((IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) && IsKeyPressed(KEY_X))
+                {
+                    copySelectedText(text, firstSelectedIndex, lastSeclectedIndex);
+
+                    deleteSelectedText(text, firstSelectedIndex, lastSeclectedIndex);
+                    index = firstSelectedIndex;
+                    select = false;
+                }
+
+                // SHIFT
+                if ((IsKeyDown(KEY_LEFT_SHIFT) || IsKeyDown(KEY_RIGHT_SHIFT)) && !GetCharPressed())
+                {
+                    // selected index
+                    if (!select)
+                        firstSelectedIndex = index;
+                    lastSeclectedIndex = index;
+
+                    // select
+                    select = true;
+                    selectKeyPressed = true;
+                }
+                else
+                {
+                    selectKeyPressed = false;
+                }
+
+                // selected index
+                if (!select)
+                {
+                    firstSelectedIndex = index;
+                    lastSeclectedIndex = index;
+                }
+
+                // check reach max input
+                text.push_back('\0');
+                if (MeasureTextEx(editTextFont, &text[0], 20, 0).x > 780)
+                    reachMaxInput = true;
+                else
+                    reachMaxInput = false;
+                text.pop_back();
+
+                letterCount = text.size();
+                if (clickOnWordBox)
+                    word = text;
+                else
+                    meaning = text;
+            }
+            else if (mouseOnWordBox || mouseOnMeaningBox)
+                SetMouseCursor(MOUSE_CURSOR_IBEAM);
+            else
+                SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+
+            if (mouseOnWordBox || clickOnWordBox || mouseOnMeaningBox || clickOnMeaningBox)
+                framesCounter++;
+            else
+                framesCounter = 0;
+        }
 
         BeginDrawing();
         ClearBackground(backgroundColor);
@@ -361,7 +862,7 @@ int main()
                 if (isClicked)
                 {
                     currentWindow = START_WINDOW;
-                    currentDesk = i;
+                    currentDeck = i;
                 }
             }
         }
@@ -375,11 +876,11 @@ int main()
 
             gpBG.Draw();
 
-            if (isStartPressed && document[currentDesk]["data"].Size() > 0)
+            if (isStartPressed && document[currentDeck]["data"].Size() > 0)
             {
                 currentWindow = GAMEPLAY_WINDOW;
             }
-            else if (isChallengePressed && document[currentDesk]["data"].Size() > 0)
+            else if (isChallengePressed && document[currentDeck]["data"].Size() > 0)
             {
                 challengeMode = true;
                 countdownStarted = true;
@@ -392,6 +893,8 @@ int main()
             }
             else if (isAddPressed)
             {
+                word.clear();
+                meaning.clear();
                 currentWindow = ADD_WINDOW;
             }
             else if (isHomePressed)
@@ -401,17 +904,17 @@ int main()
 
             // new position
             Vector2 newPosition = {173, 201};
-            Vector2 originalPosition = deckCovers[currentDesk].getPosition();
+            Vector2 originalPosition = deckCovers[currentDeck].getPosition();
             // resize
             float scale = 2; // 2เท่า
-            Texture2D texture = deckCovers[currentDesk].GetTexture();
+            Texture2D texture = deckCovers[currentDeck].GetTexture();
             float newWidth = texture.width * scale;
             float newHeight = texture.height * scale;
             Rectangle sourceRec = {0, 0, (float)texture.width, (float)texture.height};
             Rectangle destRec = {newPosition.x, newPosition.y, newWidth, newHeight}; // new pic
             Vector2 origin = {0, 0};
             DrawTexturePro(texture, sourceRec, destRec, origin, 0.0f, WHITE);
-            deckCovers[currentDesk].SetPosition(originalPosition); // คืนค่าเดิมหน้า home
+            deckCovers[currentDeck].SetPosition(originalPosition); // คืนค่าเดิมหน้า home
 
             gpHome.Draw();
             startDeleteBtn.Draw();
@@ -430,7 +933,7 @@ int main()
                 isShuffled = !isShuffled;
             }
 
-            if (checkEndGame(currentDesk))
+            if (checkEndGame(currentDeck))
             {
                 currentWindow = ENDGAME_WINDOW;
                 UnloadTexture(wordImage);
@@ -445,12 +948,12 @@ int main()
                 UnloadTexture(wordImage);
             }
 
-            Value &currentData = document[currentDesk]["data"];
+            Value &currentData = document[currentDeck]["data"];
 
             int dataSize = currentData.Size() - 1;
             bool isApproved = currentData[currentPage]["approved"].GetBool();
 
-            while (isApproved == true && checkEndGame(currentDesk) == false)
+            while (isApproved == true && checkEndGame(currentDeck) == false)
             {
                 if (currentPage < dataSize)
                 {
@@ -507,7 +1010,7 @@ int main()
             }
             else if (isEasyPressed)
             {
-                updateApproved(currentDesk, currentPage, true);
+                updateApproved(currentDeck, currentPage, true);
                 currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
@@ -516,7 +1019,7 @@ int main()
             }
             else if (isHardPressed)
             {
-                updateApproved(currentDesk, currentPage, false);
+                updateApproved(currentDeck, currentPage, false);
                 currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
@@ -551,8 +1054,8 @@ int main()
                 gpHideAns.Draw();
 
                 // Show answer text
-                Vector2 answerPos = GetCenteredTextPos(InterSemiBold, meaning, 32, screenCenterPos, 529 + 6);
-                DrawTextEx(InterMedium, meaning.c_str(), answerPos, 32, 0, BLACK);
+                Vector2 answerPos = GetCenteredTextPos(InterSemiBold, meaning, 40, screenCenterPos, 529 + 6);
+                DrawTextEx(InterMedium, meaning.c_str(), answerPos, 40, 0, BLACK);
             }
             else
             {
@@ -643,7 +1146,7 @@ int main()
             gpNext.Draw();
             gpPrevious.Draw();
 
-            const Value &deskData = document[currentDesk]["data"];
+            const Value &deskData = document[currentDeck]["data"];
             int dataSize = deskData.Size();
 
             const int maxRowsPerPage = 10;
@@ -677,13 +1180,13 @@ int main()
                 int actualIndex = startIndex + (selectedIndex - startIndex);
 
                 // เรียกใช้ฟังก์ชัน deleteWord เพื่อลบรายการที่เลือก
-                if (deleteWord(currentDesk, actualIndex))
+                if (deleteWord(currentDeck, actualIndex))
                 {
                     // อัปเดตข้อมูลหลังจากลบ
                     document = getData();
 
                     // ตรวจสอบว่าหลังจากลบแล้ว หน้าปัจจุบันยังมีข้อมูลหรือไม่
-                    int newDataSize = document[currentDesk]["data"].Size();
+                    int newDataSize = document[currentDeck]["data"].Size();
                     if (startIndex >= newDataSize && currentPage > 0)
                     {
                         // ถ้าหน้าปัจจุบันไม่มีข้อมูลแล้ว ให้ย้อนกลับไปหน้าก่อนหน้า
@@ -695,10 +1198,50 @@ int main()
                 }
             }
 
+            if (browseEditBtn.isPressed(mousePosition, mousePressed))
+            {
+                string getWord, getMeaning;
+
+                editCardIndex = selectedIndex;
+
+                getWord = deskData[editCardIndex]["word"].GetString();
+                word.clear();
+                for (auto c : getWord)
+                {
+                    if (c == '\0')
+                        break;
+                    word.push_back(c);
+                }
+
+                getMeaning = deskData[editCardIndex]["meaning"].GetString();
+                meaning.clear();
+                for (auto c : getMeaning)
+                {
+                    if (c == '\0')
+                        break;
+                    meaning.push_back(c);
+                }
+
+                img = LoadImage(deskData[editCardIndex]["image"].GetString());
+                int newWidth, newHeight;
+
+                // imageResize
+                if (img.height != imageBox.height - 4)
+                {
+                    newHeight = imageBox.height - 4;
+                    newWidth = imageBox.height / img.height * img.width;
+                    ImageResize(&img, newWidth, newHeight);
+                }
+                txt = LoadTextureFromImage(img);
+                isImageLoad = true;
+
+                currentWindow = EDIT_WINDOW;
+            }
+
             for (int i = startIndex; i < endIndex; ++i)
             {
-                string word = deskData[i]["word"].GetString();
-                string meaning = deskData[i]["meaning"].GetString();
+                string browseWord = deskData[i]["word"].GetString();
+                string browseMeaning = deskData[i]["meaning"].GetString();
 
                 float rowWidth = screenWidth * 0.6f;
                 Rectangle rowBox = {screenCenterX - rowWidth / 2, yOffset, rowWidth, 30.0f};
@@ -710,10 +1253,10 @@ int main()
                 }
 
                 // แสดง Word
-                DrawTextEx(InterRegular, word.c_str(), {xWord, yOffset}, 24, 0, DARKGRAY);
+                DrawTextEx(InterRegular, browseWord.c_str(), {xWord, yOffset}, 24, 0, DARKGRAY);
 
                 // แสดง Meaning
-                DrawTextEx(InterRegular, meaning.c_str(), {xMeaning, yOffset}, 24, 0, DARKGRAY);
+                DrawTextEx(InterRegular, browseMeaning.c_str(), {xMeaning, yOffset}, 24, 0, DARKGRAY);
 
                 // เช็คที่คลิก
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), rowBox))
@@ -738,6 +1281,117 @@ int main()
             string pageIndicator = "Page " + to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
             Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX, 700}, 700);
             DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
+        }
+        else if (currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW || currentWindow == ADD_DECK_WINDOW)
+        {
+            // editBox
+            Rectangle editBox;
+            if (clickOnWordBox)
+                editBox = wordBox;
+            if (clickOnMeaningBox)
+                editBox = meaningBox;
+
+            // text
+            word.push_back('\0');
+            meaning.push_back('\0');
+            vector<char> text;
+            if (clickOnWordBox)
+                text = word;
+            else
+                text = meaning;
+
+            // font
+            Font editTextFont = InterRegular;
+            int fontSize = 20;
+
+            // wordBox
+            DrawTextEx(editTextFont, "Word", {(wordBox.x + 5), (wordBox.y - 25)}, fontSize + 4, 0, BLACK);
+            DrawRectangleRec(wordBox, LIGHTGRAY);
+            if (mouseOnWordBox || clickOnWordBox)
+                DrawRectangleLinesEx(wordBox, 2, BLACK);
+            else
+                DrawRectangleLinesEx(wordBox, 2, GRAY);
+
+            // meaningBox
+            if (!(currentWindow == ADD_DECK_WINDOW))
+            {
+                DrawTextEx(editTextFont, "Meaning", {(meaningBox.x + 5), (meaningBox.y - 25)}, fontSize + 4, 0, BLACK);
+                DrawRectangleRec(meaningBox, LIGHTGRAY);
+                if (mouseOnMeaningBox || clickOnMeaningBox)
+                    DrawRectangleLinesEx(meaningBox, 2, BLACK);
+                else
+                    DrawRectangleLinesEx(meaningBox, 2, GRAY);
+            }
+
+            // imageBox
+            DrawTextEx(editTextFont, "Image", {(imageBox.x + 5), (imageBox.y - 25)}, fontSize + 4, 0, BLACK);
+            DrawRectangleRec(imageBox, LIGHTGRAY);
+            DrawRectangleLinesEx(imageBox, 2, GRAY);
+
+            // selectedBox
+            if (select)
+            {
+                int f = firstSelectedIndex;
+                int l = lastSeclectedIndex;
+                if (f > l)
+                    swap(f, l);
+
+                DrawRectangle(editBox.x + 5 + MeasureTextEx(editTextFont, TextSubtext(&text[0], 0, f + 1), fontSize, 0).x - MeasureTextEx(editTextFont, TextSubtext(&text[0], f, 1), fontSize, 0).x // first selected index position
+                              ,
+                              editBox.y + 2, MeasureTextEx(editTextFont, TextSubtext(&text[0], f, l - f), fontSize, 0).x // selected index length
+                              ,
+                              editBox.height - 4, BLUE);
+            }
+
+            // reach max input
+            if (reachMaxInput)
+            {
+                DrawTextEx(editTextFont, "Reach Max Input", {(editBox.x + 5), (editBox.y + 32)}, fontSize, 0, MAROON);
+            }
+
+            // word
+            Vector2 wordPos = {wordBox.x + 5.0f, wordBox.y + 6.0f};
+            DrawTextEx(editTextFont, &word[0], wordPos, fontSize, 0, BLACK);
+
+            // meaning
+            Vector2 meaningPos = {meaningBox.x + 5.0f, meaningBox.y + 6.0f};
+            if (!(currentWindow == ADD_DECK_WINDOW))
+            {
+                DrawTextEx(editTextFont, &meaning[0], meaningPos, fontSize, 0, BLACK);
+            }
+
+            // cursor
+            if (clickOnWordBox || clickOnMeaningBox)
+            {
+                if (((framesCounter / 20) % 2) == 0)
+                    DrawText("|", (int)editBox.x + 4 + MeasureTextEx(editTextFont, TextSubtext(&text[0], 0, index), fontSize, 0).x, (int)editBox.y + 8, fontSize, BLACK);
+            }
+
+            // image
+            Vector2 centerPos;
+            centerPos.x = (imageBox.x + 2) + (imageBox.width - img.width) / 2;
+            centerPos.y = imageBox.y + 2;
+            if (isImageLoad)
+                DrawTexture(txt, centerPos.x, centerPos.y, WHITE);
+
+            // button
+            editSaveBtn.Draw();
+            editBackBtn.Draw();
+            if (isImageLoad)
+                imageDeleteBtn.Draw();
+
+            // text
+            word.pop_back();
+            meaning.pop_back();
+
+            if (word.empty() && !clickOnWordBox)
+                DrawTextEx(editTextFont, "Please Input Word", wordPos, fontSize, 0, DARKGRAY);
+            if (meaning.empty() && !clickOnMeaningBox && !(currentWindow == ADD_DECK_WINDOW))
+                DrawTextEx(editTextFont, "Please Input Meaning", meaningPos, fontSize, 0, DARKGRAY);
+            if (!isImageLoad)
+                DrawTextEx(editTextFont, "Drag and Drop Image here", {(imageBox.x + 5), (imageBox.y + 8)}, fontSize, 0, DARKGRAY);
+            // test text
+            // DrawText(TextFormat("%d %d %f",reachMaxInput,(int)MeasureTextEx(editTextFont, &word[0], 20, 0).x,wordBox.width-10),0,0,30,BLACK);
         }
         EndDrawing();
     }
