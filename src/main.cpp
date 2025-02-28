@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
-#include <stack>
 #include <algorithm> // For shuffle
 #include <random>    // For random generator
 #include "rapidjson/document.h"
@@ -15,10 +14,10 @@
 using namespace rapidjson;
 using namespace std;
 
-WindowState currentWindow = EDIT_WINDOW;
+WindowState currentWindow = START_WINDOW;
 
 int currentPage = 0;
-int currentDesk = 0;
+int currentDeck = 0;
 bool imageLoaded = false;
 bool showAnswer = false;
 bool isShuffled = false;
@@ -193,11 +192,11 @@ void updateApproved(int currentDeck, int dataIndex, bool isApproved)
     return;
 };
 
-bool checkEndGame(int currentDesk = 0)
+bool checkEndGame(int currentDeck = 0)
 {
     // check if the game is over by checking if all the cards are approved
     Document document = getData();
-    Value &currentData = document[currentDesk]["data"];
+    Value &currentData = document[currentDeck]["data"];
     int dataSize = currentData.Size();
 
     for (int i = 0; i < dataSize; i++)
@@ -233,8 +232,8 @@ int GetCursorPosition(Font font, Rectangle textBox, vector<char> text){
     int i = 0;
     int textLengthToIndex, currentCharLength;
     while(i < (int)text.size()){
-        textLengthToIndex = MeasureTextEx(font,TextSubtext(&text[0],0,i),40,0).x;
-        currentCharLength = MeasureTextEx(font,TextSubtext(&text[0],i,1),40,0).x;
+        textLengthToIndex = MeasureTextEx(font,TextSubtext(&text[0],0,i),20,0).x;
+        currentCharLength = MeasureTextEx(font,TextSubtext(&text[0],i,1),20,0).x;
 
         //less than half of current character
         if(GetMousePosition().x <= textBox.x + textLengthToIndex + currentCharLength/2){ 
@@ -360,10 +359,13 @@ int main()
     Button browseEditBtn{"img/buttons/edit2.png", {900, 50}};
 
     // add & edit
-    Rectangle wordBox = {100, 100, 800, 50};
-    Rectangle meaningBox = {100, 220, 800, 50};
+    Button editSaveBtn{"img/buttons/save2.png", {screenWidth-120, screenHeight-50}};
+    Button editBackBtn{"img/buttons/back.png", {screenWidth-250, screenHeight-50}};
+    Rectangle wordBox = {100, 100, 800, 30};
+    Rectangle imageBox = {100, 200, 800, 300};
+    Rectangle meaningBox = {100, 550, 800, 30};
+
     vector<char> word, meaning;
-    int letterCount = 0;
     
     bool mouseOnWordBox = false;
     bool clickOnWordBox = false;
@@ -371,12 +373,15 @@ int main()
     bool clickOnMeaningBox = false;
     bool select = false;
     bool selectKeyPressed = false;
+    bool reachMaxInput = false;
 
     int framesCounter = 0;
     int framesDelete = 0;
+    int letterCount = 0;
     int index = 0;
     int firstSelectedIndex = 0;
     int lastSeclectedIndex = 0;
+    int editCardIndex;
 
     // endgame
     Button endHomeBtn{"img/buttons/home.png", {522, 593}};
@@ -390,6 +395,7 @@ int main()
         if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW){
             Font editTextFont = InterRegular;
             
+            //wordBox Check
             if (CheckCollisionPointRec(GetMousePosition(), wordBox)){
                 mouseOnWordBox = true;
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) clickOnWordBox = true; 
@@ -401,6 +407,7 @@ int main()
                 }
             }
 
+            //meaningBox Check
             if (CheckCollisionPointRec(GetMousePosition(), meaningBox)){
                 mouseOnMeaningBox = true;
                 if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) clickOnMeaningBox = true; 
@@ -412,6 +419,51 @@ int main()
                 }
             }
 
+            //imageBox
+            
+
+
+            //editSave
+            if(editSaveBtn.isPressed(mousePosition,mousePressed))
+            {
+                //save code
+                if(currentWindow == ADD_WINDOW)
+                {
+                    editCardIndex =  document[currentDeck]["data"].Size();
+
+                    word.push_back('\0');
+                    string saveWord (word.begin(),word.end());
+                    word.pop_back();
+
+                    
+                    
+                }
+
+                if(currentWindow == EDIT_WINDOW)
+                {
+                    word.push_back('\0');
+                    string saveWord (word.begin(),word.end());
+                    word.pop_back();
+
+                    //document[currentDeck]["data"][editCardIndex]["word"] = saveWord;
+                }
+
+                //
+                if(currentWindow == EDIT_WINDOW) currentWindow = BROWSER_WINDOW;
+                
+                word.clear();
+                meaning.clear();
+            }
+
+            //editBack
+            if(editBackBtn.isPressed(mousePosition, mousePressed))
+            {
+                if(currentWindow == ADD_WINDOW) currentWindow = START_WINDOW;
+                if(currentWindow == EDIT_WINDOW) currentWindow = BROWSER_WINDOW;
+            }
+
+
+            //text editor
             if (clickOnWordBox || clickOnMeaningBox)
             {
                 vector<char> text;
@@ -449,8 +501,17 @@ int main()
                         deleteSelectedText(text,firstSelectedIndex,lastSeclectedIndex);
                         index = firstSelectedIndex;
                     }
-                    text.insert(text.begin()+index,key); 
-                    index++;
+
+                    text.push_back('\0');
+                    if(MeasureTextEx(editTextFont, &text[0], 20, 0).x > 780) reachMaxInput = true;
+                    else reachMaxInput = false;
+                    text.pop_back();
+
+                    if(!reachMaxInput) 
+                    {
+                        text.insert(text.begin()+index,key); 
+                        index++;
+                    }
                     select = false;
                     key = GetCharPressed();  // Check next character in the queue
                 }
@@ -584,11 +645,21 @@ int main()
                     if(select){
                         deleteSelectedText(text,firstSelectedIndex,lastSeclectedIndex);
                         index = firstSelectedIndex;
+                        letterCount = text.size();
                         select = false;
                     }
-                    
+
+                    //
                     const char* copyText = GetClipboardText();
                     for(int i=0;copyText[i] != '\0';i++){
+                        //check reach max input
+                        text.push_back('\0');
+                        if(MeasureTextEx(editTextFont, &text[0], 20, 0).x > 780){
+                            reachMaxInput = true;
+                            break;
+                        }
+                        text.pop_back();
+
                         text.insert(text.begin()+index,copyText[i]);
                         index++;
                     }
@@ -624,14 +695,22 @@ int main()
                     lastSeclectedIndex = index;
                 }
             
+                //check reach max input
+                text.push_back('\0');
+                if(MeasureTextEx(editTextFont, &text[0], 20, 0).x > 780) reachMaxInput = true;
+                else reachMaxInput = false;
+                text.pop_back();
+
                 letterCount = text.size();
                 if(clickOnWordBox) word = text;
                 else meaning = text;
+
+                
             }
             else if(mouseOnWordBox || mouseOnMeaningBox) SetMouseCursor(MOUSE_CURSOR_IBEAM);
             else SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 
-            if (mouseOnWordBox || clickOnWordBox) framesCounter++;
+            if (mouseOnWordBox || clickOnWordBox || mouseOnMeaningBox || clickOnMeaningBox) framesCounter++;
             else framesCounter = 0;
         }
 
@@ -660,7 +739,7 @@ int main()
                 if (isClicked)
                 {
                     currentWindow = START_WINDOW;
-                    currentDesk = i;
+                    currentDeck = i;
                 }
             }
         }
@@ -672,11 +751,11 @@ int main()
             bool isAddPressed = stAddBtn.isPressed(mousePosition, mousePressed);
             bool isHomePressed = gpHome.isPressed(mousePosition, mousePressed);
 
-            if (isStartPressed && document[currentDesk]["data"].Size() > 0)
+            if (isStartPressed && document[currentDeck]["data"].Size() > 0)
             {
                 currentWindow = GAMEPLAY_WINDOW;
             }
-            else if (isChallengePressed && document[currentDesk]["data"].Size() > 0)
+            else if (isChallengePressed && document[currentDeck]["data"].Size() > 0)
             {
                 challengeMode = true;
                 countdownStarted = true;
@@ -689,6 +768,8 @@ int main()
             }
             else if (isAddPressed)
             {
+                word.clear();
+                meaning.clear();
                 currentWindow = ADD_WINDOW;
             }
             else if (isHomePressed)
@@ -711,7 +792,7 @@ int main()
                 isShuffled = !isShuffled;
             }
 
-            if (checkEndGame(currentDesk))
+            if (checkEndGame(currentDeck))
             {
                 currentWindow = ENDGAME_WINDOW;
                 UnloadTexture(wordImage);
@@ -722,12 +803,12 @@ int main()
                 UnloadTexture(wordImage);
             }
 
-            Value &currentData = document[currentDesk]["data"];
+            Value &currentData = document[currentDeck]["data"];
 
             int dataSize = currentData.Size() - 1;
             bool isApproved = currentData[currentPage]["approved"].GetBool();
 
-            while (isApproved == true && checkEndGame(currentDesk) == false)
+            while (isApproved == true && checkEndGame(currentDeck) == false)
             {
                 if (currentPage < dataSize)
                 {
@@ -784,7 +865,7 @@ int main()
             }
             else if (isEasyPressed)
             {
-                updateApproved(currentDesk, currentPage, true);
+                updateApproved(currentDeck, currentPage, true);
                 currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
@@ -793,7 +874,7 @@ int main()
             }
             else if (isHardPressed)
             {
-                updateApproved(currentDesk, currentPage, false);
+                updateApproved(currentDeck, currentPage, false);
                 currentPage++;
                 UnloadTexture(wordImage);
                 imageLoaded = false;
@@ -893,7 +974,7 @@ int main()
             gpNext.Draw();
             gpPrevious.Draw();
 
-            const Value &deskData = document[currentDesk]["data"];
+            const Value &deskData = document[currentDeck]["data"];
             int dataSize = deskData.Size();
 
             const int maxRowsPerPage = 10;
@@ -927,13 +1008,13 @@ int main()
                 int actualIndex = startIndex + (selectedIndex - startIndex);
 
                 // เรียกใช้ฟังก์ชัน deleteWord เพื่อลบรายการที่เลือก
-                if (deleteWord(currentDesk, actualIndex))
+                if (deleteWord(currentDeck, actualIndex))
                 {
                     // อัปเดตข้อมูลหลังจากลบ
                     document = getData();
 
                     // ตรวจสอบว่าหลังจากลบแล้ว หน้าปัจจุบันยังมีข้อมูลหรือไม่
-                    int newDataSize = document[currentDesk]["data"].Size();
+                    int newDataSize = document[currentDeck]["data"].Size();
                     if (startIndex >= newDataSize && currentPage > 0)
                     {
                         // ถ้าหน้าปัจจุบันไม่มีข้อมูลแล้ว ให้ย้อนกลับไปหน้าก่อนหน้า
@@ -945,10 +1026,35 @@ int main()
                 }
             }
 
+            if(browseEditBtn.isPressed(mousePosition, mousePressed))
+            {
+                string getWord, getMeaning;
+
+                editCardIndex = selectedIndex;
+
+                getWord = deskData[editCardIndex]["word"].GetString();
+                word.clear();
+                for(auto c : getWord)
+                {
+                    if(c == '\0') break;
+                    word.push_back(c);
+                }
+
+                getMeaning = deskData[editCardIndex]["meaning"].GetString();
+                meaning.clear();
+                for(auto c : getMeaning)
+                {
+                    if(c == '\0') break;
+                    meaning.push_back(c);
+                }
+                
+                currentWindow = EDIT_WINDOW;
+            }
+
             for (int i = startIndex; i < endIndex; ++i)
             {
-                string word = deskData[i]["word"].GetString();
-                string meaning = deskData[i]["meaning"].GetString();
+                string browseWord = deskData[i]["word"].GetString();
+                string browseMeaning = deskData[i]["meaning"].GetString();
 
                 float rowWidth = screenWidth * 0.6f;
                 Rectangle rowBox = {screenCenterX - rowWidth / 2, yOffset, rowWidth, 30.0f};
@@ -960,10 +1066,10 @@ int main()
                 }
 
                 // แสดง Word
-                DrawTextEx(InterRegular, word.c_str(), {xWord, yOffset}, 24, 0, DARKGRAY);
+                DrawTextEx(InterRegular, browseWord.c_str(), {xWord, yOffset}, 24, 0, DARKGRAY);
 
                 // แสดง Meaning
-                DrawTextEx(InterRegular, meaning.c_str(), {xMeaning, yOffset}, 24, 0, DARKGRAY);
+                DrawTextEx(InterRegular, browseMeaning.c_str(), {xMeaning, yOffset}, 24, 0, DARKGRAY);
 
                 // เช็คที่คลิก
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), rowBox))
@@ -992,7 +1098,7 @@ int main()
         else if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW)
         {
             //editBox
-            Rectangle editBox = wordBox;
+            Rectangle editBox;
             if(clickOnWordBox) editBox = wordBox;
             if(clickOnMeaningBox) editBox = meaningBox;
 
@@ -1005,41 +1111,68 @@ int main()
 
             //font
             Font editTextFont = InterRegular; 
-
+            int fontSize = 20;
+            
+            //wordBox
+            DrawTextEx(editTextFont, "Word", {(wordBox.x+5),(wordBox.y-25)}, fontSize+4, 0, BLACK);
             DrawRectangleRec(wordBox, LIGHTGRAY);
             if (mouseOnWordBox || clickOnWordBox) DrawRectangleLinesEx(wordBox, 2, BLACK);
             else DrawRectangleLinesEx(wordBox, 2, GRAY);
 
+            //meaningBox
+            DrawTextEx(editTextFont, "Meaning", {(meaningBox.x+5),(meaningBox.y-25)}, fontSize+4, 0, BLACK);
             DrawRectangleRec(meaningBox, LIGHTGRAY);
             if (mouseOnMeaningBox || clickOnMeaningBox) DrawRectangleLinesEx(meaningBox, 2, BLACK);
             else DrawRectangleLinesEx(meaningBox, 2, GRAY);
 
-            //draw highlight
+            //imageBox
+            DrawTextEx(editTextFont, "Image", {(imageBox.x+5),(imageBox.y-25)}, fontSize+4, 0, BLACK);
+            DrawRectangleRec(imageBox, LIGHTGRAY);
+            DrawRectangleLinesEx(imageBox, 2, GRAY);
+
+            //selectedBox
             if(select){
                 int f = firstSelectedIndex;
                 int l = lastSeclectedIndex;
                 if(f > l) swap(f,l);
 
-                DrawRectangle(editBox.x + 5 + MeasureTextEx(editTextFont, TextSubtext(&text[0],0,f+1), 40, 0).x - MeasureTextEx(editTextFont, TextSubtext(&text[0],f,1), 40, 0).x //first selected index position
+                DrawRectangle(editBox.x + 5 + MeasureTextEx(editTextFont, TextSubtext(&text[0],0,f+1), fontSize, 0).x - MeasureTextEx(editTextFont, TextSubtext(&text[0],f,1), fontSize, 0).x //first selected index position
                                     ,editBox.y+2
-                                    ,MeasureTextEx(editTextFont, TextSubtext(&text[0],f,l-f), 40, 0).x //selected index length
+                                    ,MeasureTextEx(editTextFont, TextSubtext(&text[0],f,l-f), fontSize, 0).x //selected index length
                                     ,editBox.height-4
                                     ,BLUE);
             }
 
-            Vector2 wordPos = {wordBox.x + 5.0f, wordBox.y + 8.0f};
-            DrawTextEx(editTextFont, &word[0], wordPos, 40, 0, BLACK);
-
-            Vector2 meaningPos = {meaningBox.x + 5.0f, meaningBox.y + 8.0f};
-            DrawTextEx(editTextFont, &meaning[0], meaningPos, 40, 0, BLACK);
-            
-            if(clickOnWordBox || clickOnMeaningBox)
-            {
-                if (((framesCounter/20)%2) == 0) DrawText("|", (int)editBox.x + 4 + MeasureTextEx(editTextFont, TextSubtext(&text[0],0,index), 40, 0).x, (int)editBox.y + 8, 40, BLACK);
+            //reach max input
+            if(reachMaxInput){
+                DrawTextEx(editTextFont, "Reach Max Input", {(editBox.x+5),(editBox.y+32)}, fontSize, 0, MAROON);
             }
 
+            //word
+            Vector2 wordPos = {wordBox.x + 5.0f, wordBox.y + 6.0f};
+            DrawTextEx(editTextFont, &word[0], wordPos, fontSize, 0, BLACK);
+
+            //meaning
+            Vector2 meaningPos = {meaningBox.x + 5.0f, meaningBox.y + 6.0f};
+            DrawTextEx(editTextFont, &meaning[0], meaningPos, fontSize, 0, BLACK);
+     
+            //cursor
+            if(clickOnWordBox || clickOnMeaningBox)
+            {
+                if (((framesCounter/20)%2) == 0) DrawText("|", (int)editBox.x + 4 + MeasureTextEx(editTextFont, TextSubtext(&text[0],0,index), fontSize, 0).x, (int)editBox.y + 8, fontSize, BLACK);
+            }
+
+            
+            //button
+            editSaveBtn.Draw();
+            editBackBtn.Draw();
+
+            //text
             word.pop_back();
             meaning.pop_back();
+
+            //test text
+            //DrawText(TextFormat("%d %d %f",reachMaxInput,(int)MeasureTextEx(editTextFont, &word[0], 20, 0).x,wordBox.width-10),0,0,30,BLACK);
         }
         EndDrawing();
     }
