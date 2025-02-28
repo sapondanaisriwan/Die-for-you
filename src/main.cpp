@@ -346,7 +346,7 @@ int main()
 
     // homepage
     Button hpTitle{"img/homepage/mydecks.png", {10, 20}};
-    Button createDeck{"img/buttons/create2.png", {245,35}} ;
+    Button createDeck{"img/buttons/create2.png", {245, 35}};
 
     // gameplay
     Button gpBG{"img/gameplay/bg.png", {43, 48}};
@@ -355,7 +355,7 @@ int main()
     Button gpPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 640}};
     Button gpNext{"img/gameplay/next-btn.png", {529 + 4, 640}};
     Button gpShowAns{"img/gameplay/show-ans-btn.png", {795, 640}};
-    Button gpHideAns{"img/gameplay/hide-ans-btn.png", {809, 651}};
+    Button gpHideAns{"img/gameplay/hide-ans-btn.png", {795, 640}};
     Button gpEasyBtn{"img/gameplay/easy-btn.png", {340 + 4, 590}};
     Button gpMedBtn{"img/gameplay/medium-btn.png", {452 + 4, 590}};
     Button gpHardBtn{"img/gameplay/hard-btn.png", {564 + 4, 590}};
@@ -366,7 +366,7 @@ int main()
     Button stBrowseBtn{"img/start/browse-btn.png", {692, 412}};
     Button stAddBtn{"img/start/add-btn.png", {537, 412}};
     Button startDeleteBtn{"img/start/delete-btn.png", {808, 637}};
-    
+
     // browse
     Button browseBackBtn{"img/buttons/back.png", {65, 650}};
     Button browseDeleteBtn{"img/start/delete-btn.png", {725, 650}};
@@ -375,7 +375,7 @@ int main()
     Button brPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 650}};
     Button brNext{"img/gameplay/next-btn.png", {529 + 4, 650}};
     Button browseBG{"img/gameplay/bg.png", {43, 48}};
-    Button browseTitle{"img/browse/word-meaning.png",{55,60}};
+    Button browseTitle{"img/browse/word-meaning.png", {55, 60}};
 
     // add & edit
     Rectangle wordBox = {100, 100, 800, 30};
@@ -390,7 +390,7 @@ int main()
     FilePathList droppedImages;
     Image img;
     Texture2D txt;
-    char* imgPath;
+    char *imgPath;
 
     bool mouseOnWordBox = false;
     bool clickOnWordBox = false;
@@ -464,41 +464,40 @@ int main()
                 if (currentWindow == ADD_WINDOW)
                 {
                     word.push_back('\0');
-                    string saveWord(word.begin(), word.end()); //word
+                    string saveWord(word.begin(), word.end()); // word
                     word.pop_back();
 
                     meaning.push_back('\0');
-                    string saveMeaning(meaning.begin(), meaning.end()); //meaning
+                    string saveMeaning(meaning.begin(), meaning.end()); // meaning
                     meaning.pop_back();
 
                     // save code
-                    //imgPath for Image
+                    // imgPath for Image
                 }
 
                 if (currentWindow == EDIT_WINDOW)
                 {
                     word.push_back('\0');
-                    string saveWord(word.begin(), word.end()); //word
+                    string saveWord(word.begin(), word.end()); // word
                     word.pop_back();
 
                     meaning.push_back('\0');
-                    string saveMeaning(meaning.begin(), meaning.end()); //meaning
+                    string saveMeaning(meaning.begin(), meaning.end()); // meaning
                     meaning.pop_back();
 
                     // save code
-                    //imgPath for Image
+                    // imgPath for Image
                 }
 
                 if (currentWindow == ADD_DECK_WINDOW)
                 {
                     word.push_back('\0');
-                    string saveWord(word.begin(), word.end()); //Deck Name
+                    string saveWord(word.begin(), word.end()); // Deck Name
                     word.pop_back();
 
                     // save code
-                    //imgPath for Image
+                    // imgPath for Image
                 }
-
 
                 word.clear();
                 meaning.clear();
@@ -1135,7 +1134,6 @@ int main()
                 resetApproved();
                 document = getData();
             }
-
         }
         else if (currentWindow == TIMEOUT_WINDOW)
         {
@@ -1154,7 +1152,6 @@ int main()
                 currentWindow = START_WINDOW;
                 resetApproved();
             }
-
         }
         else if (currentWindow == BROWSER_WINDOW)
         {
@@ -1299,8 +1296,8 @@ int main()
             }
 
             // แสดงหมายเลขหน้าปัจจุบัน ไม่รู้จะเอาอยู่มั้ย เเต่ในเกมเพลย์พวกเราตัดออก
-            string pageIndicator =  to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
-            Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX+5, 660},660);
+            string pageIndicator = to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
+            Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX + 5, 660}, 660);
             DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
         }
         else if (currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW || currentWindow == ADD_DECK_WINDOW)
@@ -1326,8 +1323,10 @@ int main()
             int fontSize = 20;
 
             // wordBox
-            if(currentWindow != ADD_DECK_WINDOW) DrawTextEx(editTextFont, "Word", {(wordBox.x + 5), (wordBox.y - 25)}, fontSize + 4, 0, BLACK);
-            else DrawTextEx(editTextFont, "Deck Name", {(wordBox.x + 5), (wordBox.y - 25)}, fontSize + 4, 0, BLACK);
+            if (currentWindow != ADD_DECK_WINDOW)
+                DrawTextEx(editTextFont, "Word", {(wordBox.x + 5), (wordBox.y - 25)}, fontSize + 4, 0, BLACK);
+            else
+                DrawTextEx(editTextFont, "Deck Name", {(wordBox.x + 5), (wordBox.y - 25)}, fontSize + 4, 0, BLACK);
             DrawRectangleRec(wordBox, WHITE);
             if (mouseOnWordBox || clickOnWordBox)
                 DrawRectangleLinesEx(wordBox, 2, BLACK);
@@ -1406,9 +1405,12 @@ int main()
             word.pop_back();
             meaning.pop_back();
 
-            if (word.empty() && !clickOnWordBox){
-                if(currentWindow != ADD_DECK_WINDOW) DrawTextEx(editTextFont, "Please Input Word (At least 1 character)", wordPos, fontSize, 0, DARKGRAY);
-                else DrawTextEx(editTextFont, "Please Input Deck Name (At least 1 character)", wordPos, fontSize, 0, DARKGRAY);
+            if (word.empty() && !clickOnWordBox)
+            {
+                if (currentWindow != ADD_DECK_WINDOW)
+                    DrawTextEx(editTextFont, "Please Input Word (At least 1 character)", wordPos, fontSize, 0, DARKGRAY);
+                else
+                    DrawTextEx(editTextFont, "Please Input Deck Name (At least 1 character)", wordPos, fontSize, 0, DARKGRAY);
             }
             if (meaning.empty() && !clickOnMeaningBox && !(currentWindow == ADD_DECK_WINDOW))
                 DrawTextEx(editTextFont, "Please Input Meaning", meaningPos, fontSize, 0, DARKGRAY);
