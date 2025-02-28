@@ -7,6 +7,8 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
+#include "type.hpp"
+#include "button.hpp"
 
 using namespace rapidjson;
 using namespace std;
@@ -261,4 +263,45 @@ void editDeckData(int deckId, int dataIndex, string word, string meaning, string
     data["image"].SetString(image.c_str(), allocator);
 
     updateJSONFile(document);
+}
+
+void dynamicDeck(vector<Button> &deckButtons, vector<Button> &deckCovers, vector<string> &deckName)
+{
+    deckName.clear();
+    deckButtons.clear();
+    deckCovers.clear();
+    float xPos = 48;
+    float yPos = 95;
+    float xImage = 88;
+    float yImage = 120;
+    oldPos oldPos = {xPos, yPos, xImage, yImage};
+    Document document = getData();
+    for (SizeType i = 0; i < document.Size(); i++)
+    {
+        Value &obj = document[i];
+        if (obj.HasMember("cover"))
+        {
+            string coverPath = obj["cover"].GetString();
+            deckName.push_back(document[i]["deck"].GetString());
+            deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
+            deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
+
+            xPos += 230;
+            xImage += 230;
+
+            if ((i + 1) % 8 == 0)
+            {
+                xPos = oldPos.xPos;
+                xImage = oldPos.xImage;
+            }
+
+            if (xPos > 800)
+            {
+                xPos = oldPos.xPos;
+                yPos += 289;
+                xImage = oldPos.xImage;
+                yImage += 287;
+            }
+        }
+    }
 }
