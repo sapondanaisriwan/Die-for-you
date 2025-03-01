@@ -886,7 +886,6 @@ int main()
 
             if (imageLoaded)
             {
-
                 // Show the desk's image
                 Rectangle imageRec = {0, 0, (float)wordImage.width, (float)wordImage.height};
                 Vector2 imageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
