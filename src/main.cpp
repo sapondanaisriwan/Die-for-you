@@ -159,8 +159,8 @@ int main()
     Rectangle wordBox = {100, 100, 800, 30};
     Rectangle imageBox = {100, 200, 800, 300};
     Rectangle meaningBox = {100, 550, 800, 30};
-    Button editSaveBtn{"img/buttons/save.png", {screenWidth - 200, screenHeight - 120}};
-    Button editBackBtn{"img/buttons/back.png", {100, screenHeight - 120}};
+    Button editSaveBtn{"img/buttons/save.png", {screenWidth - 200, screenHeight - 140}};
+    Button editBackBtn{"img/buttons/back.png", {100, screenHeight - 140}};
     Button imageDeleteBtn{"img/buttons/delete.png", {imageBox.x + imageBox.width - 110, imageBox.y + 10}};
 
     vector<char> word, meaning;
@@ -238,7 +238,7 @@ int main()
             }
 
             // editSave
-            if (editSaveBtn.isPressed(mousePosition, mousePressed) && !word.empty()) // check word not empty
+            if (editSaveBtn.isPressed(mousePosition, mousePressed)) 
             {
                 if (currentWindow == ADD_WINDOW)
                 {
@@ -268,7 +268,7 @@ int main()
 
                     // save code
                     // imgPath for Image
-                    editDeckData(currentDeck, currentPage, saveWord, saveMeaning, imgPath);
+                    editDeckData(currentDeck, editCardIndex, saveWord, saveMeaning, imgPath);
                     document = getData();
                 }
 
@@ -1020,18 +1020,22 @@ int main()
                     meaning.push_back(c);
                 }
 
-                img = LoadImage(deskData[editCardIndex]["image"].GetString());
-                int newWidth, newHeight;
-
-                // imageResize
-                if (img.height != imageBox.height - 4)
-                {
-                    newHeight = imageBox.height - 4;
-                    newWidth = imageBox.height / img.height * img.width;
-                    ImageResize(&img, newWidth, newHeight);
+                imgPath = deskData[editCardIndex]["image"].GetString();
+                if(imgPath != ""){
+                    img = LoadImage(imgPath.c_str());
+                    int newWidth, newHeight;
+    
+                    // imageResize
+                    if (img.height != imageBox.height - 4)
+                    {
+                        newHeight = imageBox.height - 4;
+                        newWidth = imageBox.height / img.height * img.width;
+                        ImageResize(&img, newWidth, newHeight);
+                    }
+                    
+                    txt = LoadTextureFromImage(img);
+                    isImageLoad = true;
                 }
-                txt = LoadTextureFromImage(img);
-                isImageLoad = true;
 
                 currentWindow = EDIT_WINDOW;
             }
@@ -1101,6 +1105,9 @@ int main()
             // font
             Font editTextFont = InterRegular;
             int fontSize = 20;
+
+            //test
+            DrawTextEx(editTextFont, imgPath.c_str(), {0,0}, fontSize + 4, 0, BLACK);
 
             // wordBox
             if (currentWindow != ADD_DECK_WINDOW)
@@ -1174,16 +1181,24 @@ int main()
             centerPos.y = imageBox.y + 2;
             if (isImageLoad)
                 DrawTexture(txt, centerPos.x, centerPos.y, WHITE);
+                
+            // text
+            word.pop_back();
+            meaning.pop_back();
 
             // button
-            editSaveBtn.Draw();
+            if(currentWindow == ADD_DECK_WINDOW)
+            {
+                if(!word.empty() && isImageLoad) editSaveBtn.Draw();
+            }
+            else if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW) 
+            {
+                if(!word.empty() && !meaning.empty()) editSaveBtn.Draw();
+            }
             editBackBtn.Draw();
             if (isImageLoad)
                 imageDeleteBtn.Draw();
 
-            // text
-            word.pop_back();
-            meaning.pop_back();
 
             if (word.empty() && !clickOnWordBox)
             {
