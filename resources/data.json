@@ -1,1 +1,764 @@
-[{"id":1,"deck":"Verbs","cover":"img/decks/verb.jpg","data":[{"word":"Cancel","meaning":"To decide that something will not happen.","image":"img/decks/verbs/7.jpg","approved":false},{"word":"Suggest","meaning":"To give an idea about what to do.","image":"img/decks/verbs/20.jpg","approved":false},{"word":"Earn","meaning":"To get money by working.","image":"img/decks/verbs/12.jpg","approved":false},{"word":"Prefer","meaning":"To like something more than something else.","image":"img/decks/verbs/17.jpg","approved":false},{"word":"Apologize","meaning":"To say sorry for something.","image":"img/decks/verbs/2.jpg","approved":false},{"word":"Agree","meaning":"To have the same opinion as someone else.","image":"img/decks/verbs/1.jpg","approved":false},{"word":"Arrange","meaning":"To plan or organize something.","image":"img/decks/verbs/3.jpg","approved":false},{"word":"Complain","meaning":"To say that you are unhappy about something.","image":"img/decks/verbs/8.jpg","approved":false},{"word":"Avoid","meaning":"To stay away from something.","image":"img/decks/verbs/5.jpg","approved":false},{"word":"Borrow","meaning":"To take something for a short time and return it later.","image":"img/decks/verbs/6.jpg","approved":false},{"word":"Promise","meaning":"To say that you will do something for sure.","image":"img/decks/verbs/18.jpg","approved":false},{"word":"Decide","meaning":"To make a choice about something.","image":"img/decks/verbs/9.jpg","approved":false},{"word":"Encourage","meaning":"To give someone support or confidence.","image":"img/decks/verbs/13.jpg","approved":false},{"word":"Improve","meaning":"To make something better.","image":"img/decks/verbs/15.jpg","approved":false},{"word":"Deliver","meaning":"To take something to a person or place.","image":"img/decks/verbs/10.jpg","approved":false},{"word":"Remind","meaning":"To help someone remember something.","image":"img/decks/verbs/19.jpg","approved":false},{"word":"Describe","meaning":"To explain what something looks like.","image":"img/decks/verbs/11.jpg","approved":false},{"word":"Guess","meaning":"To try to answer without knowing for sure.","image":"img/decks/verbs/14.jpg","approved":false},{"word":"Invite","meaning":"To ask someone to come to an event.","image":"img/decks/verbs/16.jpg","approved":false},{"word":"Arrive","meaning":"To reach a place.","image":"img/decks/verbs/4.jpg","approved":false}]},{"id":2,"deck":"Food","cover":"img/decks/food.jpg","data":[{"word":"Grill","meaning":"To cook food on a metal surface with heat from below.","image":"img/decks/food/11.jpg","approved":false},{"word":"Healthy","meaning":"Good for your body.","image":"img/decks/food/12.jpg","approved":false},{"word":"Boil","meaning":"To heat water until it bubbles.","image":"img/decks/food/4.jpg","approved":false},{"word":"Hunger","meaning":"The feeling of needing food.","image":"img/decks/food/13.jpg","approved":false},{"word":"Recipe","meaning":"A list of instructions to make a dish.","image":"img/decks/food/17.jpg","approved":false},{"word":"Lunch","meaning":"The meal eaten in the middle of the day.","image":"img/decks/food/16.jpg","approved":false},{"word":"Baker","meaning":"A person who makes bread and cakes.","image":"img/decks/food/1.jpg","approved":false},{"word":"Dessert","meaning":"A sweet dish eaten at the end of a meal.","image":"img/decks/food/7.jpg","approved":false},{"word":"Taste","meaning":"The flavor of food.","image":"img/decks/food/19.jpg","approved":false},{"word":"Bitter","meaning":"A strong, sharp taste that is not sweet.","image":"img/decks/food/3.jpg","approved":false},{"word":"Spicy","meaning":"Having a strong, hot taste.","image":"img/decks/food/18.jpg","approved":false},{"word":"Breakfast","meaning":"The first meal of the day.","image":"img/decks/food/5.jpg","approved":false},{"word":"Fizzy","meaning":"A drink with bubbles, like soda.","image":"img/decks/food/9.jpg","approved":false},{"word":"Vegetarian","meaning":"A person who does not eat meat.","image":"img/decks/food/20.jpg","approved":false},{"word":"Condiments","meaning":"Substances used to add flavor to food.","image":"img/decks/food/2.jpg","approved":false},{"word":"Juicy","meaning":"Containing a lot of liquid.","image":"img/decks/food/15.jpg","approved":false},{"word":"Fry","meaning":"To cook something in hot oil.","image":"img/decks/food/10.jpg","approved":false},{"word":"Ingredient","meaning":"A food item used to make a dish.","image":"img/decks/food/14.jpg","approved":false},{"word":"Dinner","meaning":"The main meal of the day, usually in the evening.","image":"img/decks/food/8.jpg","approved":false},{"word":"Chef","meaning":"A person who cooks in a restaurant.","image":"img/decks/food/6.jpg","approved":false}]},{"id":3,"deck":"Health","cover":"img/decks/health.jpg","data":[{"word":"Injury","meaning":"Damage to the body.","image":"img/decks/health/11.jpg","approved":false},{"word":"Fever","meaning":"A higher than normal body temperature.","image":"img/decks/health/8.jpg","approved":false},{"word":"Stomach ache","meaning":"Pain in the stomach area.","image":"img/decks/health/16.jpg","approved":false},{"word":"Ambulance","meaning":"A vehicle used to take sick people to the hospital.","image":"img/decks/health/2.jpg","approved":false},{"word":"Nurse","meaning":"A person who helps take care of patients in a hospital.","image":"img/decks/health/13.jpg","approved":false},{"word":"Temperature","meaning":"A measure of how hot or cold something is.","image":"img/decks/health/17.jpg","approved":false},{"word":"Dentist","meaning":"A doctor who takes care of teeth.","image":"img/decks/health/6.jpg","approved":false},{"word":"Exercise","meaning":"Physical activity to keep the body healthy.","image":"img/decks/health/7.jpg","approved":false},{"word":"Allergy","meaning":"A reaction to certain foods or substances.","image":"img/decks/health/1.jpg","approved":false},{"word":"Cough","meaning":"A sudden, forceful breath out of the lungs.","image":"img/decks/health/5.jpg","approved":false},{"word":"Rest","meaning":"To relax or sleep to recover strength.","image":"img/decks/health/15.jpg","approved":false},{"word":"Blood pressure","meaning":"The force of blood moving through the body.","image":"img/decks/health/3.jpg","approved":false},{"word":"Weight","meaning":"How heavy something or someone is.","image":"img/decks/health/20.jpg","approved":false},{"word":"Vaccination","meaning":"A shot that protects against a disease.","image":"img/decks/health/19.jpg","approved":false},{"word":"Calories","meaning":"The energy found in food.","image":"img/decks/health/4.jpg","approved":false},{"word":"Medication","meaning":"A substance used to treat illness.","image":"img/decks/health/12.jpg","approved":false},{"word":"Heart rate","meaning":"The number of heartbeats in one minute.","image":"img/decks/health/9.jpg","approved":false},{"word":"Infection","meaning":"A disease caused by harmful microorganisms.","image":"img/decks/health/10.jpg","approved":false},{"word":"Pain","meaning":"The feeling when something hurts.","image":"img/decks/health/14.jpg","approved":false},{"word":"Treatment","meaning":"The care given to someone to make them better.","image":"img/decks/health/18.jpg","approved":false}]},{"id":4,"deck":"Travel","cover":"img/decks/travel.jpg","data":[{"word":"Highway","meaning":"A major road designed for fast traffic.","image":"img/decks/travel/14.jpg","approved":false},{"word":"Jaywalking","meaning":"Crossing the street illegally or dangerously.","image":"img/decks/travel/13.jpg","approved":false},{"word":"Fare","meaning":"The money paid for a trip.","image":"img/decks/travel/12.jpg","approved":false},{"word":"Bus stop","meaning":"A place where a bus picks up passengers.","image":"img/decks/travel/5.jpg","approved":false},{"word":"Carpooling","meaning":"Sharing a car ride with others to reduce costs and pollution.","image":"img/decks/travel/17.jpg","approved":false},{"word":"Backpack","meaning":"A bag carried on the back.","image":"img/decks/travel/2.jpg","approved":false},{"word":"Platform","meaning":"The area where you wait for a train.","image":"img/decks/travel/18.jpg","approved":false},{"word":"Baggage","meaning":"Suitcases and bags taken on a trip.","image":"img/decks/travel/3.jpg","approved":false},{"word":"Cabin","meaning":"The inside space of a plane or ship.","image":"img/decks/travel/6.jpg","approved":false},{"word":"Itinerary","meaning":"A planned route or schedule for a trip.","image":"img/decks/travel/15.jpg","approved":false},{"word":"Sightseeing","meaning":"Visiting famous places or attractions.","image":"img/decks/travel/16.jpg","approved":false},{"word":"Layover","meaning":"A short stop at an airport between connecting flights.","image":"img/decks/travel/10.jpg","approved":false},{"word":"Traffic","meaning":"The number of cars and vehicles on the road.","image":"img/decks/travel/20.jpg","approved":false},{"word":"Check-in","meaning":"The process of registering for a flight or hotel.","image":"img/decks/travel/8.jpg","approved":false},{"word":"Car rental","meaning":"A service that lets you borrow a car for a short time.","image":"img/decks/travel/7.jpg","approved":false},{"word":"Bicycle","meaning":"A vehicle with two wheels that you pedal.","image":"img/decks/travel/4.jpg","approved":false},{"word":"Airport","meaning":"A place where planes take off and land.","image":"img/decks/travel/1.jpg","approved":false},{"word":"Tourist","meaning":"A person who visits a new place for fun.","image":"img/decks/travel/19.jpg","approved":false},{"word":"Turbulence","meaning":"Sudden air movement causing a rough flight.","image":"img/decks/travel/11.jpg","approved":false},{"word":"Cruise","meaning":"A holiday trip on a ship.","image":"img/decks/travel/9.jpg","approved":false}]},{"id":5,"deck":"Environment","cover":"img/decks/environment.jpg","data":[{"word":"Recycle","meaning":"To use something again instead of throwing it away.","image":"img/decks/environment/16.jpg","approved":false},{"word":"Bin","meaning":"A container where waste is thrown.","image":"img/decks/environment/2.jpg","approved":false},{"word":"Nature","meaning":"Plants, animals, and the outdoors.","image":"img/decks/environment/13.jpg","approved":false},{"word":"Desert","meaning":"A dry area with little rain.","image":"img/decks/environment/5.jpg","approved":false},{"word":"Litter","meaning":"Small pieces of trash left in public places.","image":"img/decks/environment/12.jpg","approved":false},{"word":"Rubbish","meaning":"Things that are thrown away as waste.","image":"img/decks/environment/17.jpg","approved":false},{"word":"Save","meaning":"To protect something from being lost.","image":"img/decks/environment/18.jpg","approved":false},{"word":"Oxygen","meaning":"The gas we breathe.","image":"img/decks/environment/14.jpg","approved":false},{"word":"Global warming","meaning":"The rise in Earth's temperature.","image":"img/decks/environment/11.jpg","approved":false},{"word":"Climate","meaning":"The usual weather in a place.","image":"img/decks/environment/3.jpg","approved":false},{"word":"Solar energy","meaning":"Power from the sun.","image":"img/decks/environment/19.jpg","approved":false},{"word":"Earthquake","meaning":"A sudden shaking of the ground.","image":"img/decks/environment/6.jpg","approved":false},{"word":"Wildlife","meaning":"Animals that live in nature.","image":"img/decks/environment/20.jpg","approved":false},{"word":"Plastic","meaning":"A material often used for bottles and bags.","image":"img/decks/environment/15.jpg","approved":false},{"word":"Damage","meaning":"Harm caused to something.","image":"img/decks/environment/4.jpg","approved":false},{"word":"Air pollution","meaning":"Dirty air caused by smoke and chemicals.","image":"img/decks/environment/1.jpg","approved":false},{"word":"Environment","meaning":"The natural world around us.","image":"img/decks/environment/8.jpg","approved":false},{"word":"Forest","meaning":"A large area filled with trees.","image":"img/decks/environment/10.jpg","approved":false},{"word":"Energy","meaning":"Power from electricity, the sun, or wind.","image":"img/decks/environment/7.jpg","approved":false},{"word":"Flood","meaning":"A large amount of water covering land.","image":"img/decks/environment/9.jpg","approved":false}]},{"id":6,"deck":"Business","cover":"img/decks/business.jpg","data":[{"word":"Inflation","meaning":"The rate at which prices of goods and services rise over time.","image":"img/decks/business/4.jpg","approved":false},{"word":"Profit","meaning":"The money a business earns after costs.","image":"img/decks/business/18.jpg","approved":false},{"word":"Product","meaning":"Something made and sold.","image":"img/decks/business/17.jpg","approved":false},{"word":"Price","meaning":"The amount of money something costs.","image":"img/decks/business/16.jpg","approved":false},{"word":"Market","meaning":"A place to buy and sell things.","image":"img/decks/business/15.jpg","approved":false},{"word":"Rent","meaning":"Money paid to use a house or car.","image":"img/decks/business/19.jpg","approved":false},{"word":"Earn","meaning":"To get money for working.","image":"img/decks/business/12.jpg","approved":false},{"word":"Discount","meaning":"A lower price on something.","image":"img/decks/business/11.jpg","approved":false},{"word":"Advert","meaning":"A message to sell something.","image":"img/decks/business/1.jpg","approved":false},{"word":"Monopoly","meaning":"A market condition where one company dominates.","image":"img/decks/business/7.jpg","approved":false},{"word":"Shop","meaning":"A place where things are sold.","image":"img/decks/business/20.jpg","approved":false},{"word":"Bank","meaning":"A place where people keep money.","image":"img/decks/business/2.jpg","approved":false},{"word":"Shareholder","meaning":"A person or entity that owns shares in a company.","image":"img/decks/business/3.jpg","approved":false},{"word":"Budget","meaning":"A plan for spending money.","image":"img/decks/business/6.jpg","approved":false},{"word":"Debt","meaning":"Money owed to someone.","image":"img/decks/business/10.jpg","approved":false},{"word":"Cost","meaning":"The price of something.","image":"img/decks/business/8.jpg","approved":false},{"word":"Entrepreneur","meaning":"A person who starts and manages a business.","image":"img/decks/business/5.jpg","approved":false},{"word":"Exchange","meaning":"To trade one thing for another.","image":"img/decks/business/13.jpg","approved":false},{"word":"Invest","meaning":"To put money into something to make a profit.","image":"img/decks/business/14.jpg","approved":false},{"word":"Customer","meaning":"A person who buys something.","image":"img/decks/business/9.jpg","approved":false}]},{"id":7,"deck":"Hello Honey","cover":"C:\\Users\\sapon\\OneDrive\\Desktop\\cat.jpg","data":[{"approved":false,"word":"555","meaning":"55555","image":"C:\\Users\\pakpi\\Downloads\\473432781_1334261861089178_2831796452389896291_n.png"}]}]
+[
+  {
+    "id": 1,
+    "deck": "Verbs",
+    "cover": "img/decks/verb.jpg",
+    "data": [
+      {
+        "word": "Cancel",
+        "meaning": "To decide that something will not happen.",
+        "image": "img/decks/verbs/7.jpg",
+        "approved": false
+      },
+      {
+        "word": "Suggest",
+        "meaning": "To give an idea about what to do.",
+        "image": "img/decks/verbs/20.jpg",
+        "approved": false
+      },
+      {
+        "word": "Earn",
+        "meaning": "To get money by working.",
+        "image": "img/decks/verbs/12.jpg",
+        "approved": false
+      },
+      {
+        "word": "Prefer",
+        "meaning": "To like something more than something else.",
+        "image": "img/decks/verbs/17.jpg",
+        "approved": false
+      },
+      {
+        "word": "Apologize",
+        "meaning": "To say sorry for something.",
+        "image": "img/decks/verbs/2.jpg",
+        "approved": false
+      },
+      {
+        "word": "Agree",
+        "meaning": "To have the same opinion as someone else.",
+        "image": "img/decks/verbs/1.jpg",
+        "approved": false
+      },
+      {
+        "word": "Arrange",
+        "meaning": "To plan or organize something.",
+        "image": "img/decks/verbs/3.jpg",
+        "approved": false
+      },
+      {
+        "word": "Complain",
+        "meaning": "To say that you are unhappy about something.",
+        "image": "img/decks/verbs/8.jpg",
+        "approved": false
+      },
+      {
+        "word": "Avoid",
+        "meaning": "To stay away from something.",
+        "image": "img/decks/verbs/5.jpg",
+        "approved": false
+      },
+      {
+        "word": "Borrow",
+        "meaning": "To take something for a short time and return it later.",
+        "image": "img/decks/verbs/6.jpg",
+        "approved": false
+      },
+      {
+        "word": "Promise",
+        "meaning": "To say that you will do something for sure.",
+        "image": "img/decks/verbs/18.jpg",
+        "approved": false
+      },
+      {
+        "word": "Decide",
+        "meaning": "To make a choice about something.",
+        "image": "img/decks/verbs/9.jpg",
+        "approved": false
+      },
+      {
+        "word": "Encourage",
+        "meaning": "To give someone support or confidence.",
+        "image": "img/decks/verbs/13.jpg",
+        "approved": false
+      },
+      {
+        "word": "Improve",
+        "meaning": "To make something better.",
+        "image": "img/decks/verbs/15.jpg",
+        "approved": false
+      },
+      {
+        "word": "Deliver",
+        "meaning": "To take something to a person or place.",
+        "image": "img/decks/verbs/10.jpg",
+        "approved": false
+      },
+      {
+        "word": "Remind",
+        "meaning": "To help someone remember something.",
+        "image": "img/decks/verbs/19.jpg",
+        "approved": false
+      },
+      {
+        "word": "Describe",
+        "meaning": "To explain what something looks like.",
+        "image": "img/decks/verbs/11.jpg",
+        "approved": false
+      },
+      {
+        "word": "Guess",
+        "meaning": "To try to answer without knowing for sure.",
+        "image": "img/decks/verbs/14.jpg",
+        "approved": false
+      },
+      {
+        "word": "Invite",
+        "meaning": "To ask someone to come to an event.",
+        "image": "img/decks/verbs/16.jpg",
+        "approved": false
+      },
+      {
+        "word": "Arrive",
+        "meaning": "To reach a place.",
+        "image": "img/decks/verbs/4.jpg",
+        "approved": false
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "deck": "Food",
+    "cover": "img/decks/food.jpg",
+    "data": [
+      {
+        "word": "Grill",
+        "meaning": "To cook food on a metal surface with heat from below.",
+        "image": "img/decks/food/11.jpg",
+        "approved": false
+      },
+      {
+        "word": "Healthy",
+        "meaning": "Good for your body.",
+        "image": "img/decks/food/12.jpg",
+        "approved": false
+      },
+      {
+        "word": "Boil",
+        "meaning": "To heat water until it bubbles.",
+        "image": "img/decks/food/4.jpg",
+        "approved": false
+      },
+      {
+        "word": "Hunger",
+        "meaning": "The feeling of needing food.",
+        "image": "img/decks/food/13.jpg",
+        "approved": false
+      },
+      {
+        "word": "Recipe",
+        "meaning": "A list of instructions to make a dish.",
+        "image": "img/decks/food/17.jpg",
+        "approved": false
+      },
+      {
+        "word": "Lunch",
+        "meaning": "The meal eaten in the middle of the day.",
+        "image": "img/decks/food/16.jpg",
+        "approved": false
+      },
+      {
+        "word": "Baker",
+        "meaning": "A person who makes bread and cakes.",
+        "image": "img/decks/food/1.jpg",
+        "approved": false
+      },
+      {
+        "word": "Dessert",
+        "meaning": "A sweet dish eaten at the end of a meal.",
+        "image": "img/decks/food/7.jpg",
+        "approved": false
+      },
+      {
+        "word": "Taste",
+        "meaning": "The flavor of food.",
+        "image": "img/decks/food/19.jpg",
+        "approved": false
+      },
+      {
+        "word": "Bitter",
+        "meaning": "A strong, sharp taste that is not sweet.",
+        "image": "img/decks/food/3.jpg",
+        "approved": false
+      },
+      {
+        "word": "Spicy",
+        "meaning": "Having a strong, hot taste.",
+        "image": "img/decks/food/18.jpg",
+        "approved": false
+      },
+      {
+        "word": "Breakfast",
+        "meaning": "The first meal of the day.",
+        "image": "img/decks/food/5.jpg",
+        "approved": false
+      },
+      {
+        "word": "Fizzy",
+        "meaning": "A drink with bubbles, like soda.",
+        "image": "img/decks/food/9.jpg",
+        "approved": false
+      },
+      {
+        "word": "Vegetarian",
+        "meaning": "A person who does not eat meat.",
+        "image": "img/decks/food/20.jpg",
+        "approved": false
+      },
+      {
+        "word": "Condiments",
+        "meaning": "Substances used to add flavor to food.",
+        "image": "img/decks/food/2.jpg",
+        "approved": false
+      },
+      {
+        "word": "Juicy",
+        "meaning": "Containing a lot of liquid.",
+        "image": "img/decks/food/15.jpg",
+        "approved": false
+      },
+      {
+        "word": "Fry",
+        "meaning": "To cook something in hot oil.",
+        "image": "img/decks/food/10.jpg",
+        "approved": false
+      },
+      {
+        "word": "Ingredient",
+        "meaning": "A food item used to make a dish.",
+        "image": "img/decks/food/14.jpg",
+        "approved": false
+      },
+      {
+        "word": "Dinner",
+        "meaning": "The main meal of the day, usually in the evening.",
+        "image": "img/decks/food/8.jpg",
+        "approved": false
+      },
+      {
+        "word": "Chef",
+        "meaning": "A person who cooks in a restaurant.",
+        "image": "img/decks/food/6.jpg",
+        "approved": false
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "deck": "Health",
+    "cover": "img/decks/health.jpg",
+    "data": [
+      {
+        "word": "Injury",
+        "meaning": "Damage to the body.",
+        "image": "img/decks/health/11.jpg",
+        "approved": false
+      },
+      {
+        "word": "Fever",
+        "meaning": "A higher than normal body temperature.",
+        "image": "img/decks/health/8.jpg",
+        "approved": false
+      },
+      {
+        "word": "Stomach ache",
+        "meaning": "Pain in the stomach area.",
+        "image": "img/decks/health/16.jpg",
+        "approved": false
+      },
+      {
+        "word": "Ambulance",
+        "meaning": "A vehicle used to take sick people to the hospital.",
+        "image": "img/decks/health/2.jpg",
+        "approved": false
+      },
+      {
+        "word": "Nurse",
+        "meaning": "A person who helps take care of patients in a hospital.",
+        "image": "img/decks/health/13.jpg",
+        "approved": false
+      },
+      {
+        "word": "Temperature",
+        "meaning": "A measure of how hot or cold something is.",
+        "image": "img/decks/health/17.jpg",
+        "approved": false
+      },
+      {
+        "word": "Dentist",
+        "meaning": "A doctor who takes care of teeth.",
+        "image": "img/decks/health/6.jpg",
+        "approved": false
+      },
+      {
+        "word": "Exercise",
+        "meaning": "Physical activity to keep the body healthy.",
+        "image": "img/decks/health/7.jpg",
+        "approved": false
+      },
+      {
+        "word": "Allergy",
+        "meaning": "A reaction to certain foods or substances.",
+        "image": "img/decks/health/1.jpg",
+        "approved": false
+      },
+      {
+        "word": "Cough",
+        "meaning": "A sudden, forceful breath out of the lungs.",
+        "image": "img/decks/health/5.jpg",
+        "approved": false
+      },
+      {
+        "word": "Rest",
+        "meaning": "To relax or sleep to recover strength.",
+        "image": "img/decks/health/15.jpg",
+        "approved": false
+      },
+      {
+        "word": "Blood pressure",
+        "meaning": "The force of blood moving through the body.",
+        "image": "img/decks/health/3.jpg",
+        "approved": false
+      },
+      {
+        "word": "Weight",
+        "meaning": "How heavy something or someone is.",
+        "image": "img/decks/health/20.jpg",
+        "approved": false
+      },
+      {
+        "word": "Vaccination",
+        "meaning": "A shot that protects against a disease.",
+        "image": "img/decks/health/19.jpg",
+        "approved": false
+      },
+      {
+        "word": "Calories",
+        "meaning": "The energy found in food.",
+        "image": "img/decks/health/4.jpg",
+        "approved": false
+      },
+      {
+        "word": "Medication",
+        "meaning": "A substance used to treat illness.",
+        "image": "img/decks/health/12.jpg",
+        "approved": false
+      },
+      {
+        "word": "Heart rate",
+        "meaning": "The number of heartbeats in one minute.",
+        "image": "img/decks/health/9.jpg",
+        "approved": false
+      },
+      {
+        "word": "Infection",
+        "meaning": "A disease caused by harmful microorganisms.",
+        "image": "img/decks/health/10.jpg",
+        "approved": false
+      },
+      {
+        "word": "Pain",
+        "meaning": "The feeling when something hurts.",
+        "image": "img/decks/health/14.jpg",
+        "approved": false
+      },
+      {
+        "word": "Treatment",
+        "meaning": "The care given to someone to make them better.",
+        "image": "img/decks/health/18.jpg",
+        "approved": false
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "deck": "Travel",
+    "cover": "img/decks/travel.jpg",
+    "data": [
+      {
+        "word": "Highway",
+        "meaning": "A major road designed for fast traffic.",
+        "image": "img/decks/travel/14.jpg",
+        "approved": false
+      },
+      {
+        "word": "Jaywalking",
+        "meaning": "Crossing the street illegally or dangerously.",
+        "image": "img/decks/travel/13.jpg",
+        "approved": false
+      },
+      {
+        "word": "Fare",
+        "meaning": "The money paid for a trip.",
+        "image": "img/decks/travel/12.jpg",
+        "approved": false
+      },
+      {
+        "word": "Bus stop",
+        "meaning": "A place where a bus picks up passengers.",
+        "image": "img/decks/travel/5.jpg",
+        "approved": false
+      },
+      {
+        "word": "Carpooling",
+        "meaning": "Sharing a car ride with others to reduce costs and pollution.",
+        "image": "img/decks/travel/17.jpg",
+        "approved": false
+      },
+      {
+        "word": "Backpack",
+        "meaning": "A bag carried on the back.",
+        "image": "img/decks/travel/2.jpg",
+        "approved": false
+      },
+      {
+        "word": "Platform",
+        "meaning": "The area where you wait for a train.",
+        "image": "img/decks/travel/18.jpg",
+        "approved": false
+      },
+      {
+        "word": "Baggage",
+        "meaning": "Suitcases and bags taken on a trip.",
+        "image": "img/decks/travel/3.jpg",
+        "approved": false
+      },
+      {
+        "word": "Cabin",
+        "meaning": "The inside space of a plane or ship.",
+        "image": "img/decks/travel/6.jpg",
+        "approved": false
+      },
+      {
+        "word": "Itinerary",
+        "meaning": "A planned route or schedule for a trip.",
+        "image": "img/decks/travel/15.jpg",
+        "approved": false
+      },
+      {
+        "word": "Sightseeing",
+        "meaning": "Visiting famous places or attractions.",
+        "image": "img/decks/travel/16.jpg",
+        "approved": false
+      },
+      {
+        "word": "Layover",
+        "meaning": "A short stop at an airport between connecting flights.",
+        "image": "img/decks/travel/10.jpg",
+        "approved": false
+      },
+      {
+        "word": "Traffic",
+        "meaning": "The number of cars and vehicles on the road.",
+        "image": "img/decks/travel/20.jpg",
+        "approved": false
+      },
+      {
+        "word": "Check-in",
+        "meaning": "The process of registering for a flight or hotel.",
+        "image": "img/decks/travel/8.jpg",
+        "approved": false
+      },
+      {
+        "word": "Car rental",
+        "meaning": "A service that lets you borrow a car for a short time.",
+        "image": "img/decks/travel/7.jpg",
+        "approved": false
+      },
+      {
+        "word": "Bicycle",
+        "meaning": "A vehicle with two wheels that you pedal.",
+        "image": "img/decks/travel/4.jpg",
+        "approved": false
+      },
+      {
+        "word": "Airport",
+        "meaning": "A place where planes take off and land.",
+        "image": "img/decks/travel/1.jpg",
+        "approved": false
+      },
+      {
+        "word": "Tourist",
+        "meaning": "A person who visits a new place for fun.",
+        "image": "img/decks/travel/19.jpg",
+        "approved": false
+      },
+      {
+        "word": "Turbulence",
+        "meaning": "Sudden air movement causing a rough flight.",
+        "image": "img/decks/travel/11.jpg",
+        "approved": false
+      },
+      {
+        "word": "Cruise",
+        "meaning": "A holiday trip on a ship.",
+        "image": "img/decks/travel/9.jpg",
+        "approved": false
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "deck": "Environment",
+    "cover": "img/decks/environment.jpg",
+    "data": [
+      {
+        "word": "Recycle",
+        "meaning": "To use something again instead of throwing it away.",
+        "image": "img/decks/environment/16.jpg",
+        "approved": false
+      },
+      {
+        "word": "Bin",
+        "meaning": "A container where waste is thrown.",
+        "image": "img/decks/environment/2.jpg",
+        "approved": false
+      },
+      {
+        "word": "Nature",
+        "meaning": "Plants, animals, and the outdoors.",
+        "image": "img/decks/environment/13.jpg",
+        "approved": false
+      },
+      {
+        "word": "Desert",
+        "meaning": "A dry area with little rain.",
+        "image": "img/decks/environment/5.jpg",
+        "approved": false
+      },
+      {
+        "word": "Litter",
+        "meaning": "Small pieces of trash left in public places.",
+        "image": "img/decks/environment/12.jpg",
+        "approved": false
+      },
+      {
+        "word": "Rubbish",
+        "meaning": "Things that are thrown away as waste.",
+        "image": "img/decks/environment/17.jpg",
+        "approved": false
+      },
+      {
+        "word": "Save",
+        "meaning": "To protect something from being lost.",
+        "image": "img/decks/environment/18.jpg",
+        "approved": false
+      },
+      {
+        "word": "Oxygen",
+        "meaning": "The gas we breathe.",
+        "image": "img/decks/environment/14.jpg",
+        "approved": false
+      },
+      {
+        "word": "Global warming",
+        "meaning": "The rise in Earth's temperature.",
+        "image": "img/decks/environment/11.jpg",
+        "approved": false
+      },
+      {
+        "word": "Climate",
+        "meaning": "The usual weather in a place.",
+        "image": "img/decks/environment/3.jpg",
+        "approved": false
+      },
+      {
+        "word": "Solar energy",
+        "meaning": "Power from the sun.",
+        "image": "img/decks/environment/19.jpg",
+        "approved": false
+      },
+      {
+        "word": "Earthquake",
+        "meaning": "A sudden shaking of the ground.",
+        "image": "img/decks/environment/6.jpg",
+        "approved": false
+      },
+      {
+        "word": "Wildlife",
+        "meaning": "Animals that live in nature.",
+        "image": "img/decks/environment/20.jpg",
+        "approved": false
+      },
+      {
+        "word": "Plastic",
+        "meaning": "A material often used for bottles and bags.",
+        "image": "img/decks/environment/15.jpg",
+        "approved": false
+      },
+      {
+        "word": "Damage",
+        "meaning": "Harm caused to something.",
+        "image": "img/decks/environment/4.jpg",
+        "approved": false
+      },
+      {
+        "word": "Air pollution",
+        "meaning": "Dirty air caused by smoke and chemicals.",
+        "image": "img/decks/environment/1.jpg",
+        "approved": false
+      },
+      {
+        "word": "Environment",
+        "meaning": "The natural world around us.",
+        "image": "img/decks/environment/8.jpg",
+        "approved": false
+      },
+      {
+        "word": "Forest",
+        "meaning": "A large area filled with trees.",
+        "image": "img/decks/environment/10.jpg",
+        "approved": false
+      },
+      {
+        "word": "Energy",
+        "meaning": "Power from electricity, the sun, or wind.",
+        "image": "img/decks/environment/7.jpg",
+        "approved": false
+      },
+      {
+        "word": "Flood",
+        "meaning": "A large amount of water covering land.",
+        "image": "img/decks/environment/9.jpg",
+        "approved": false
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "deck": "Business",
+    "cover": "img/decks/business.jpg",
+    "data": [
+      {
+        "word": "Inflation",
+        "meaning": "The rate at which prices of goods and services rise over time.",
+        "image": "img/decks/business/4.jpg",
+        "approved": false
+      },
+      {
+        "word": "Profit",
+        "meaning": "The money a business earns after costs.",
+        "image": "img/decks/business/18.jpg",
+        "approved": false
+      },
+      {
+        "word": "Product",
+        "meaning": "Something made and sold.",
+        "image": "img/decks/business/17.jpg",
+        "approved": false
+      },
+      {
+        "word": "Price",
+        "meaning": "The amount of money something costs.",
+        "image": "img/decks/business/16.jpg",
+        "approved": false
+      },
+      {
+        "word": "Market",
+        "meaning": "A place to buy and sell things.",
+        "image": "img/decks/business/15.jpg",
+        "approved": false
+      },
+      {
+        "word": "Rent",
+        "meaning": "Money paid to use a house or car.",
+        "image": "img/decks/business/19.jpg",
+        "approved": false
+      },
+      {
+        "word": "Earn",
+        "meaning": "To get money for working.",
+        "image": "img/decks/business/12.jpg",
+        "approved": false
+      },
+      {
+        "word": "Discount",
+        "meaning": "A lower price on something.",
+        "image": "img/decks/business/11.jpg",
+        "approved": false
+      },
+      {
+        "word": "Advert",
+        "meaning": "A message to sell something.",
+        "image": "img/decks/business/1.jpg",
+        "approved": false
+      },
+      {
+        "word": "Monopoly",
+        "meaning": "A market condition where one company dominates.",
+        "image": "img/decks/business/7.jpg",
+        "approved": false
+      },
+      {
+        "word": "Shop",
+        "meaning": "A place where things are sold.",
+        "image": "img/decks/business/20.jpg",
+        "approved": false
+      },
+      {
+        "word": "Bank",
+        "meaning": "A place where people keep money.",
+        "image": "img/decks/business/2.jpg",
+        "approved": false
+      },
+      {
+        "word": "Shareholder",
+        "meaning": "A person or entity that owns shares in a company.",
+        "image": "img/decks/business/3.jpg",
+        "approved": false
+      },
+      {
+        "word": "Budget",
+        "meaning": "A plan for spending money.",
+        "image": "img/decks/business/6.jpg",
+        "approved": false
+      },
+      {
+        "word": "Debt",
+        "meaning": "Money owed to someone.",
+        "image": "img/decks/business/10.jpg",
+        "approved": false
+      },
+      {
+        "word": "Cost",
+        "meaning": "The price of something.",
+        "image": "img/decks/business/8.jpg",
+        "approved": false
+      },
+      {
+        "word": "Entrepreneur",
+        "meaning": "A person who starts and manages a business.",
+        "image": "img/decks/business/5.jpg",
+        "approved": false
+      },
+      {
+        "word": "Exchange",
+        "meaning": "To trade one thing for another.",
+        "image": "img/decks/business/13.jpg",
+        "approved": false
+      },
+      {
+        "word": "Invest",
+        "meaning": "To put money into something to make a profit.",
+        "image": "img/decks/business/14.jpg",
+        "approved": false
+      },
+      {
+        "word": "Customer",
+        "meaning": "A person who buys something.",
+        "image": "img/decks/business/9.jpg",
+        "approved": false
+      }
+    ]
+  }
+]
