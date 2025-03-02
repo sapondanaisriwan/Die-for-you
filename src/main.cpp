@@ -238,7 +238,7 @@ int main()
             }
 
             // editSave
-            if (editSaveBtn.isPressed(mousePosition, mousePressed)) 
+            if (editSaveBtn.isPressed(mousePosition, mousePressed))
             {
                 if (currentWindow == ADD_WINDOW)
                 {
@@ -1020,10 +1020,11 @@ int main()
                 }
 
                 imgPath = deskData[editCardIndex]["image"].GetString();
-                if(imgPath != ""){
+                if (imgPath != "")
+                {
                     img = LoadImage(imgPath.c_str());
                     int newWidth, newHeight;
-    
+
                     // imageResize
                     if (img.height != imageBox.height - 4)
                     {
@@ -1031,7 +1032,7 @@ int main()
                         newWidth = imageBox.height / img.height * img.width;
                         ImageResize(&img, newWidth, newHeight);
                     }
-                    
+
                     txt = LoadTextureFromImage(img);
                     isImageLoad = true;
                 }
@@ -1105,8 +1106,8 @@ int main()
             Font editTextFont = InterRegular;
             int fontSize = 20;
 
-            //test
-            DrawTextEx(editTextFont, imgPath.c_str(), {0,0}, fontSize + 4, 0, BLACK);
+            // test
+            DrawTextEx(editTextFont, imgPath.c_str(), {0, 0}, fontSize + 4, 0, BLACK);
 
             // wordBox
             if (currentWindow != ADD_DECK_WINDOW)
@@ -1180,24 +1181,25 @@ int main()
             centerPos.y = imageBox.y + 2;
             if (isImageLoad)
                 DrawTexture(txt, centerPos.x, centerPos.y, WHITE);
-                
+
             // text
             word.pop_back();
             meaning.pop_back();
 
             // button
-            if(currentWindow == ADD_DECK_WINDOW)
+            if (currentWindow == ADD_DECK_WINDOW)
             {
-                if(!word.empty() && isImageLoad) editSaveBtn.Draw();
+                if (!word.empty() && isImageLoad)
+                    editSaveBtn.Draw();
             }
-            else if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW) 
+            else if (currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW)
             {
-                if(!word.empty() && !meaning.empty()) editSaveBtn.Draw();
+                if (!word.empty() && !meaning.empty())
+                    editSaveBtn.Draw();
             }
             editBackBtn.Draw();
             if (isImageLoad)
                 imageDeleteBtn.Draw();
-
 
             if (word.empty() && !clickOnWordBox)
             {
