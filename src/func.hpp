@@ -270,11 +270,11 @@ void dynamicDeck(vector<Button> &deckButtons, vector<Button> &deckCovers, vector
     deckName.clear();
     deckButtons.clear();
     deckCovers.clear();
-    float xPos = 48;
-    float yPos = 95;
-    float xImage = 88;
-    float yImage = 120;
-    oldPos oldPos = {xPos, yPos, xImage, yImage};
+
+    float xPos = 48, yPos = 95;
+    float xImage = 88, yImage = 120;
+    // oldPos oldPos = {xPos, yPos, xImage, yImage};
+
     Document document = getData();
     for (SizeType i = 0; i < document.Size(); i++)
     {
@@ -286,25 +286,60 @@ void dynamicDeck(vector<Button> &deckButtons, vector<Button> &deckCovers, vector
             deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
             deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
 
-            xPos += 230;
-            xImage += 230;
+            // xPos += 230;
+            // xImage += 230;
 
-            if ((i + 1) % 8 == 0)
-            {
-                xPos = oldPos.xPos;
-                xImage = oldPos.xImage;
-            }
-
-            if (xPos > 800)
-            {
-                xPos = oldPos.xPos;
-                yPos += 289;
-                xImage = oldPos.xImage;
-                yImage += 287;
-            }
+            // if ((i + 1) % 4 == 0) // Move to the next row after 4 cards
+            // {
+            //     xPos = oldPos.xPos;
+            //     yPos += 289;
+            //     xImage = oldPos.xImage;
+            //     yImage += 287;
+            // }
         }
     }
 }
+
+// void dynamicDeck(vector<Button> &deckButtons, vector<Button> &deckCovers, vector<string> &deckName)
+// {
+//     deckName.clear();
+//     deckButtons.clear();
+//     deckCovers.clear();
+//     float xPos = 48;
+//     float yPos = 95;
+//     float xImage = 88;
+//     float yImage = 120;
+//     oldPos oldPos = {xPos, yPos, xImage, yImage};
+//     Document document = getData();
+//     for (SizeType i = 0; i < document.Size(); i++)
+//     {
+//         Value &obj = document[i];
+//         if (obj.HasMember("cover"))
+//         {
+//             string coverPath = obj["cover"].GetString();
+//             deckName.push_back(document[i]["deck"].GetString());
+//             deckButtons.push_back(Button("img/homepage/card-template.png", {xPos, yPos}, 1));
+//             deckCovers.push_back(Button(coverPath.c_str(), {xImage, yImage}, {144, 144}));
+
+//             xPos += 230;
+//             xImage += 230;
+
+//             if ((i + 1) % 8 == 0)
+//             {
+//                 xPos = oldPos.xPos;
+//                 xImage = oldPos.xImage;
+//             }
+
+//             if (xPos > 800)
+//             {
+//                 xPos = oldPos.xPos;
+//                 yPos += 289;
+//                 xImage = oldPos.xImage;
+//                 yImage += 287;
+//             }
+//         }
+//     }
+// }
 
 string TruncateText(const string &text, Font font, float fontSize, float maxWidth)
 {
