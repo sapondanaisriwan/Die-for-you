@@ -187,6 +187,7 @@ int main()
     int firstSelectedIndex = 0;
     int lastSeclectedIndex = 0;
     int editCardIndex;
+    int currentEditPage = 0;
 
     // endgame
     Button endHomeBtn{"img/buttons/home.png", {522, 593}};
@@ -238,7 +239,7 @@ int main()
             }
 
             // editSave
-            if (editSaveBtn.isPressed(mousePosition, mousePressed)) 
+            if (editSaveBtn.isPressed(mousePosition, mousePressed))
             {
                 if (currentWindow == ADD_WINDOW)
                 {
@@ -689,6 +690,7 @@ int main()
                 {
                     currentWindow = START_WINDOW;
                     currentDeck = i;
+                    currentEditPage = 0;
                 }
                 bool isCreateDPressed = createDeck.isPressed(mousePosition, mousePressed);
                 if (isCreateDPressed)
@@ -828,7 +830,8 @@ int main()
             if (!imageLoaded && showAnswer)
             {
                 // ตรวจสอบว่าไฟล์ภาพสามารถโหลดได้หรือไม่
-                if (FileExists(imgPath.c_str())) {
+                if (FileExists(imgPath.c_str()))
+                {
                     // โหลดภาพเป็น Image ก่อน
                     Image image = LoadImage(imgPath.c_str());
 
@@ -842,12 +845,14 @@ int main()
                     // หากขนาดของภาพเกินขีดจำกัดที่กำหนด (สูงสุด 300px หรือกว้างสุด 400px)
                     if (image.height > 300 || image.width > 400)
                     {
-                        if (image.width > image.height) {
+                        if (image.width > image.height)
+                        {
                             // หากความกว้างมากกว่าความสูง, ปรับขนาดตามความกว้าง
                             newWidth = 400;
                             newHeight = (int)(newWidth / aspectRatio); // คำนวณความสูงใหม่
                         }
-                        else {
+                        else
+                        {
                             // หากความสูงมากกว่าความกว้าง, ปรับขนาดตามความสูง
                             newHeight = 300;
                             newWidth = (int)(newHeight * aspectRatio); // คำนวณความกว้างใหม่
@@ -863,9 +868,11 @@ int main()
                     // ปล่อยทรัพยากร Image ที่ไม่ใช้งานแล้ว
                     UnloadImage(image);
 
-                    imageLoaded = true; // ตั้งค่า imageLoaded เป็น true หมายความว่าได้โหลดภาพแล้ว
+                    imageLoaded = true;      // ตั้งค่า imageLoaded เป็น true หมายความว่าได้โหลดภาพแล้ว
                     cout << imgPath << endl; // แสดง path ของไฟล์ที่โหลด
-                } else {
+                }
+                else
+                {
                     cout << "Error: Image path does not exist!" << endl;
                 }
             }
@@ -873,7 +880,7 @@ int main()
             if (!showAnswer && imageLoaded)
             {
                 UnloadTexture(wordImage);
-                imageLoaded = false; 
+                imageLoaded = false;
             }
 
             if (isBackPressed)
@@ -1008,8 +1015,8 @@ int main()
             int dataSize = deskData.Size();
 
             const int maxRowsPerPage = 10;
-            int startIndex = currentPage * maxRowsPerPage; // เพื่อที่จะเริ่มเเต่ละหน้า
-            int endIndex = min((currentPage + 1) * maxRowsPerPage, dataSize);
+            int startIndex = currentEditPage * maxRowsPerPage; // เพื่อที่จะเริ่มเเต่ละหน้า
+            int endIndex = min((currentEditPage + 1) * maxRowsPerPage, dataSize);
 
             // คำนวณจุดศูนย์กลางจอ
             const float screenWidth = 1000.0f;
@@ -1045,10 +1052,10 @@ int main()
 
                     // ตรวจสอบว่าหลังจากลบแล้ว หน้าปัจจุบันยังมีข้อมูลหรือไม่
                     int newDataSize = document[currentDeck]["data"].Size();
-                    if (startIndex >= newDataSize && currentPage > 0)
+                    if (startIndex >= newDataSize && currentEditPage > 0)
                     {
                         // ถ้าหน้าปัจจุบันไม่มีข้อมูลแล้ว ให้ย้อนกลับไปหน้าก่อนหน้า
-                        currentPage--;
+                        currentEditPage--;
                     }
 
                     selectedIndex = -1; // รีเซ็ตการเลือก
@@ -1081,10 +1088,11 @@ int main()
                 }
 
                 imgPath = deskData[editCardIndex]["image"].GetString();
-                if(imgPath != ""){
+                if (imgPath != "")
+                {
                     img = LoadImage(imgPath.c_str());
                     int newWidth, newHeight;
-    
+
                     // imageResize
                     if (img.height != imageBox.height - 4)
                     {
@@ -1092,7 +1100,7 @@ int main()
                         newWidth = imageBox.height / img.height * img.width;
                         ImageResize(&img, newWidth, newHeight);
                     }
-                    
+
                     txt = LoadTextureFromImage(img);
                     isImageLoad = true;
                 }
@@ -1130,17 +1138,17 @@ int main()
             }
 
             // อันนี้ปุ่มเปลี่ยนหน้าเฉยๆ
-            if (brNext.isPressed(mousePosition, mousePressed) && currentPage < dataSize / 10)
+            if (brNext.isPressed(mousePosition, mousePressed) && currentEditPage < dataSize / 10)
             {
-                currentPage++;
+                currentEditPage++;
             }
-            else if ((brPrevious.isPressed(mousePosition, mousePressed) || brPreviousFade.isPressed(mousePosition, mousePressed)) && currentPage > 0)
+            else if ((brPrevious.isPressed(mousePosition, mousePressed) || brPreviousFade.isPressed(mousePosition, mousePressed)) && currentEditPage > 0)
             {
-                currentPage--;
+                currentEditPage--;
             }
 
             // แสดงหมายเลขหน้าปัจจุบัน ไม่รู้จะเอาอยู่มั้ย เเต่ในเกมเพลย์พวกเราตัดออก
-            string pageIndicator = to_string(currentPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
+            string pageIndicator = to_string(currentEditPage + 1) + " / " + to_string((dataSize / maxRowsPerPage) + 1);
             Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterX + 5, 660}, 660);
             DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
         }
@@ -1166,8 +1174,8 @@ int main()
             Font editTextFont = InterRegular;
             int fontSize = 20;
 
-            //test
-            DrawTextEx(editTextFont, imgPath.c_str(), {0,0}, fontSize + 4, 0, BLACK);
+            // test
+            DrawTextEx(editTextFont, imgPath.c_str(), {0, 0}, fontSize + 4, 0, BLACK);
 
             // wordBox
             if (currentWindow != ADD_DECK_WINDOW)
@@ -1241,24 +1249,25 @@ int main()
             centerPos.y = imageBox.y + 2;
             if (isImageLoad)
                 DrawTexture(txt, centerPos.x, centerPos.y, WHITE);
-                
+
             // text
             word.pop_back();
             meaning.pop_back();
 
             // button
-            if(currentWindow == ADD_DECK_WINDOW)
+            if (currentWindow == ADD_DECK_WINDOW)
             {
-                if(!word.empty() && isImageLoad) editSaveBtn.Draw();
+                if (!word.empty() && isImageLoad)
+                    editSaveBtn.Draw();
             }
-            else if(currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW) 
+            else if (currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW)
             {
-                if(!word.empty() && !meaning.empty()) editSaveBtn.Draw();
+                if (!word.empty() && !meaning.empty())
+                    editSaveBtn.Draw();
             }
             editBackBtn.Draw();
             if (isImageLoad)
                 imageDeleteBtn.Draw();
-
 
             if (word.empty() && !clickOnWordBox)
             {
