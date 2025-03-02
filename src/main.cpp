@@ -351,6 +351,16 @@ int main()
                             newWidth = imageBox.height / img.height * img.width;
                             ImageResize(&img, newWidth, newHeight);
                         }
+                        /*if(currentWindow==ADD_DECK_WINDOW){
+                            newHeight = imageBox.height - 4;
+                            newWidth = imageBox.height / img.height * img.width;
+                            ImageResize(&img, newWidth, newHeight);
+                        }
+                        if(currentWindow==ADD_WINDOW || currentWindow==EDIT_WINDOW){
+                            newHeight = 300;
+                            newWidth = 400;
+                            ImageResize(&img, newWidth, newHeight);
+                        }*/
                         txt = LoadTextureFromImage(img);
                         isImageLoad = true;
                     }
@@ -803,7 +813,7 @@ int main()
             bool isEasyPressed = gpEasyBtn.isPressed(mousePosition, mousePressed);
             bool isHardPressed = gpHardBtn.isPressed(mousePosition, mousePressed);
 
-            if (!imageLoaded && showAnswer)
+            /*if (!imageLoaded && showAnswer)
             {
                 wordImage = LoadTexture(imgPath.c_str());
                 imageLoaded = true;
@@ -813,6 +823,57 @@ int main()
             {
                 UnloadTexture(wordImage);
                 imageLoaded = false;
+            }*/
+
+            if (!imageLoaded && showAnswer)
+            {
+                // ตรวจสอบว่าไฟล์ภาพสามารถโหลดได้หรือไม่
+                if (FileExists(imgPath.c_str())) {
+                    // โหลดภาพเป็น Image ก่อน
+                    Image image = LoadImage(imgPath.c_str());
+
+                    // คำนวณขนาดใหม่ตามข้อกำหนด
+                    int newWidth = image.width;
+                    int newHeight = image.height;
+
+                    // คำนวณอัตราส่วนของภาพ
+                    float aspectRatio = (float)image.width / (float)image.height;
+
+                    // หากขนาดของภาพเกินขีดจำกัดที่กำหนด (สูงสุด 300px หรือกว้างสุด 400px)
+                    if (image.height > 300 || image.width > 400)
+                    {
+                        if (image.width > image.height) {
+                            // หากความกว้างมากกว่าความสูง, ปรับขนาดตามความกว้าง
+                            newWidth = 400;
+                            newHeight = (int)(newWidth / aspectRatio); // คำนวณความสูงใหม่
+                        }
+                        else {
+                            // หากความสูงมากกว่าความกว้าง, ปรับขนาดตามความสูง
+                            newHeight = 300;
+                            newWidth = (int)(newHeight * aspectRatio); // คำนวณความกว้างใหม่
+                        }
+                    }
+
+                    // รีไซซ์ภาพตามขนาดใหม่
+                    ImageResize(&image, newWidth, newHeight);
+
+                    // โหลด Texture ใหม่จาก Image ที่ถูกรีไซซ์
+                    wordImage = LoadTextureFromImage(image);
+
+                    // ปล่อยทรัพยากร Image ที่ไม่ใช้งานแล้ว
+                    UnloadImage(image);
+
+                    imageLoaded = true; // ตั้งค่า imageLoaded เป็น true หมายความว่าได้โหลดภาพแล้ว
+                    cout << imgPath << endl; // แสดง path ของไฟล์ที่โหลด
+                } else {
+                    cout << "Error: Image path does not exist!" << endl;
+                }
+            }
+
+            if (!showAnswer && imageLoaded)
+            {
+                UnloadTexture(wordImage);
+                imageLoaded = false; 
             }
 
             if (isBackPressed)
