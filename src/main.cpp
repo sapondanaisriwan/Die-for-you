@@ -5,6 +5,8 @@ WindowState currentWindow = HOME_WINDOW;
 
 int currentPage = 0;
 int currentDeck = 0;
+int currentHomepage = 0;
+int currentEditPage = 0;
 bool imageLoaded = false;
 bool showAnswer = false;
 bool isShuffled = false;
@@ -16,6 +18,12 @@ int startTime = 0;
 int countdownTime = 60;
 bool timeOut = false;
 bool countdownStarted = false;
+
+int CARDS_PER_PAGE = 8;
+int CARDS_PER_ROW = 4;
+vector<Button> deckButtons = {};
+vector<Button> deckCovers = {};
+vector<string> deckName = {};
 
 Vector2 GetCenteredTextPos(Font font, string text, int fontSize, Vector2 screencenterPos, float yPos)
 {
@@ -85,6 +93,82 @@ void copySelectedText(vector<char> text, int firstIndex, int lastIndex)
     SetClipboardText(&cpy[0]);
 }
 
+void drawDeckPage(Font InterMedium, Vector2 mousePosition, bool mousePressed)
+{
+    // int totalPages = (deckButtons.size() + CARDS_PER_PAGE - 1) / CARDS_PER_PAGE;
+    int startIdx = currentHomepage * CARDS_PER_PAGE;
+    int endIdx = min(startIdx + CARDS_PER_PAGE, (int)deckButtons.size());
+    float xPos = 48, yPos = 95;
+    float xImage = 88, yImage = 120;
+    for (int i = startIdx; i < endIdx; i++)
+    {
+        int indexInPage = i % CARDS_PER_PAGE;
+        int row = indexInPage / CARDS_PER_ROW;
+        int col = indexInPage % CARDS_PER_ROW;
+
+        float adjustedXPos = xPos + (col * 230);
+        float adjustedYPos = yPos + (row * 289);
+        float adjustedXImage = xImage + (col * 230);
+        float adjustedYImage = yImage + (row * 287);
+
+        deckButtons[i].SetPosition({adjustedXPos, adjustedYPos});
+        deckCovers[i].SetPosition({adjustedXImage, adjustedYImage});
+
+        deckButtons[i].Draw();
+        deckCovers[i].Draw();
+
+        Vector2 centerText = MeasureTextEx(InterMedium, deckName[i].c_str(), 24, 0);
+        Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
+        DrawTextEx(InterMedium, deckName[i].c_str(), textPos, 24, 0, BLACK);
+
+        bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
+        if (isClicked)
+        {
+            currentWindow = START_WINDOW;
+            currentDeck = i; // Keep `i` to track the correct deck
+            currentEditPage = 0;
+        }
+    }
+}
+
+void handlePageNavigation(Font InterRegular, Vector2 mousePosition, bool mousePressed, Button &brPrevious, Button &brNext, Button &brPreviousFadeLeft, Button &brNextFade)
+{
+    int totalPages = (deckButtons.size() + CARDS_PER_PAGE - 1) / CARDS_PER_PAGE;
+    bool isPrevPressed = brPrevious.isPressed(mousePosition, mousePressed);
+    bool isNextPressed = brNext.isPressed(mousePosition, mousePressed);
+
+    if (totalPages > 1)
+    {
+
+        if (currentHomepage < totalPages - 1)
+            brNext.Draw();
+        else
+            brNextFade.Draw();
+
+        if (currentHomepage == 0)
+            brPreviousFadeLeft.Draw();
+
+        string pageIndicator = to_string(currentHomepage + 1) + " / " + to_string(totalPages);
+        Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {500 + 5, 660}, 660);
+        DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
+    }
+    if (currentHomepage > 0)
+        brPrevious.Draw();
+    // else
+    //     brPreviousFadeLeft.Draw();
+    // Previous Page
+    if (currentHomepage > 0 && isPrevPressed)
+    {
+        currentHomepage--;
+    }
+
+    // Next Page
+    if (currentHomepage < totalPages - 1 && isNextPressed)
+    {
+        currentHomepage++;
+    }
+}
+
 // MAIN
 int main()
 {
@@ -121,10 +205,6 @@ int main()
     SetTextureFilter(InterLight.texture, TEXTURE_FILTER_BILINEAR);
     SetTextureFilter(Upperclock.texture, TEXTURE_FILTER_BILINEAR);
 
-    vector<Button> deckButtons = {};
-    vector<Button> deckCovers = {};
-    vector<string> deckName = {};
-    dynamicDeck(deckButtons, deckCovers, deckName);
     // homepage
     Button hpTitle{"img/homepage/mydecks.png", {10, 20}};
     Button createDeck{"img/buttons/create2.png", {245, 35}};
@@ -149,9 +229,10 @@ int main()
     Button browseBackBtn{"img/buttons/back.png", {65, 650}};
     Button browseDeleteBtn{"img/start/delete-btn.png", {725, 650}};
     Button browseEditBtn{"img/buttons/edit.png", {835, 650}};
-    Button brPreviousFade{"img/gameplay/previous-btn.png", {443 - 4, 650}};
+    Button brPreviousFadeLeft{"img/gameplay/previous-btn.png", {443 - 4, 650}};
     Button brPrevious{"img/gameplay/previous-btn2.png", {443 - 4, 650}};
     Button brNext{"img/gameplay/next-btn.png", {529 + 4, 650}};
+    Button brNextFade{"img/gameplay/next-btn-fade.png", {529 + 4, 650}};
     Button browseBG{"img/gameplay/bg.png", {43, 48}};
     Button browseTitle{"img/browse/word-meaning.png", {70, 60}};
 
@@ -187,7 +268,6 @@ int main()
     int firstSelectedIndex = 0;
     int lastSeclectedIndex = 0;
     int editCardIndex;
-    int currentEditPage = 0;
 
     // endgame
     Button endHomeBtn{"img/buttons/home.png", {522, 593}};
@@ -197,6 +277,7 @@ int main()
 
     Color backgroundColor = Color{221, 245, 253, 255};
 
+    dynamicDeck(deckButtons, deckCovers, deckName);
     while (!WindowShouldClose())
     {
         Vector2 mousePosition = GetMousePosition();
@@ -676,28 +757,39 @@ int main()
             challengeMode = false;
             countdownStarted = false;
             timeOut = false;
-            for (size_t i = 0; i < deckButtons.size(); i++)
+            drawDeckPage(InterMedium, mousePosition, mousePressed);
+            handlePageNavigation(InterRegular, mousePosition, mousePressed, brPrevious, brNext, brPreviousFadeLeft, brNextFade);
+            bool isCreateDPressed = createDeck.isPressed(mousePosition, mousePressed);
+            if (isCreateDPressed)
             {
-                deckButtons[i].Draw();
-                deckCovers[i].Draw();
-                // show dack's name
-                Vector2 centerText = MeasureTextEx(InterMedium, deckName[i].c_str(), 24, 0);
-                Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
-                DrawTextEx(InterMedium, deckName[i].c_str(), textPos, 24, 0, BLACK);
-
-                bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
-                if (isClicked)
-                {
-                    currentWindow = START_WINDOW;
-                    currentDeck = i;
-                    currentEditPage = 0;
-                }
-                bool isCreateDPressed = createDeck.isPressed(mousePosition, mousePressed);
-                if (isCreateDPressed)
-                {
-                    currentWindow = ADD_DECK_WINDOW;
-                }
+                currentWindow = ADD_DECK_WINDOW;
             }
+
+            // string pageIndicator = to_string(currentHomepage + 1) + " / " + to_string((deckButtons.size() + CARDS_PER_PAGE - 1) / CARDS_PER_PAGE);
+            // Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterPos.x + 5, 660}, 660);
+            // DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
+            // for (size_t i = 0; i < deckButtons.size(); i++)
+            // {
+            //     deckButtons[i].Draw();
+            //     deckCovers[i].Draw();
+            //     // show dack's name
+            //     Vector2 centerText = MeasureTextEx(InterMedium, deckName[i].c_str(), 24, 0);
+            //     Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
+            //     DrawTextEx(InterMedium, deckName[i].c_str(), textPos, 24, 0, BLACK);
+
+            //     bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
+            //     if (isClicked)
+            //     {
+            //         currentWindow = START_WINDOW;
+            //         currentDeck = i;
+            //         currentEditPage = 0;
+            //     }
+            //     bool isCreateDPressed = createDeck.isPressed(mousePosition, mousePressed);
+            //     if (isCreateDPressed)
+            //     {
+            //         currentWindow = ADD_DECK_WINDOW;
+            //     }
+            // }
         }
         else if (currentWindow == START_WINDOW)
         {
@@ -731,6 +823,7 @@ int main()
             }
             else if (isBrowsePressed)
             {
+                document = getData();
                 currentWindow = BROWSER_WINDOW;
             }
             else if (isAddPressed)
@@ -1015,9 +1108,7 @@ int main()
             browseBackBtn.Draw();
             browseEditBtn.Draw();
             browseDeleteBtn.Draw();
-
-            brNext.Draw();
-            brPrevious.Draw();
+            // brPrevious.Draw();
 
             const Value &deskData = document[currentDeck]["data"];
             int dataSize = deskData.Size();
@@ -1038,6 +1129,16 @@ int main()
             /* หัวข้อตาราง
             DrawTextEx(InterSemiBold, "Word", {xWord, yOffset}, 26, 0, BLACK);
             DrawTextEx(InterSemiBold, "Meaning", {xMeaning, yOffset}, 26, 0, BLACK); */
+
+            if (currentEditPage < dataSize / 10)
+                brNext.Draw();
+            else
+                brNextFade.Draw();
+
+            if (currentEditPage > 0)
+                brPrevious.Draw();
+            else
+                brPreviousFadeLeft.Draw();
 
             // บิวเขียนเซ็ตปุ่มต่อตรงนี้
             if (browseBackBtn.isPressed(mousePosition, mousePressed))
@@ -1153,7 +1254,7 @@ int main()
             {
                 currentEditPage++;
             }
-            else if ((brPrevious.isPressed(mousePosition, mousePressed) || brPreviousFade.isPressed(mousePosition, mousePressed)) && currentEditPage > 0)
+            else if ((brPrevious.isPressed(mousePosition, mousePressed) || brPreviousFadeLeft.isPressed(mousePosition, mousePressed)) && currentEditPage > 0)
             {
                 currentEditPage--;
             }
