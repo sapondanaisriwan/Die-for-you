@@ -34,7 +34,7 @@ void DrawCountdown(int startTime, int countdownTime, Font font, Vector2 position
     {
         remainingTime = 0;
     }
-    std::string timeStr = std::to_string(remainingTime);
+    string timeStr = to_string(remainingTime);
     DrawTextEx(font, timeStr.c_str(), position, fontSize, 0, color);
     if (remainingTime == 0)
     {
@@ -710,16 +710,24 @@ int main()
 
             gpBG.Draw();
 
-            if (isStartPressed && document[currentDeck]["data"].Size() > 0)
+            if (isStartPressed)
             {
-                currentWindow = GAMEPLAY_WINDOW;
+                document = getData();
+                if (document[currentDeck]["data"].Size() > 0)
+                {
+                    currentWindow = GAMEPLAY_WINDOW;
+                }
             }
             else if (isChallengePressed && document[currentDeck]["data"].Size() > 0)
             {
-                challengeMode = true;
-                countdownStarted = true;
-                currentWindow = GAMEPLAY_WINDOW;
-                startTime = static_cast<int>(GetTime());
+                document = getData();
+                if (document[currentDeck]["data"].Size() > 0)
+                {
+                    challengeMode = true;
+                    countdownStarted = true;
+                    currentWindow = GAMEPLAY_WINDOW;
+                    startTime = static_cast<int>(GetTime());
+                }
             }
             else if (isBrowsePressed)
             {
@@ -1113,8 +1121,8 @@ int main()
                 string browseWord = deskData[i]["word"].GetString();
                 string browseMeaning = deskData[i]["meaning"].GetString();
 
-                float rowWidth = (screenWidth * 0.85f) -20 ; // 600
-                Rectangle rowBox = {screenCenterX - (rowWidth  / 2) +20, yOffset-12, rowWidth, 30.0f}; // x,y,w,h
+                float rowWidth = (screenWidth * 0.85f) - 20;                                             // 600
+                Rectangle rowBox = {screenCenterX - (rowWidth / 2) + 20, yOffset - 12, rowWidth, 30.0f}; // x,y,w,h
 
                 // Highlight เเถวที่กดก่อนที่จะพิมพ์ตัวหนังสือออกมานะ ไม่งั้นมันจะทับกัน
                 if (i == selectedIndex)
@@ -1123,10 +1131,13 @@ int main()
                 }
 
                 // แสดง Word
-                DrawTextEx(InterRegular, browseWord.c_str(), {xWord-120, yOffset-10}, 24, 0, DARKGRAY);
+                string displayedWord = TruncateText(browseWord, InterRegular, 24, 250);
+                string displayedMeaning = TruncateText(browseMeaning, InterRegular, 24, 500);
+
+                DrawTextEx(InterRegular, displayedWord.c_str(), {xWord - 120, yOffset - 10}, 24, 0, DARKGRAY);
 
                 // แสดง Meaning
-                DrawTextEx(InterRegular, browseMeaning.c_str(), {xMeaning-200, yOffset-10}, 24, 0, DARKGRAY);
+                DrawTextEx(InterRegular, displayedMeaning.c_str(), {xMeaning - 200, yOffset - 10}, 24, 0, DARKGRAY);
 
                 // เช็คที่คลิก
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), rowBox))

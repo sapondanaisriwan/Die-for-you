@@ -305,3 +305,19 @@ void dynamicDeck(vector<Button> &deckButtons, vector<Button> &deckCovers, vector
         }
     }
 }
+
+string TruncateText(const string &text, Font font, float fontSize, float maxWidth)
+{
+    if (MeasureTextEx(font, text.c_str(), fontSize, 0).x <= maxWidth)
+    {
+        return text; // Return original text if it fits
+    }
+
+    string truncated = text;
+    while (!truncated.empty() && MeasureTextEx(font, (truncated + "...").c_str(), fontSize, 0).x > maxWidth)
+    {
+        truncated.pop_back(); // Remove last character
+    }
+
+    return truncated + "..."; // Append ellipsis only if truncated
+}
