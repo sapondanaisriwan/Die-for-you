@@ -104,7 +104,7 @@ void drawDeckPage(Font InterMedium, Vector2 mousePosition, bool mousePressed)
     isDeckHovered = false;
     for (int i = startIdx; i < endIdx; i++)
     {
-        
+
         int indexInPage = i % CARDS_PER_PAGE;
         int row = indexInPage / CARDS_PER_ROW;
         int col = indexInPage % CARDS_PER_ROW;
@@ -128,9 +128,9 @@ void drawDeckPage(Font InterMedium, Vector2 mousePosition, bool mousePressed)
         string displayedWord = TruncateText(deckName[i].c_str(), InterMedium, 24, 150);
         Vector2 centerText = MeasureTextEx(InterMedium, displayedWord.c_str(), 24, 0);
         Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
-        
+
         DrawTextEx(InterMedium, displayedWord.c_str(), textPos, 24, 0, BLACK);
-        
+
         bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
         if (isClicked)
         {
@@ -278,6 +278,7 @@ int main()
     bool selectKeyPressed = false;
     bool reachMaxInput = false;
     bool isImageLoad = false;
+    bool isCoverLoad = false;
 
     int framesCounter = 0;
     int framesDelete = 0;
@@ -800,6 +801,7 @@ int main()
             challengeMode = false;
             countdownStarted = false;
             timeOut = false;
+            isCoverLoad = false;
             drawDeckPage(InterMedium, mousePosition, mousePressed);
             handlePageNavigation(InterRegular, mousePosition, mousePressed, brPrevious, brNext, brPreviousFadeLeft, brNextFade);
             bool isCreateDPressed = createDeck.isPressed(mousePosition, mousePressed);
@@ -827,7 +829,7 @@ int main()
                     currentWindow = GAMEPLAY_WINDOW;
                 }
             }
-            else if (isChallengePressed && document[currentDeck]["data"].Size() > 0)
+            else if (isChallengePressed)
             {
                 document = getData();
                 if (document[currentDeck]["data"].Size() > 0)
@@ -860,20 +862,69 @@ int main()
                 currentWindow = HOME_WINDOW;
             }
 
-            // new position
-            Vector2 newPosition = {173, 201};
-            Vector2 originalPosition = deckCovers[currentDeck].getPosition();
-            // resize
-            float scale = 2; // 2เท่า
-            Texture2D texture = deckCovers[currentDeck].GetTexture();
-            float newWidth = texture.width * scale;
-            float newHeight = texture.height * scale;
-            Rectangle sourceRec = {0, 0, (float)texture.width, (float)texture.height};
-            Rectangle destRec = {newPosition.x, newPosition.y, newWidth, newHeight}; // new pic
-            Vector2 origin = {0, 0};
-            DrawTexturePro(texture, sourceRec, destRec, origin, 0.0f, WHITE);
-            deckCovers[currentDeck].SetPosition(originalPosition); // คืนค่าเดิมหน้า home
+            if (!isCoverLoad)
+            {
+                document = getData();
+                string deckCover = document[currentDeck]["cover"].GetString();
+                // ตรวจสอบว่าไฟล์ภาพสามารถโหลดได้หรือไม่
+                if (FileExists(deckCover.c_str()))
+                {
+                    // โหลดภาพเป็น Image ก่อน
+                    Image image = LoadImage(deckCover.c_str());
 
+                    // คำนวณขนาดใหม่ตามข้อกำหนด
+                    int newWidth = image.width;
+                    int newHeight = image.height;
+
+                    // คำนวณอัตราส่วนของภาพ
+                    float aspectRatio = (float)image.width / (float)image.height;
+
+                    // หากขนาดของภาพเกินขีดจำกัดที่กำหนด (สูงสุด 300px หรือกว้างสุด 400px)
+
+                    if (image.width < 150 || image.height < 150)
+                    {
+                        newWidth = image.width * 2;
+                        newHeight = image.height * 2;
+                    }
+
+                    if (image.height > 300 || image.width > 400)
+                    {
+                        if (image.width > image.height)
+                        {
+                            // หากความกว้างมากกว่าความสูง, ปรับขนาดตามความกว้าง
+                            newWidth = 400;
+                            newHeight = (int)(newWidth / aspectRatio); // คำนวณความสูงใหม่
+                        }
+                        else
+                        {
+                            // หากความสูงมากกว่าความกว้าง, ปรับขนาดตามความสูง
+                            newHeight = 300;
+                            newWidth = (int)(newHeight * aspectRatio); // คำนวณความกว้างใหม่
+                        }
+                    }
+
+                    // รีไซซ์ภาพตามขนาดใหม่
+                    ImageResize(&image, newWidth, newHeight);
+
+                    // โหลด Texture ใหม่จาก Image ที่ถูกรีไซซ์
+                    wordImage = LoadTextureFromImage(image);
+
+                    // ปล่อยทรัพยากร Image ที่ไม่ใช้งานแล้ว
+                    UnloadImage(image);
+                    isCoverLoad = true; // ตั้งค่า imageLoaded เป็น true หมายความว่าได้โหลดภาพแล้ว
+                }
+                else
+                {
+                    cout << "Error: Image path does not exist!" << endl;
+                }
+            }
+
+            if (isCoverLoad)
+            {
+                Rectangle imageRec = {0, 0, (float)wordImage.width, (float)wordImage.height};
+                Vector2 imageCenter = {wordImage.width / 2.0f, wordImage.height / 2.0f};
+                DrawTexturePro(wordImage, imageRec, (Rectangle){282, 330, imageRec.width, imageRec.height}, imageCenter, 0, WHITE);
+            }
             stHome.Draw();
             startDeleteBtn.Draw();
             stStartBtn.Draw();
