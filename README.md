@@ -1,19 +1,16 @@
-## ✨ Introduction
-
-Welcome to **Die for You** – a unique tool for learning and mastering words through interactive flashcards! Whether you're studying for a test, enhancing your vocabulary, or just having fun with language, our platform offers a dynamic, challenge-driven experience.
-
-![Die for You](https://github.com/user-attachments/assets/8f84cfec-c75a-4e32-946a-8291ab76ba16)
-
 ## 📚 Table of Contents
-- [✨ Introduction](#-introduction)
 - [📚 Table of Contents](#-table-of-contents)
+- [✨ Introduction](#-introduction)
 - [⭐ Features](#-features)
 - [🧑‍💻 How to Contribute](#-how-to-contribute)
 - [©️ License](#️-license)
 - [❤️ Group Members](#️-group-members)
 
+## ✨ Introduction
 
+Welcome to **Die for You** – a unique tool for learning and mastering words through interactive flashcards! Whether you're studying for a test, enhancing your vocabulary, or just having fun with language, our platform offers a dynamic, challenge-driven experience.
 
+![Die for You](https://github.com/user-attachments/assets/8f84cfec-c75a-4e32-946a-8291ab76ba16)
 
 ## ⭐ Features
 
