@@ -37,27 +37,17 @@ void Button::Draw()
 {
   DrawTextureV(texture, position, WHITE);
 }
-void Button::Draw2()
+
+bool Button::isHovered(Vector2 mousePos)
 {
-  // // Draw a part of a texture defined by a rectangle with 'pro' parameters
-  // void DrawTexturePro(Texture2D texture, Rectangle sourceRec, Rectangle destRec, Vector2 origin, float rotation, Color tint);
-  Rectangle sourceRec = {0.0f, 0.0f, (float)texture.width, (float)texture.height};
-  Rectangle destRec = {position.x, position.y, (float)texture.width, (float)texture.height};
-  Vector2 origin = {0.0f, 0.0f};
-  float rotation = 0.0f;
-  Color tint = WHITE;
-  DrawTexturePro(texture, sourceRec, destRec, origin, rotation, tint);
+  Rectangle rect = {position.x, position.y, (float)texture.width, (float)texture.height};
+  return CheckCollisionPointRec(mousePos, rect);
 }
 
 bool Button::isPressed(Vector2 mousePos, bool mousePressed)
 {
   Rectangle rect = {position.x, position.y, static_cast<float>(texture.width), static_cast<float>(texture.height)};
-
-  if (CheckCollisionPointRec(mousePos, rect) && mousePressed)
-  {
-    return true;
-  }
-  return false;
+  return CheckCollisionPointRec(mousePos, rect) && mousePressed;
 }
 
 Button::Button(Button &&other) noexcept
