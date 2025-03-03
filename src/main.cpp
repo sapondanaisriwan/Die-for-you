@@ -104,6 +104,7 @@ void drawDeckPage(Font InterMedium, Vector2 mousePosition, bool mousePressed)
     isDeckHovered = false;
     for (int i = startIdx; i < endIdx; i++)
     {
+        
         int indexInPage = i % CARDS_PER_PAGE;
         int row = indexInPage / CARDS_PER_ROW;
         int col = indexInPage % CARDS_PER_ROW;
@@ -124,10 +125,12 @@ void drawDeckPage(Font InterMedium, Vector2 mousePosition, bool mousePressed)
             isDeckHovered = true;
         }
 
-        Vector2 centerText = MeasureTextEx(InterMedium, deckName[i].c_str(), 24, 0);
+        string displayedWord = TruncateText(deckName[i].c_str(), InterMedium, 24, 150);
+        Vector2 centerText = MeasureTextEx(InterMedium, displayedWord.c_str(), 24, 0);
         Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
-        DrawTextEx(InterMedium, deckName[i].c_str(), textPos, 24, 0, BLACK);
-
+        
+        DrawTextEx(InterMedium, displayedWord.c_str(), textPos, 24, 0, BLACK);
+        
         bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
         if (isClicked)
         {
