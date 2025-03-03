@@ -11,6 +11,7 @@ bool imageLoaded = false;
 bool showAnswer = false;
 bool isShuffled = false;
 bool challengeMode = false;
+bool isDeckHovered = false;
 Texture2D wordImage;
 
 // Time Variables
@@ -100,6 +101,7 @@ void drawDeckPage(Font InterMedium, Vector2 mousePosition, bool mousePressed)
     int endIdx = min(startIdx + CARDS_PER_PAGE, (int)deckButtons.size());
     float xPos = 48, yPos = 95;
     float xImage = 88, yImage = 120;
+    isDeckHovered = false;
     for (int i = startIdx; i < endIdx; i++)
     {
         int indexInPage = i % CARDS_PER_PAGE;
@@ -116,6 +118,11 @@ void drawDeckPage(Font InterMedium, Vector2 mousePosition, bool mousePressed)
 
         deckButtons[i].Draw();
         deckCovers[i].Draw();
+
+        if (deckButtons[i].isHovered(mousePosition) || deckCovers[i].isHovered(mousePosition))
+        {
+            isDeckHovered = true;
+        }
 
         Vector2 centerText = MeasureTextEx(InterMedium, deckName[i].c_str(), 24, 0);
         Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
@@ -167,6 +174,14 @@ void handlePageNavigation(Font InterRegular, Vector2 mousePosition, bool mousePr
     {
         currentHomepage++;
     }
+}
+
+void updateCursor(bool isHovered)
+{
+    if (isHovered)
+        SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+    else
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
 }
 
 // MAIN
@@ -282,6 +297,31 @@ int main()
     {
         Vector2 mousePosition = GetMousePosition();
         bool mousePressed = IsMouseButtonPressed(MOUSE_BUTTON_LEFT);
+
+        if (currentWindow != HOME_WINDOW)
+            isDeckHovered = false;
+
+        bool isBtnHovered =
+            isDeckHovered || gpBack.isHovered(mousePosition) ||
+            gpShowAns.isHovered(mousePosition) ||
+            gpHideAns.isHovered(mousePosition) ||
+            gpEasyBtn.isHovered(mousePosition) ||
+            gpHardBtn.isHovered(mousePosition) ||
+            createDeck.isHovered(mousePosition) ||
+            browseBackBtn.isHovered(mousePosition) ||
+            browseDeleteBtn.isHovered(mousePosition) ||
+            browseEditBtn.isHovered(mousePosition) ||
+            brPrevious.isHovered(mousePosition) ||
+            brNext.isHovered(mousePosition) ||
+            editSaveBtn.isHovered(mousePosition) ||
+            editBackBtn.isHovered(mousePosition) ||
+            imageDeleteBtn.isHovered(mousePosition) ||
+            stStartBtn.isHovered(mousePosition) ||
+            stChallengeBtn.isHovered(mousePosition) ||
+            stBrowseBtn.isHovered(mousePosition) ||
+            stAddBtn.isHovered(mousePosition) ||
+            stHome.isHovered(mousePosition) ||
+            startDeleteBtn.isHovered(mousePosition);
 
         if (currentWindow == ADD_WINDOW || currentWindow == EDIT_WINDOW || currentWindow == ADD_DECK_WINDOW)
         {
@@ -764,32 +804,6 @@ int main()
             {
                 currentWindow = ADD_DECK_WINDOW;
             }
-
-            // string pageIndicator = to_string(currentHomepage + 1) + " / " + to_string((deckButtons.size() + CARDS_PER_PAGE - 1) / CARDS_PER_PAGE);
-            // Vector2 pageIndicatorPos = GetCenteredTextPos(InterRegular, pageIndicator, 20, {screenCenterPos.x + 5, 660}, 660);
-            // DrawTextEx(InterRegular, pageIndicator.c_str(), pageIndicatorPos, 20, 0, Color{88, 99, 128, 255});
-            // for (size_t i = 0; i < deckButtons.size(); i++)
-            // {
-            //     deckButtons[i].Draw();
-            //     deckCovers[i].Draw();
-            //     // show dack's name
-            //     Vector2 centerText = MeasureTextEx(InterMedium, deckName[i].c_str(), 24, 0);
-            //     Vector2 textPos = {(deckCovers[i].getPosition().x + (deckCovers[i].getImageSize().width / 2.0f) - (centerText.x / 2.0f)) - 2, deckCovers[i].getPosition().y + 190 - 20};
-            //     DrawTextEx(InterMedium, deckName[i].c_str(), textPos, 24, 0, BLACK);
-
-            //     bool isClicked = deckButtons[i].isPressed(mousePosition, mousePressed) || deckCovers[i].isPressed(mousePosition, mousePressed);
-            //     if (isClicked)
-            //     {
-            //         currentWindow = START_WINDOW;
-            //         currentDeck = i;
-            //         currentEditPage = 0;
-            //     }
-            //     bool isCreateDPressed = createDeck.isPressed(mousePosition, mousePressed);
-            //     if (isCreateDPressed)
-            //     {
-            //         currentWindow = ADD_DECK_WINDOW;
-            //     }
-            // }
         }
         else if (currentWindow == START_WINDOW)
         {
@@ -1393,6 +1407,9 @@ int main()
             if (!isImageLoad)
                 DrawTextEx(editTextFont, "Drag and Drop Image here", {(imageBox.x + 5), (imageBox.y + 8)}, fontSize, 0, DARKGRAY);
         }
+        updateCursor(isBtnHovered);
+
+        // SetMouseCursor(MOUSE_CURSOR_DEFAULT);
         EndDrawing();
     }
 

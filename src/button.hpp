@@ -1,5 +1,7 @@
 #pragma once
 #include <raylib.h>
+#include <iostream>
+using namespace std;
 
 struct ImageSize
 {
@@ -25,6 +27,7 @@ public:
   Vector2 getPosition();
   TextureSize getImageSize();
   bool isPressed(Vector2 mousePos, bool mousePressed);
+  bool isHovered(Vector2 mousePos);
 
   // set new position
   void SetPosition(Vector2 newPosition);
