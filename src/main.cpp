@@ -255,8 +255,8 @@ int main()
     Rectangle wordBox = {100, 100, 800, 30};
     Rectangle imageBox = {100, 200, 800, 300};
     Rectangle meaningBox = {100, 550, 800, 30};
-    Button editSaveBtn{"img/buttons/save.png", {screenWidth - 200, screenHeight - 140}};
-    Button editBackBtn{"img/buttons/back.png", {100, screenHeight - 140}};
+    Button editSaveBtn{"img/buttons/save.png", {screenWidth - 200, screenHeight - 100}};
+    Button editBackBtn{"img/buttons/back.png", {100, screenHeight - 100}};
     Button imageDeleteBtn{"img/buttons/delete.png", {imageBox.x + imageBox.width - 110, imageBox.y + 10}};
 
     vector<char> word, meaning;
