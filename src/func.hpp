@@ -103,14 +103,14 @@ bool deleteWord(int deskIndex, int wordIndex)
     // if (deskIndex < 0 || deskIndex >= document.Size())
     if (deskIndex < 0 || deskIndex >= static_cast<int>(document.Size()))
     {
-        cerr << "Error: Invalid desk index!" << endl;
+        cout << "Error: Invalid desk index!" << endl;
         return false;
     }
 
     Value &deskData = document[deskIndex];
     if (!deskData.HasMember("data") || !deskData["data"].IsArray())
     {
-        cerr << "Error: Desk has no data array!" << endl;
+        cout << "Error: Desk has no data array!" << endl;
         return false;
     }
 
@@ -119,7 +119,7 @@ bool deleteWord(int deskIndex, int wordIndex)
     // if (wordIndex < 0 || wordIndex >= dataArray.Size())
     if (wordIndex < 0 || wordIndex >= static_cast<int>(dataArray.Size()))
     {
-        cerr << "Error: Invalid word index!" << endl;
+        cout << "Error: Invalid word index!" << endl;
         return false;
     }
 

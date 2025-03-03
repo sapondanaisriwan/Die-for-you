@@ -934,6 +934,7 @@ int main()
         }
         else if (currentWindow == GAMEPLAY_WINDOW)
         {
+            isCoverLoad = false;
 
             if (isShuffled == false)
             {
@@ -1242,8 +1243,8 @@ int main()
 
             if (browseEditBtn.isPressed(mousePosition, mousePressed))
             {
-                string getWord, getMeaning;
 
+                string getWord, getMeaning;
                 editCardIndex = selectedIndex;
 
                 getWord = deskData[editCardIndex]["word"].GetString();
