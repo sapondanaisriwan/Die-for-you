@@ -253,13 +253,14 @@ int main()
     Button brNextFade{"img/gameplay/next-btn-fade.png", {529 + 4, 650}};
     Button browseBG{"img/gameplay/bg.png", {43, 48}};
     Button browseTitle{"img/browse/word-meaning.png", {70, 60}};
+    bool isWordSelected = false;
 
     // add & edit
     Rectangle wordBox = {100, 100, 800, 30};
     Rectangle imageBox = {100, 200, 800, 300};
     Rectangle meaningBox = {100, 550, 800, 30};
-    Button editSaveBtn{"img/buttons/save.png", {screenWidth - 200, screenHeight - 100}};
-    Button editBackBtn{"img/buttons/back.png", {100, screenHeight - 100}};
+    Button editSaveBtn{"img/buttons/save.png", {screenWidth - 200, screenHeight - 150}};
+    Button editBackBtn{"img/buttons/back.png", {100, screenHeight - 150}};
     Button imageDeleteBtn{"img/buttons/delete.png", {imageBox.x + imageBox.width - 110, imageBox.y + 10}};
 
     vector<char> word, meaning;
@@ -844,6 +845,7 @@ int main()
             {
                 document = getData();
                 currentWindow = BROWSER_WINDOW;
+                isWordSelected = false;
             }
             else if (isAddPressed)
             {
@@ -1172,16 +1174,9 @@ int main()
         }
         else if (currentWindow == BROWSER_WINDOW)
         {
-            browseBG.Draw();
-            browseTitle.Draw();
-            browseBackBtn.Draw();
-            browseEditBtn.Draw();
-            browseDeleteBtn.Draw();
-            // brPrevious.Draw();
-
             const Value &deskData = document[currentDeck]["data"];
             int dataSize = deskData.Size();
-
+            
             const int maxRowsPerPage = 10;
             int startIndex = currentEditPage * maxRowsPerPage; // เพื่อที่จะเริ่มเเต่ละหน้า
             int endIndex = min((currentEditPage + 1) * maxRowsPerPage, dataSize);
@@ -1189,11 +1184,17 @@ int main()
             // คำนวณจุดศูนย์กลางจอ
             const float screenWidth = 1000.0f;
             const float screenCenterX = screenWidth / 2.0f;
-
+            
             float yOffset = 150.0f;
             float columnSpacing = 100.0f;
             float xWord = screenCenterX - columnSpacing - 150.0f;
             float xMeaning = screenCenterX + columnSpacing;
+
+            browseBG.Draw();
+            browseTitle.Draw();
+            browseBackBtn.Draw();
+            if(isWordSelected) browseEditBtn.Draw();
+            if(isWordSelected) browseDeleteBtn.Draw();
 
             /* หัวข้อตาราง
             DrawTextEx(InterSemiBold, "Word", {xWord, yOffset}, 26, 0, BLACK);
@@ -1213,6 +1214,7 @@ int main()
             if (browseBackBtn.isPressed(mousePosition, mousePressed))
             {
                 currentWindow = START_WINDOW;
+                isWordSelected = false;
             }
 
             // ทำDelete
@@ -1237,6 +1239,7 @@ int main()
                     }
 
                     selectedIndex = -1; // รีเซ็ตการเลือก
+                    isWordSelected = false;
                     continue;
                 }
             }
@@ -1295,7 +1298,7 @@ int main()
                 Rectangle rowBox = {screenCenterX - (rowWidth / 2) + 20, yOffset - 12, rowWidth, 30.0f}; // x,y,w,h
 
                 // Highlight เเถวที่กดก่อนที่จะพิมพ์ตัวหนังสือออกมานะ ไม่งั้นมันจะทับกัน
-                if (i == selectedIndex)
+                if (i == selectedIndex && isWordSelected)
                 {
                     DrawRectangleRec(rowBox, Color{255, 225, 230, 255});
                 }
@@ -1313,6 +1316,7 @@ int main()
                 if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && CheckCollisionPointRec(GetMousePosition(), rowBox))
                 {
                     selectedIndex = i; // ตั้งค่าแถวที่ถูกเลือก
+                    isWordSelected = true;
                 }
 
                 yOffset += 50.0f;
@@ -1356,7 +1360,7 @@ int main()
             int fontSize = 20;
 
             // test
-            DrawTextEx(editTextFont, imgPath.c_str(), {0, 0}, fontSize + 4, 0, BLACK);
+            //DrawTextEx(editTextFont, imgPath.c_str(), {0, 0}, fontSize + 4, 0, BLACK);
 
             // wordBox
             if (currentWindow != ADD_DECK_WINDOW)
