@@ -819,6 +819,10 @@ int main()
             bool isAddPressed = stAddBtn.isPressed(mousePosition, mousePressed);
             bool isHomePressed = stHome.isPressed(mousePosition, mousePressed);
             bool isDeletePressed = startDeleteBtn.isPressed(mousePosition, mousePressed);
+            challengeMode = false;
+            countdownStarted = false;
+            timeOut = false;
+            
 
             gpBG.Draw();
 
